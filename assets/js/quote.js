@@ -151,11 +151,7 @@
   form.addEventListener('submit', function (e) { e.preventDefault(); });
 
   /* --- Live estimate ---------------------------------------------------- */
-  var STORY_MULT    = { '1 story': 1, '2 stories': 1.35, '3+ stories': 1.75 };
-  var FRONTAGE_MULT = {
-    'Under 40 ft': 0.7, '40–60 ft': 0.88, '60–90 ft': 1,
-    '90–130 ft': 1.3, 'Over 130 ft': 1.7, '': 1
-  };
+  var STORY_MULT = { '1 story': 1, '2 stories': 1.35, '3+ stories': 1.75 };
 
   function val(name) {
     var el = form.querySelector('input[name="' + name + '"]:checked, select[name="' + name + '"]');
@@ -207,7 +203,7 @@
     var base = checked.reduce(function (sum, c) { return sum + Number(c.dataset.price || 0); }, 0);
     if (base === 0) base = 1200; // "not sure yet" only — assume a typical Signature
 
-    var est = base * (STORY_MULT[stories] || 1) * (FRONTAGE_MULT[val('frontage')] || 1);
+    var est = base * (STORY_MULT[stories] || 1);
     var low = Math.max(850, round50(est * 0.85));
     var high = Math.max(low + 300, round50(est * 1.2));
 

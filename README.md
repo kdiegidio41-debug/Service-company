@@ -20,7 +20,7 @@ Find-and-replace these across `index.html` and `quote.html`:
 | `hello@everglowlighting.com` | Your real email | Both pages, `quote.js` |
 | `everglowlighting.com` | Your real domain | Both pages (canonical, OG tags, JSON-LD) |
 | Chestnut Hill, Blue Bell, Ambler, Flourtown, Lafayette Hill, Plymouth Meeting, Glenside, Dresher, Fort Washington, Wyndmoor, Horsham, Erdenheim | **Your** service area | `index.html` — service-area chips, the map SVG labels, and `areaServed` in the JSON-LD |
-| Prices: `$895` / `$1,650` / `$3,400` | Your real prices once you've priced a few local jobs | `index.html` pricing cards, FAQ |
+| The 15-mile service radius | Your real radius, if different | `index.html` — service-area heading and the map label |
 
 Two things are **deliberately not fabricated**, and you must not fake them:
 
@@ -42,7 +42,7 @@ them, so they have to be true.
 
 ```
 ├── index.html              Homepage — hero, process, services, gallery,
-│                           pricing, reviews, service area, FAQ, CTA
+│                           reviews, service area, FAQ, CTA
 ├── quote.html              4-step quote request form (the conversion page)
 ├── assets/
 │   ├── css/styles.css      Design system + all homepage components
@@ -113,18 +113,23 @@ the time. An email you check at night will not do that.
 - **4 steps** with a progress bar; validation blocks you from advancing past an incomplete step.
 - **Live ballpark estimate** in the sidebar, updating as answers change. Commercial always
   returns "Custom quote."
-- **Deep links from the pricing cards** — `quote.html?package=signature` pre-checks that
-  package's scope items.
+- **Package deep links** — `quote.html?package=roofline|signature|estate` pre-checks that
+  package's scope items. The homepage no longer publishes prices, but these links still work
+  from an ad, an email, or a QR code.
 - **Honeypot field** catches spam bots without a CAPTCHA.
 - **Failure fallback** — if the POST fails, the lead is never lost: the page shows your
   phone number and a pre-filled mailto containing all their answers.
 
 ### Tuning the estimate
 
-The ranges come from `STORY_MULT`, `FRONTAGE_MULT`, and the `data-price` attributes on the
-scope checkboxes in `quote.html`. **Recalibrate these after your first ten real quotes** so
-the number people see on the site matches what you actually charge. A ballpark that reads
-low and then jumps at quote time costs you the job.
+The ranges come from `STORY_MULT` and the `data-price` attributes on the scope checkboxes in
+`quote.html`. **Recalibrate these after your first ten real quotes** so the number people see
+matches what you actually charge. A ballpark that reads low and then jumps at quote time
+costs you the job.
+
+Note that the homepage does not publish prices — this sidebar estimate on the quote page is
+the only number a customer sees before you send a real quote. If you'd rather show no number
+at all, delete the `.qsummary` block from `quote.html`.
 
 ---
 
@@ -154,7 +159,8 @@ asset you will ever own. Shoot the ~25 minutes after sunset, never full dark.
 ## Where to start (first 30 days)
 
 1. Read `docs/BUSINESS_PLAN.md` §4 (pricing) and §5 (unit economics). Those two sections
-   decide whether you make money.
+   decide whether you make money — the plan still carries the full pricing model even though
+   the website no longer publishes it.
 2. Check the name against USPTO and your state registry, then buy the domain and handles
    (`docs/BRAND_GUIDE.md` §1 has the checklist and five backup names).
 3. Get insured. Everything else on this site is a lie without it.

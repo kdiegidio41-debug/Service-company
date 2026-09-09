@@ -63,7 +63,7 @@ So: **takedown and storage are included in every package, priced in, never an ad
 
 ## 3. Market
 
-**Target geography.** One metro, a 25-minute drive radius, focused on 4–8 specific neighborhoods. Density is everything: two jobs on one street is a 40% efficiency gain over two jobs 20 minutes apart, and neighbors sell neighbors.
+**Target geography.** One metro, a 15-mile service radius, focused on 4–8 specific neighborhoods. Density is everything: two jobs on one street is a 40% efficiency gain over two jobs 20 minutes apart, and neighbors sell neighbors.
 
 **How to pick your neighborhoods (do this in August with Zillow and a car):**
 
