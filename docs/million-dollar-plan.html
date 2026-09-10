@@ -1,0 +1,587 @@
+<title>Everglow's Road to a Million</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  :root{
+    /* Everglow brand tokens, dark-first (docs/BRAND_GUIDE.md) */
+    --midnight:#0B1220;
+    --bulb:#FFC46B;
+    --pine:#14513C;
+    --cranberry:#C2413C;
+    --snow:#F7F9FC;
+
+    --ground:#0B1220;
+    --ground-2:#111a2c;
+    --ground-3:#16233a;
+    --rule:#22304a;
+    --rule-soft:#1a2740;
+    --ink:#EDF2FA;
+    --ink-2:#A9B7CE;
+    --ink-3:#74849e;
+    --accent:#FFC46B;
+    --accent-ink:#0B1220;
+    --good:#4FB286;
+    --warn:#E0913F;
+    --bad:#E0625C;
+    --shadow:0 1px 0 rgba(255,255,255,.03), 0 18px 40px -24px rgba(0,0,0,.9);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --ground:#F7F9FC;
+      --ground-2:#ffffff;
+      --ground-3:#eef2f8;
+      --rule:#d3dbe8;
+      --rule-soft:#e2e8f1;
+      --ink:#0B1220;
+      --ink-2:#455166;
+      --ink-3:#6d7b92;
+      --accent:#0f5c43;
+      --accent-ink:#ffffff;
+      --good:#177a55;
+      --warn:#9a5f13;
+      --bad:#a8322d;
+      --shadow:0 1px 0 rgba(255,255,255,.7), 0 14px 32px -26px rgba(11,18,32,.5);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#F7F9FC; --ground-2:#ffffff; --ground-3:#eef2f8;
+    --rule:#d3dbe8; --rule-soft:#e2e8f1;
+    --ink:#0B1220; --ink-2:#455166; --ink-3:#6d7b92;
+    --accent:#0f5c43; --accent-ink:#ffffff;
+    --good:#177a55; --warn:#9a5f13; --bad:#a8322d;
+    --shadow:0 1px 0 rgba(255,255,255,.7), 0 14px 32px -26px rgba(11,18,32,.5);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:16px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+    padding-inline:20px; padding-block:0;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  .col{max-width:660px}
+
+  h1,h2,h3{font-family:"Fraunces","Iowan Old Style",Georgia,serif;text-wrap:balance;margin:0;line-height:1.14;letter-spacing:-.01em}
+  p{margin:0}
+  a{color:var(--accent)}
+
+  .eyebrow{
+    font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-3);font-family:"Inter",sans-serif;
+  }
+  .num{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+  /* ---------- masthead ---------- */
+  header.mast{
+    border-bottom:1px solid var(--rule);
+    padding-block:56px 34px;
+    display:flex;flex-direction:column;gap:22px;
+  }
+  .mast .kicker{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+  .mast h1{font-size:clamp(38px,7vw,64px);font-weight:600}
+  .mast h1 em{font-style:normal;color:var(--accent)}
+  .dek{color:var(--ink-2);font-size:18px;max-width:60ch}
+  .mastfacts{display:flex;flex-wrap:wrap;gap:10px 34px;padding-top:6px}
+  .mastfacts div{display:flex;flex-direction:column;gap:2px}
+  .mastfacts b{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;font-size:21px;font-weight:500;color:var(--ink)}
+  .mastfacts span{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+  /* ---------- caveat ---------- */
+  .caveat{
+    margin-block:34px;padding:20px 22px;
+    border-left:3px solid var(--warn);
+    background:var(--ground-2);
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .caveat h3{font-size:17px;font-weight:600}
+  .caveat p{color:var(--ink-2);font-size:15.5px;max-width:70ch}
+
+  /* ---------- sections ---------- */
+  section{padding-block:46px;border-top:1px solid var(--rule-soft)}
+  section:first-of-type{border-top:0}
+  .shead{display:flex;gap:16px;align-items:baseline;margin-bottom:8px}
+  .shead .sn{
+    font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;
+    color:var(--accent);padding-top:6px;flex:none;
+  }
+  .shead h2{font-size:clamp(24px,3.4vw,32px);font-weight:600}
+  .sub{color:var(--ink-2);margin-top:12px;margin-left:34px;max-width:66ch}
+  .body{margin-left:34px;max-width:66ch;display:flex;flex-direction:column;gap:16px;margin-top:22px;color:var(--ink-2)}
+  .body strong{color:var(--ink);font-weight:600}
+  @media (max-width:620px){.sub,.body{margin-left:0}}
+
+  /* ---------- chart ---------- */
+  figure{margin:30px 0 0;display:flex;flex-direction:column;gap:14px}
+  .chartbox{overflow-x:auto;background:var(--ground-2);border:1px solid var(--rule-soft);padding:18px 8px 8px}
+  .chartbox svg{display:block;min-width:640px;width:100%;height:auto}
+  figcaption{color:var(--ink-3);font-size:13.5px;max-width:70ch}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--ink-2)}
+  .legend i{display:inline-block;width:11px;height:11px;margin-right:7px;vertical-align:-1px}
+
+  /* ---------- composition bar ---------- */
+  .compbar{display:flex;width:100%;height:44px;overflow:hidden;background:var(--ground-3)}
+  .compbar div{position:relative}
+  .complist{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:2px 24px;margin-top:6px}
+  .complist li{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule-soft);font-size:14.5px}
+  .complist li i{width:10px;height:10px;flex:none;transform:translateY(-1px)}
+  .complist li span{color:var(--ink-2);flex:1}
+  .complist li b{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500;color:var(--ink)}
+  ul{margin:0;padding:0;list-style:none}
+
+  /* ---------- tables ---------- */
+  .tscroll{overflow-x:auto;margin-top:26px;border:1px solid var(--rule-soft)}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:14.5px}
+  caption{
+    text-align:left;padding:14px 16px;background:var(--ground-3);
+    font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink-2);
+    border-bottom:1px solid var(--rule-soft);
+  }
+  th,td{padding:10px 16px;text-align:left;border-bottom:1px solid var(--rule-soft);vertical-align:top}
+  thead th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600;white-space:nowrap}
+  tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}
+  td.n,th.n{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+  tr.total td,tr.total th{background:var(--ground-3);font-weight:700;color:var(--ink);border-top:1px solid var(--rule)}
+  tbody th{font-weight:500;color:var(--ink)}
+
+  /* ---------- risk ledger ---------- */
+  .risks{display:flex;flex-direction:column;gap:0;margin-top:28px;border-top:1px solid var(--rule-soft)}
+  .risk{display:grid;grid-template-columns:auto 1fr auto;gap:6px 18px;padding:20px 0 20px 16px;border-bottom:1px solid var(--rule-soft);border-left:3px solid var(--sev)}
+  .risk .rn{font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;color:var(--ink-3);padding-top:4px}
+  .risk h3{font-size:18px;font-weight:600;grid-column:2}
+  .risk .sev{
+    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+    color:var(--sev);align-self:center;white-space:nowrap;
+  }
+  .risk p{grid-column:2/-1;color:var(--ink-2);font-size:15px;max-width:66ch}
+  .risk .fix{grid-column:2/-1;color:var(--ink);font-size:15px;max-width:66ch}
+  .risk .fix b{color:var(--accent);font-weight:600}
+  @media (max-width:620px){
+    .risk{grid-template-columns:auto 1fr;padding-left:14px}
+    .risk .sev{grid-column:2;justify-self:start;align-self:start}
+    .risk h3,.risk p,.risk .fix{grid-column:2}
+  }
+
+  /* ---------- calendar ---------- */
+  .cal{margin-top:26px;border:1px solid var(--rule-soft)}
+  .cal .row{display:grid;grid-template-columns:190px 1fr;gap:0;border-bottom:1px solid var(--rule-soft)}
+  .cal .row:last-child{border-bottom:0}
+  .cal .when{
+    padding:14px 16px;background:var(--ground-3);color:var(--ink);
+    font-size:13px;font-weight:600;letter-spacing:.02em;
+    border-right:1px solid var(--rule-soft);
+  }
+  .cal .what{padding:14px 16px;color:var(--ink-2);font-size:15px}
+  .cal .what b{color:var(--ink);font-weight:600}
+  @media (max-width:620px){
+    .cal .row{grid-template-columns:1fr}
+    .cal .when{border-right:0;border-bottom:1px solid var(--rule-soft)}
+  }
+
+  /* ---------- metrics ---------- */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft);margin-top:26px}
+  .metric{background:var(--ground-2);padding:20px 18px;display:flex;flex-direction:column;gap:6px}
+  .metric .t{font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
+  .metric .v{font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;font-size:27px;font-weight:500;color:var(--accent);line-height:1.1}
+  .metric .n{font-size:13.5px;color:var(--ink-3);line-height:1.45}
+  .metric.key{background:var(--ground-3)}
+  .metric.key .v{color:var(--ink)}
+
+  /* ---------- pull ---------- */
+  .pull{
+    margin:32px 0 6px;margin-left:34px;max-width:60ch;padding-left:20px;
+    border-left:2px solid var(--accent);
+    font-family:"Fraunces",Georgia,serif;font-size:20px;line-height:1.42;color:var(--ink);
+  }
+  @media (max-width:620px){.pull{margin-left:0}}
+
+  footer{border-top:1px solid var(--rule);padding-block:32px 60px;color:var(--ink-3);font-size:13.5px;display:flex;flex-direction:column;gap:8px}
+  footer b{color:var(--ink-2);font-weight:600}
+</style>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="kicker">
+      <span class="eyebrow">Everglow Holiday Lighting Co.</span>
+      <span class="eyebrow" style="color:var(--accent)">Seasons 4–5 scale plan</span>
+    </div>
+    <h1>The road to <em>a million</em></h1>
+    <p class="dek">The founding plan ends at <span class="num">$430,000</span> on four crews. This is the arithmetic for the two seasons after that — what a <span class="num">$1.07M</span> season is made of, what it costs to run, and the three things that will break it.</p>
+    <div class="mastfacts">
+      <div><b>$1,073,200</b><span>Season 5 revenue</span></div>
+      <div><b>$183,000</b><span>Operating profit</span></div>
+      <div><b>456</b><span>Jobs</span></div>
+      <div><b>6</b><span>Crews at peak</span></div>
+      <div><b>72%</b><span>Renewal rate required</span></div>
+    </div>
+  </header>
+
+  <div class="caveat">
+    <h3>Before the numbers: what this document is and isn't</h3>
+    <p>No business plan makes a million dollars — execution does. Every figure here is <em>internally consistent</em>: the crew count supports the job count, the job count supports the revenue, the revenue supports the payroll. They are still assumptions. Replace each one with your own market's data the moment you have it.</p>
+    <p>Two things worth being blunt about. This is a <strong>five-season</strong> plan, not a fast one — anyone selling a million-dollar first year in a trade with ninety days of revenue is selling something else. And <span class="num">$1.07M</span> of revenue is roughly <span class="num">$183k</span> of operating profit, not a million dollars of income. By then you have a warehouse, four trucks and a year-round payroll.</p>
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="shead"><span class="sn">01</span><h2>Five seasons, and the year the margin dips</h2></div>
+    <p class="sub">Growth is roughly 55–60% a year from Season 3. That's demanding but ordinary for this trade — what isn't ordinary is what happens to margin in Season 4.</p>
+
+    <figure>
+      <div class="chartbox">
+        <svg viewBox="0 0 720 356" role="img" aria-label="Revenue and operating profit by season: Season 1 $130k revenue and $42k profit; Season 2 $258k and $96k; Season 3 $430k and $168k; Season 4 $680k and $132k; Season 5 $1,073k and $183k.">
+          <g stroke="var(--rule-soft)" stroke-width="1">
+            <line x1="60" y1="280" x2="700" y2="280" stroke="var(--rule)"></line>
+            <line x1="60" y1="223.2" x2="700" y2="223.2"></line>
+            <line x1="60" y1="166.4" x2="700" y2="166.4"></line>
+            <line x1="60" y1="109.5" x2="700" y2="109.5"></line>
+            <line x1="60" y1="52.7" x2="700" y2="52.7"></line>
+          </g>
+          <g fill="var(--ink-3)" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="end">
+            <text x="52" y="284">$0</text>
+            <text x="52" y="227">$250k</text>
+            <text x="52" y="170">$500k</text>
+            <text x="52" y="113">$750k</text>
+            <text x="52" y="56">$1.0M</text>
+          </g>
+
+          <!-- revenue bars -->
+          <g fill="var(--accent)" opacity="0.34">
+            <rect x="86"  y="250.5" width="76" height="29.5"></rect>
+            <rect x="214" y="221.4" width="76" height="58.6"></rect>
+            <rect x="342" y="182.3" width="76" height="97.7"></rect>
+            <rect x="470" y="125.5" width="76" height="154.5"></rect>
+          </g>
+          <rect x="598" y="36.1" width="76" height="243.9" fill="var(--accent)" opacity="0.85"></rect>
+
+          <!-- profit bars, same scale -->
+          <g fill="var(--good)">
+            <rect x="109" y="270.5" width="30" height="9.5"></rect>
+            <rect x="237" y="258.2" width="30" height="21.8"></rect>
+            <rect x="365" y="241.8" width="30" height="38.2"></rect>
+            <rect x="493" y="250.0" width="30" height="30.0"></rect>
+            <rect x="621" y="238.4" width="30" height="41.6"></rect>
+          </g>
+
+          <!-- revenue value labels -->
+          <g fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="11.5" text-anchor="middle">
+            <text x="124" y="243">$130k</text>
+            <text x="252" y="214">$258k</text>
+            <text x="380" y="175">$430k</text>
+            <text x="508" y="118">$680k</text>
+            <text x="636" y="28" font-size="14" font-weight="700" fill="var(--accent)">$1.07M</text>
+          </g>
+
+          <!-- season labels -->
+          <g fill="var(--ink-2)" font-family="Inter, sans-serif" font-size="11.5" text-anchor="middle" font-weight="600">
+            <text x="124" y="300">SEASON 1</text>
+            <text x="252" y="300">SEASON 2</text>
+            <text x="380" y="300">SEASON 3</text>
+            <text x="508" y="300">SEASON 4</text>
+            <text x="636" y="300">SEASON 5</text>
+          </g>
+          <g fill="var(--ink-3)" font-family="JetBrains Mono, monospace" font-size="10.5" text-anchor="middle">
+            <text x="124" y="317">1 crew</text>
+            <text x="252" y="317">2 crews</text>
+            <text x="380" y="317">4 crews</text>
+            <text x="508" y="317">5 crews</text>
+            <text x="636" y="317">6 crews</text>
+          </g>
+          <text x="508" y="341" fill="var(--warn)" font-family="Inter, sans-serif" font-size="11.5" font-weight="600" text-anchor="middle">profit dips — full cost structure arrives first</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--accent);opacity:.5"></i>Revenue</span>
+        <span><i style="background:var(--good)"></i>Operating profit, same scale</span>
+      </div>
+      <figcaption>Profit is drawn on the same axis as revenue on purpose. The gap between the two bars is the whole business — and it is wider than most operators expect.</figcaption>
+    </figure>
+
+    <div class="body">
+      <p><strong>Read the margin, not the revenue.</strong> Gross margin climbs to 64% by Season 3 and then falls to 56%. That isn't an error. Seasons 1–3 are owner-operated with almost no fixed overhead, and part of that "margin" is your own unpaid labor. Seasons 4–5 add a warehouse, year-round salaries and crews you pay whether or not it rains.</p>
+      <p><strong>Season 4 is the hardest year in this plan.</strong> You take on the full cost structure a season before the renewal base is large enough to carry it. Profit falls from $168k to $132k on nearly 60% more revenue. Budget for the dip — and do not respond to it by cutting marketing, because that dip is precisely what buys Season 5.</p>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption>Season-by-season</caption>
+        <thead><tr><th>Driver</th><th class="n">S1</th><th class="n">S2</th><th class="n">S3</th><th class="n">S4</th><th class="n">S5</th></tr></thead>
+        <tbody>
+          <tr><th>Residential customers</th><td class="n">56</td><td class="n">105</td><td class="n">165</td><td class="n">300</td><td class="n">400</td></tr>
+          <tr><th>— of which renewals</th><td class="n">0</td><td class="n">38</td><td class="n">76</td><td class="n">130</td><td class="n">215</td></tr>
+          <tr><th>Commercial accounts</th><td class="n">6</td><td class="n">14</td><td class="n">24</td><td class="n">34</td><td class="n">42</td></tr>
+          <tr><th>Permanent-lighting installs</th><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="n">8</td><td class="n">14</td></tr>
+          <tr><th>Crews at peak</th><td class="n">1</td><td class="n">2</td><td class="n">4</td><td class="n">5</td><td class="n">6</td></tr>
+          <tr><th>Year-round staff (excl. owner)</th><td class="n">0</td><td class="n">0</td><td class="n">1</td><td class="n">2</td><td class="n">3</td></tr>
+          <tr><th>Gross margin</th><td class="n">54%</td><td class="n">61%</td><td class="n">64%</td><td class="n">58%</td><td class="n">56%</td></tr>
+          <tr class="total"><td>Revenue</td><td class="n">$130k</td><td class="n">$258k</td><td class="n">$430k</td><td class="n">$680k</td><td class="n">$1.07M</td></tr>
+          <tr class="total"><td>Operating profit</td><td class="n">$42k</td><td class="n">$96k</td><td class="n">$168k</td><td class="n">$132k</td><td class="n">$183k</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="shead"><span class="sn">02</span><h2>What a million-dollar season is made of</h2></div>
+    <p class="sub">456 jobs across four revenue lines. They are not equally valuable, and the biggest one is not the most important one.</p>
+
+    <figure>
+      <div class="compbar" role="img" aria-label="Revenue composition: renewals 25%, new core residential 25%, commercial 25%, estate 12%, permanent lighting 10%, service 2%.">
+        <div style="width:25.04%;background:var(--accent)"></div>
+        <div style="width:25.27%;background:#8a6a3a"></div>
+        <div style="width:11.74%;background:#c99a52"></div>
+        <div style="width:25.44%;background:var(--pine)"></div>
+        <div style="width:10.17%;background:#2f7d5f"></div>
+        <div style="width:2.33%;background:var(--ink-3)"></div>
+      </div>
+      <ul class="complist">
+        <li><i style="background:var(--accent)"></i><span>Residential renewals · 215 × $1,250</span><b>$268,750</b></li>
+        <li><i style="background:#8a6a3a"></i><span>New core residential · 155 × $1,750</span><b>$271,250</b></li>
+        <li><i style="background:var(--pine)"></i><span>Commercial contracts · 42 × $6,500</span><b>$273,000</b></li>
+        <li><i style="background:#c99a52"></i><span>Estate residential · 30 × $4,200</span><b>$126,000</b></li>
+        <li><i style="background:#2f7d5f"></i><span>Permanent architectural lighting · 14 × $7,800</span><b>$109,200</b></li>
+        <li><i style="background:var(--ink-3)"></i><span>Service calls, add-ons, upsells</span><b>$25,000</b></li>
+      </ul>
+      <figcaption>Four lines of roughly a quarter each. Only one of them costs nothing to acquire.</figcaption>
+    </figure>
+
+    <div class="body">
+      <p><strong>Renewals — 25% of revenue at ~69% margin.</strong> 215 customers who cost you nothing to win, because you are storing their custom-cut lights in your warehouse, labeled by address. This line is the entire reason the business is worth building; everything else exists to feed it.</p>
+      <p><strong>Commercial — 25%, and the most controllable growth in the plan.</strong> It books in August, pays on contract and renews without a sales cycle. Going from 24 accounts to 42 is outbound work by one person, not an advertising bet.</p>
+      <p><strong>Permanent architectural lighting — 10%, installed in the off-season.</strong> Track-mounted year-round LED at a $7,800 average, sold to customers who already trust you on their roof. It consumes zero peak capacity, which is what makes it the line that de-risks a ninety-day business.</p>
+      <p><strong>New residential — 37%, and your most expensive revenue.</strong> Necessary fuel for the renewal base, but it carries 26% material cost against a renewal's 10%, plus roughly $250 of acquisition cost each.</p>
+    </div>
+
+    <p class="pull">A $430k business becomes a $1M business mostly by <em>keeping</em> customers and <em>signing contracts</em> — not by advertising harder.</p>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <div class="shead"><span class="sn">03</span><h2>Does six crews actually cover it?</h2></div>
+    <p class="sub">This is where scale plans usually lie. It checks out — but only at six crews, and only if you stop selling at 90% of capacity.</p>
+
+    <div class="body">
+      <p>A two-person crew installs <strong>2.5 standard homes a day</strong>. The install window — October 15 to December 20 — is about <strong>45 working days</strong>, so one crew is worth <strong>112 home-equivalents</strong> a season.</p>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption>Install season demand</caption>
+        <thead><tr><th>Work</th><th class="n">Volume</th><th class="n">Crew-days</th><th>Basis</th></tr></thead>
+        <tbody>
+          <tr><th>Standard residential</th><td class="n">370</td><td class="n">370</td><td>Renewals install faster; averaged flat</td></tr>
+          <tr><th>Estate</th><td class="n">30</td><td class="n">75</td><td>2.5× a standard home</td></tr>
+          <tr><th>Commercial</th><td class="n">42</td><td class="n">63</td><td>~1.5 crew-days each</td></tr>
+          <tr class="total"><td>Total demand</td><td class="n">442</td><td class="n">508</td><td>÷ 0.85 weather buffer = 598 needed</td></tr>
+          <tr class="total"><td>Crews required</td><td class="n">—</td><td class="n">5.3</td><td>598 ÷ 112 → <strong>staff 6</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="body">
+      <p><strong>January is the check that makes it work.</strong> 400 residential takedowns at 5 homes per crew-day is 80 crew-days, plus about 30 for commercial. Across the 21 working days of January that's 5.2 crews — the same six, retained.</p>
+      <p>That is why takedown is the strategy rather than a chore. It lets you offer installers a <strong>fifteen-week job instead of an eleven-week one</strong>, which is what lets you hire good people and get them back next year. Nobody good leaves a year-round job for eleven weeks.</p>
+      <p><strong>Headcount at a million:</strong> 12 seasonal installers, one year-round operations manager, one year-round sales estimator, a part-time admin, and you. Four trucks, six trailers, one 4,000 sq ft warehouse.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="shead"><span class="sn">04</span><h2>What it costs to run</h2></div>
+    <p class="sub">$1,073,200 in, $877,260 out. The line that surprises people is crew labor, because at six crews you pay for the whole season, not per job.</p>
+
+    <div class="tscroll">
+      <table>
+        <caption>Cost of goods sold</caption>
+        <thead><tr><th>Line</th><th class="n">Amount</th><th>Basis</th></tr></thead>
+        <tbody>
+          <tr><th>Materials — new residential + estate</th><td class="n">$91,900</td><td>26% of $353,500</td></tr>
+          <tr><th>Materials — renewals</th><td class="n">$30,000</td><td>10% attrition and replacement</td></tr>
+          <tr><th>Materials — commercial</th><td class="n">$49,140</td><td>18% blended, new and renewing</td></tr>
+          <tr><th>Materials — permanent lighting</th><td class="n">$38,220</td><td>35% — the fixtures are the cost</td></tr>
+          <tr><th>Crew labor, install + takedown</th><td class="n">$180,000</td><td>12 × 15 wks × 40 hrs × $25 loaded</td></tr>
+          <tr><th>Crew labor, off-season permanent</th><td class="n">$16,800</td><td>42 crew-days</td></tr>
+          <tr><th>Fuel, vehicles in service, consumables</th><td class="n">$38,000</td><td></td></tr>
+          <tr><th>Payment processing</th><td class="n">$27,600</td><td>2.6% blended</td></tr>
+          <tr class="total"><td>Total COGS</td><td class="n">$471,660</td><td>Gross profit $601,540 · <strong>56%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tscroll">
+      <table>
+        <caption>Operating expenses</caption>
+        <thead><tr><th>Line</th><th class="n">Amount</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><th>Operations manager, year-round</th><td class="n">$62,000</td><td>Owns the schedule. Your first real hire.</td></tr>
+          <tr><th>Sales / estimator</th><td class="n">$58,000</td><td>Base + commission; pays for itself at ~35 extra jobs</td></tr>
+          <tr><th>Admin, part-time year-round</th><td class="n">$28,000</td><td></td></tr>
+          <tr><th>Marketing</th><td class="n">$95,000</td><td>~9% of revenue</td></tr>
+          <tr><th>Insurance — $2M GL + workers' comp</th><td class="n">$22,000</td><td>Rises steeply with payroll. Budget it.</td></tr>
+          <tr><th>Vehicles and trailers</th><td class="n">$46,000</td><td>Lease, depreciation, maintenance</td></tr>
+          <tr><th>Warehouse, 4,000 sq ft, 12 months</th><td class="n">$42,000</td><td>Storage is the moat; it's also rent</td></tr>
+          <tr><th>Software, 15 seats</th><td class="n">$9,600</td><td>CRM, routing, payroll</td></tr>
+          <tr><th>Legal, accounting, licensing</th><td class="n">$14,000</td><td></td></tr>
+          <tr><th>Recruiting, training, safety program</th><td class="n">$11,000</td><td></td></tr>
+          <tr><th>Equipment replacement reserve</th><td class="n">$18,000</td><td></td></tr>
+          <tr class="total"><td>Total opex</td><td class="n">$405,600</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><span class="t">Revenue</span><span class="v">$1,073,200</span><span class="n">456 jobs</span></div>
+      <div class="metric"><span class="t">Gross profit</span><span class="v">$601,540</span><span class="n">56% margin</span></div>
+      <div class="metric"><span class="t">Operating profit, modeled</span><span class="v">$195,940</span><span class="n">18.3% of revenue</span></div>
+      <div class="metric key"><span class="t">Plan on</span><span class="v">$183,000</span><span class="n">After a $13k reserve for the truck that dies in November, the damage claim, the payroll week you didn't forecast</span></div>
+    </div>
+
+    <div class="body">
+      <p>That is a genuinely good outcome for a 456-job service company. It is also, plainly, not the same thing as making a million dollars — and the difference between those two sentences is the most common misunderstanding in this trade.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="shead"><span class="sn">05</span><h2>Cash, and the September problem</h2></div>
+    <p class="sub">You spend about $310,000 before the first Season-5 dollar lands. This is where profitable companies in this trade actually die.</p>
+
+    <div class="tscroll">
+      <table>
+        <caption>Pre-revenue outflow</caption>
+        <thead><tr><th>Outflow</th><th>When</th><th class="n">Amount</th></tr></thead>
+        <tbody>
+          <tr><th>Inventory buy, ahead of the seasonal markup</th><td>June–July</td><td class="n">$145,000</td></tr>
+          <tr><th>Insurance renewal</th><td>July</td><td class="n">$22,000</td></tr>
+          <tr><th>Marketing, front-loaded</th><td>Aug–Oct</td><td class="n">$65,000</td></tr>
+          <tr><th>Payroll before deposits clear</th><td>Sept–Oct</td><td class="n">$48,000</td></tr>
+          <tr><th>Warehouse and fixed overhead, off-season</th><td>Mar–Sep</td><td class="n">$30,000</td></tr>
+          <tr class="total"><td>Total</td><td></td><td class="n">$310,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="body">
+      <p><strong>1. Fifty percent deposits.</strong> 456 jobs at half of a ~$2,350 average ticket, landing August through October, is the primary engine. No exceptions, no "we'll invoice after the install." This single policy is the difference between needing a bank and not.</p>
+      <p><strong>2. Commercial signed in August, half on signature.</strong> 42 accounts × $3,250 is about $136,000 in the door before the peak marketing budget goes out.</p>
+      <p><strong>3. A $150,000 line of credit, arranged in February</strong> — when your books look their best, not in September when you need it. Draw it only for the inventory buy and repay it by December 31. Arrange it even if you never intend to use it.</p>
+    </div>
+
+    <div class="caveat">
+      <h3>The failure mode, stated plainly</h3>
+      <p>Growing from $680k to $1.07M means buying roughly $100,000 more inventory in July on the <em>belief</em> that you'll sell it in October. Do not buy Season-5 inventory against Season-5 hopes. Buy it against <strong>signed commercial contracts and closed renewals</strong>, and buy the remainder in September at a worse price. A 25% markup on the last tranche is cheap next to $100,000 of unsold C9 sitting on a shelf until next November.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <div class="shead"><span class="sn">06</span><h2>The two-year sequence</h2></div>
+    <p class="sub">Every hire and every commitment lands an off-season early, on purpose. Hiring an operations manager in October is hiring them too late to matter.</p>
+
+    <div class="cal">
+      <div class="row"><div class="when">S4 · February</div><div class="what">Arrange the line of credit. Rewrite pricing from Season 4's <b>real</b> per-job margins, and kill the job types that lost money.</div></div>
+      <div class="row"><div class="when">S4 · March</div><div class="what"><b>Hire the operations manager.</b> They need a full off-season to own the calendar before it matters.</div></div>
+      <div class="row"><div class="when">S4 · Mar–Sep</div><div class="what">Launch permanent architectural lighting to the existing list. Eight jobs. It funds the ops manager and proves the off-season model.</div></div>
+      <div class="row"><div class="when">S4 · June</div><div class="what">Sign the warehouse. You cannot label and shelve 400 customer kits in a 10×20 storage unit.</div></div>
+      <div class="row"><div class="when">S4 · August</div><div class="what">Run the renewal campaign like a product launch, not an email. Target <b>75% of renewals closed before Labor Day.</b></div></div>
+      <div class="row"><div class="when">S5 · February</div><div class="what">Hire the sales estimator. Their whole Q2–Q3 job is commercial outbound: 24 accounts to 42.</div></div>
+      <div class="row"><div class="when">S5 · June–July</div><div class="what">The inventory buy — against contracts, never against forecasts.</div></div>
+      <div class="row"><div class="when">S5 · July–Sept</div><div class="what"><b>Recruit twelve installers.</b> Rehire last year's crew first with a return bonus and let them recruit their friends.</div></div>
+      <div class="row"><div class="when">S5 · October</div><div class="what">Stop selling at 90% of capacity. Put the rest on the Season-6 list. A waitlist is an asset; a missed install is a one-star review.</div></div>
+      <div class="row"><div class="when">S5 · January</div><div class="what">Six crews, 21 days, 400 takedowns. This month is the reason next year's renewals renew.</div></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <div class="shead"><span class="sn">07</span><h2>What breaks this plan</h2></div>
+    <p class="sub">Ranked by expected damage, with the arithmetic. The order is not the order most operators worry in.</p>
+
+    <div class="risks">
+      <div class="risk" style="--sev:var(--bad)">
+        <span class="rn">01</span><h3>The renewal rate slips</h3><span class="sev">Catastrophic</span>
+        <p>The plan assumes 72%. At 55%: renewals fall from 215 to 164, a direct loss of <span class="num">$63,750</span>. To hold 400 residential jobs you must then acquire 51 more new customers at ~$250 each (<span class="num">$12,750</span> of marketing) — and they carry 26% material cost instead of 10%, another <span class="num">$28,000</span> of COGS.</p>
+        <p class="fix">Total impact: roughly <b>−$104,000, or 57% of your operating profit.</b> It is far cheaper to keep a customer than to grow past losing one. And the renewal rate is set in <b>January</b>, not August: a clean, on-time takedown and a labeled kit <em>is</em> the retention program. Measure it every August; treat anything under 65% as a five-alarm fire.</p>
+      </div>
+
+      <div class="risk" style="--sev:var(--bad)">
+        <span class="rn">02</span><h3>You sell more than six crews can install</h3><span class="sev">Severe · self-inflicted</span>
+        <p>The most common way this business fails <em>publicly</em>. Every over-sold install becomes a December emergency, a rushed job, a one-star review — and a lost renewal, which feeds failure 01.</p>
+        <p class="fix">Book to 85%. <b>Cap it in October and say so out loud:</b> "we're full — want the Season 6 list?" is the best marketing you will ever run.</p>
+      </div>
+
+      <div class="risk" style="--sev:var(--warn)">
+        <span class="rn">03</span><h3>You can't hire twelve competent installers</h3><span class="sev">Likely</span>
+        <p>At six crews, labor is the binding constraint — not demand. Every mitigation happens in July, and none of them work in October.</p>
+        <p class="fix">Rehire last season's crew first with a return bonus. Recruit from roofing, landscaping and window-cleaning crews entering their off-season. Pay 15% above the local handyman rate. And sell the January takedown work as what it is: <b>a fifteen-week job, not an eleven-week one.</b></p>
+      </div>
+
+      <div class="risk" style="--sev:var(--bad)">
+        <span class="rn">04</span><h3>A serious injury</h3><span class="sev">Existential</span>
+        <p>Six crews at height, in the cold, under December schedule pressure. This is the risk that ends companies and hurts people.</p>
+        <p class="fix">$2M general liability plus workers' comp. Harnesses above 6/12 pitch or any second story, stabilizers on every ladder, no work in rain, ice or sustained wind over 20 mph, a documented daily brief, and a photograph of every ladder setup. <b>Enforce the weather rule hardest when you are behind schedule</b> — that is exactly when it gets broken, and exactly when it matters.</p>
+      </div>
+
+      <div class="risk" style="--sev:var(--warn)">
+        <span class="rn">05</span><h3>The July inventory bet goes wrong</h3><span class="sev">Severe · cash</span>
+        <p>$145,000 of lights bought four months before the revenue arrives, in a business where an unsold strand is dead money until next November.</p>
+        <p class="fix">Buy against <b>signed contracts and closed renewals only.</b> Pay the September markup on the rest.</p>
+      </div>
+
+      <div class="risk" style="--sev:var(--ink-3)">
+        <span class="rn">06</span><h3>Weather compresses the window</h3><span class="sev">Certain</span>
+        <p>Not a risk — a certainty. You will lose six to ten days, and every one of them is unrecoverable.</p>
+        <p class="fix">It is already priced in, as the 85% booking cap and the December 8–15 float. <b>If you book to 100%, you have removed the mitigation and adopted the risk.</b></p>
+      </div>
+
+      <div class="risk" style="--sev:var(--warn)">
+        <span class="rn">07</span><h3>A national franchise enters your metro</h3><span class="sev">Moderate</span>
+        <p>They will outspend you on advertising and undercut you on price. They cannot beat you on the January 15 takedown, the 24-hour fix, or knowing the customer's roof.</p>
+        <p class="fix"><b>Do not match their price.</b> Defend the renewal base — it is the one thing their marketing budget cannot buy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section>
+    <div class="shead"><span class="sn">08</span><h2>Five numbers to run the company on</h2></div>
+    <p class="sub">Sections 02, 04 and 07 all resolve to the first one. If you track nothing else, track that.</p>
+
+    <div class="metrics">
+      <div class="metric key"><span class="t">Renewal rate</span><span class="v">72%+</span><span class="n">Checked every August. Under 65% — stop growing and fix delivery.</span></div>
+      <div class="metric"><span class="t">Booked capacity</span><span class="v">≤90%</span><span class="n">By October 15. Weekly through Sep–Oct, then stop selling.</span></div>
+      <div class="metric"><span class="t">Time to first response</span><span class="v">&lt;15 min</span><span class="n">The first company to reply wins about half the time. It's free, and most competitors are bad at it.</span></div>
+      <div class="metric"><span class="t">Gross margin per job type</span><span class="v">56%</span><span class="n">Monthly in season. Find and fire the job types that lose money.</span></div>
+      <div class="metric"><span class="t">Cost per acquired customer</span><span class="v">&lt;$250</span><span class="n">By channel, at season end. Kill anything above it.</span></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <div class="shead"><span class="sn">09</span><h2>Past a million</h2></div>
+    <p class="sub">Six crews in one metro with one owner is roughly the ceiling. Three ways through it, in ascending order of risk.</p>
+
+    <div class="tscroll">
+      <table>
+        <caption>Options beyond Season 5</caption>
+        <thead><tr><th>Path</th><th>What it means</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><th>Deepen</th><td>Permanent lighting, gutter cleaning and washing sold to the list you already own. Same customers, more revenue each, year-round crews.</td><td><strong>Lowest.</strong> No new acquisition, no new market. Start here.</td></tr>
+          <tr><th>Widen</th><td>A second metro, a second warehouse, a second operations manager.</td><td>High. Everything that is hard at $1M is harder remotely.</td></tr>
+          <tr><th>License the system</th><td>Sell the playbook rather than the labor.</td><td>Highest. A different company entirely — you'd be in the training and support business.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="pull">You own a list of several hundred homeowners who have let you on their roof and trusted you with their storage. That relationship is the asset. Sell more to the customers you already have before you go find new ones.</p>
+  </section>
+
+  <footer>
+    <p><b>Everglow Holiday Lighting Co. — Seasons 4–5 scale plan.</b> Companion to <span class="num">docs/BUSINESS_PLAN.md</span> (Seasons 1–3) and <span class="num">docs/LEAD_GENERATION.md</span> in the project repository.</p>
+    <p>All figures are modeled assumptions, internally consistent but unverified against your market. Replace each with your own data as it arrives. Nothing here is financial advice or a projection of actual results.</p>
+  </footer>
+
+</div>
