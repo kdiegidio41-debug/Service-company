@@ -20,7 +20,7 @@
   var CONFIG = {
     endpoint: '',
     fallbackEmail: 'hello@everglowlighting.com',
-    phone: '(555) 555-0142'
+    phone: '(267) 853-0058'
   };
 
   var form = document.getElementById('qform');

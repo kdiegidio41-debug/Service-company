@@ -192,7 +192,7 @@ Blue hour is the ~25 minutes after sunset when the sky is deep blue but still ho
 | --- | --- |
 | **Truck / trailer** | Midnight wrap, oversized Bulb mark on the rear door, wordmark on both sides, phone + `everglowlighting.com` in Snow at 6" cap height. The trailer is a rolling billboard that parks in your best neighborhoods for 8 hours a day — treat it as your #1 ad buy. |
 | **Crew uniform** | Midnight quarter-zip or hoodie, Bulb mark embroidered left chest, wordmark across the back. Warm hat in Pine. Uniforms are a trust device — a homeowner letting strangers onto their roof needs to see them. |
-| **Yard sign** | 18×24, Midnight ground, Bulb mark, one line: **"Lights by Everglow"** + phone + short URL. Placed at every job with permission. Expect 1 lead per 6–8 signs per season. |
+| **Yard sign** | 18×24, Midnight ground, lit-bulb wordmark, the takedown promise, the phone at 1.3in caps, and a QR to the quote form. Placed at every job with permission. Expect 1 lead per 6–8 signs per season. **Built and ready to print: `assets/print/yard-sign.pdf` — spec in [`YARD_SIGN.md`](YARD_SIGN.md).** |
 | **Door hanger** | For the 8 houses either side of every install. Headline: *"We just lit up your neighbor's house."* |
 | **Estimate PDF** | Branded cover, blue-hour photo of a comparable home, itemized scope, the four guarantees, one-click accept link. |
 | **Thank-you card** | Handwritten, mailed within 3 days of install, with two referral cards enclosed. |

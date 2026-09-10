@@ -16,9 +16,9 @@ Find-and-replace these across `index.html` and `quote.html`:
 
 | Placeholder | Replace with | Where |
 | --- | --- | --- |
-| `(555) 555-0142` and `+15555550142` | Your real phone | Both pages, `quote.js` |
+| ~~`(555) 555-0142`~~ | ✅ Done — set to `(267) 853-0058` across both pages and `quote.js` | — |
 | `hello@everglowlighting.com` | Your real email | Both pages, `quote.js` |
-| `everglowlighting.com` | Your real domain | Both pages (canonical, OG tags, JSON-LD) |
+| `everglowlighting.com` | Your real domain | Both pages (canonical, OG tags, JSON-LD) — **and the yard-sign QR, see `docs/YARD_SIGN.md`** |
 | Chestnut Hill, Blue Bell, Ambler, Flourtown, Lafayette Hill, Plymouth Meeting, Glenside, Dresher, Fort Washington, Wyndmoor, Horsham, Erdenheim | **Your** service area | `index.html` — service-area chips, the map SVG labels, and `areaServed` in the JSON-LD |
 | The 15-mile service radius | Your real radius, if different | `index.html` — service-area heading and the map label |
 
@@ -38,6 +38,20 @@ them, so they have to be true.
 
 ---
 
+## The yard sign
+
+An 18×24 double-sided coroplast sign is ready to print at
+`assets/print/yard-sign.pdf`, with a scannable QR to the quote form and the phone
+number set large enough to read from the street.
+
+**Do not order it until the domain is live** — the QR currently encodes the
+placeholder `everglowlighting.com`. `docs/YARD_SIGN.md` covers repointing the QR,
+the full printer spec, and where signs may legally be placed.
+
+![Yard sign, front and back](assets/print/yard-sign-front.png)
+
+---
+
 ## What's in here
 
 ```
@@ -49,17 +63,25 @@ them, so they have to be true.
 │   ├── css/quote.css       Quote form styles
 │   ├── js/main.js          Nav, sticky header, scroll reveal, FAQ accordion
 │   ├── js/quote.js         Step logic, validation, live estimate, submission
-│   └── img/                logo.svg, logo-mark.svg, favicon.svg
+│   ├── img/                logo.svg, logo-mark.svg, favicon.svg
+│   └── print/              18×24 yard sign — HTML master, print PDF, QR, proofs
+├── tools/
+│   ├── make_qr.py          Generates the sign QR for a given URL
+│   ├── embed_fonts.py      Subsets and inlines Fraunces + Inter into the master
+│   └── build_signs.py      Renders the print PDF and the proofs
 └── docs/
     ├── BRAND_GUIDE.md      Name rationale, positioning, voice, color, type,
     │                       logo rules, photography, physical touchpoints
     ├── BUSINESS_PLAN.md    Offer, market, pricing, unit economics, 3-season
     │                       projection, startup capital, ops calendar, risks
-    └── LEAD_GENERATION.md  Ranked channel playbook, ad budgets, commercial
-                            outreach, follow-up scripts, renewal campaign
+    ├── LEAD_GENERATION.md  Ranked channel playbook, ad budgets, commercial
+    │                       outreach, follow-up scripts, renewal campaign
+    └── YARD_SIGN.md        Sign design rationale, print spec, QR setup, placement
 ```
 
-No build step, no dependencies, no framework. Open `index.html` and it runs.
+The website has no build step, no dependencies, no framework. Open `index.html` and it runs.
+The print files under `assets/print/` are already rendered; you only need Python if you
+want to change the sign or repoint its QR.
 
 ---
 
@@ -89,7 +111,7 @@ Open `assets/js/quote.js` and set the endpoint at the top:
 var CONFIG = {
   endpoint: 'https://formspree.io/f/YOUR_ID',   // ← your form endpoint
   fallbackEmail: 'you@yourdomain.com',
-  phone: '(555) 555-0142'
+  phone: '(267) 853-0058'
 };
 ```
 
