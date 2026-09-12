@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>J.A.R.V.I.S. — voice operations console</title>
+<meta name="description" content="A voice-controlled heads-up display for running an app and a content operation. Wake word, spoken briefings, content queue. Runs entirely in the browser.">
+<meta name="theme-color" content="#04070E">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="assets/img/reactor.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/jarvis.css">
+</head>
+<body>
+
+<div class="room" aria-hidden="true"></div>
+
+<!-- ===================== BOOT ===================== -->
+<div class="boot" id="boot">
+  <div class="boot__inner">
+    <div class="boot__log" id="bootLog" aria-live="polite"></div>
+    <div class="boot__bar"><div class="boot__fill" id="bootFill"></div></div>
+    <button class="boot__start" id="bootStart" hidden>Initialize</button>
+    <p class="boot__hint">
+      Allow the microphone when prompted — that's how the wake word works.<br>
+      Nothing leaves your machine except the speech recognition itself.
+    </p>
+  </div>
+</div>
+
+<!-- ===================== HUD ===================== -->
+<main class="hud">
+
+  <!-- ---------- top bar ---------- -->
+  <header class="bar">
+    <div class="bar__mark">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="#5ED6FF" stroke-width="1.4" opacity=".5"/>
+        <circle cx="20" cy="20" r="13" fill="none" stroke="#5ED6FF" stroke-width="1.8" stroke-dasharray="42 10"/>
+        <circle cx="20" cy="20" r="7" fill="#5ED6FF" opacity=".28"/>
+        <circle cx="20" cy="20" r="3.4" fill="#C9F2FF"/>
+      </svg>
+      <div>
+        <div class="bar__name">Jarvis</div>
+        <div class="bar__sub">voice operations console</div>
+      </div>
+    </div>
+
+    <div class="bar__spacer"></div>
+
+    <span class="chip is-off" id="micChip">
+      <span class="chip__dot"></span><span id="micLabel">mic off</span>
+    </span>
+    <span class="chip is-warn" id="dataChip">
+      <span class="chip__dot"></span><span id="dataMode">demo data</span>
+    </span>
+
+    <div>
+      <div class="bar__clock" id="clock">--:--</div>
+      <div class="bar__date" id="date"></div>
+    </div>
+  </header>
+
+  <!-- ---------- left column: the numbers ---------- -->
+  <div class="col col--left">
+
+    <section class="panel" id="pRevenue">
+      <div class="panel__head">
+        <h2 class="panel__title">Revenue</h2>
+        <span class="panel__note">7 days</span>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">MRR</div>
+          <div class="stat__val stat__val--gold" id="mMrr">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Last 7</div>
+          <div class="stat__val stat__val--sm" id="mRev7">—</div>
+          <div class="stat__delta flat" id="mRevDelta">—</div>
+        </div>
+      </div>
+      <svg class="spark" id="sparkRev" aria-hidden="true"></svg>
+    </section>
+
+    <section class="panel" id="pGrowth">
+      <div class="panel__head">
+        <h2 class="panel__title">Growth</h2>
+        <span class="panel__note">7 days</span>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">Downloads</div>
+          <div class="stat__val" id="mDl">—</div>
+          <div class="stat__delta flat" id="mDlDelta">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Active</div>
+          <div class="stat__val stat__val--sm" id="mActive">—</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">Trial → paid</div>
+          <div class="stat__val stat__val--sm" id="mConv">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Churn</div>
+          <div class="stat__val stat__val--sm" id="mChurn">—</div>
+        </div>
+      </div>
+      <svg class="spark" id="sparkDl" aria-hidden="true"></svg>
+    </section>
+
+    <section class="panel" id="pContent">
+      <div class="panel__head">
+        <h2 class="panel__title">Content</h2>
+        <span class="panel__note">7 days</span>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">Views</div>
+          <div class="stat__val" id="mViews">—</div>
+          <div class="stat__delta flat" id="mViewsDelta">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Posts / followers</div>
+          <div class="stat__val stat__val--sm">
+            <span id="mPosts">—</span> <span style="opacity:.4">/</span> <span id="mFollowers">—</span>
+          </div>
+        </div>
+      </div>
+      <ul id="platforms" style="margin-top:12px"></ul>
+    </section>
+
+    <section class="panel" id="pTop">
+      <div class="panel__head">
+        <h2 class="panel__title">Top performer</h2>
+      </div>
+      <p style="font-size:.86rem; line-height:1.45; margin:0 0 6px" id="topHook">—</p>
+      <div class="feed__meta" id="topMeta">—</div>
+    </section>
+
+  </div>
+
+  <!-- ---------- stage: the reactor ---------- -->
+  <div class="stage">
+    <div class="reactor is-idle" id="reactor">
+      <canvas class="reactor__canvas" id="reactorCanvas" aria-hidden="true"></canvas>
+      <div class="reactor__center">
+        <div class="reactor__state" id="reactorState">standing by</div>
+        <div class="reactor__hint" id="reactorHint"></div>
+      </div>
+    </div>
+
+    <div class="caption" aria-live="polite">
+      <div class="caption__heard" id="capHeard"></div>
+      <p class="caption__said" id="capSaid"></p>
+    </div>
+  </div>
+
+  <!-- ---------- right column: the work ---------- -->
+  <div class="col col--right">
+
+    <section class="panel" id="pNeeds">
+      <div class="panel__head">
+        <h2 class="panel__title">Needs you</h2>
+      </div>
+      <ul class="feed" id="needsFeed"></ul>
+    </section>
+
+    <section class="panel" id="pHandled">
+      <div class="panel__head">
+        <h2 class="panel__title">Handled</h2>
+        <span class="panel__note">autonomous</span>
+      </div>
+      <ul class="feed" id="handledFeed"></ul>
+    </section>
+
+    <section class="panel" id="pQueue">
+      <div class="panel__head">
+        <h2 class="panel__title">Content queue</h2>
+        <span class="panel__note" id="queueCount">0 posts</span>
+      </div>
+      <ul id="queueList"></ul>
+    </section>
+
+    <section class="panel" id="pBeats" hidden>
+      <div class="panel__head">
+        <h2 class="panel__title">Script beats</h2>
+      </div>
+      <ul id="beatList"></ul>
+    </section>
+
+    <section class="panel" id="pIdeas">
+      <div class="panel__head">
+        <h2 class="panel__title">Ideas &amp; notes</h2>
+        <span class="panel__note"><span id="ideaCount">0</span> saved</span>
+      </div>
+      <ul class="feed" id="ideaList"></ul>
+    </section>
+
+  </div>
+
+  <!-- ---------- dock ---------- -->
+  <div class="dock">
+    <button class="mic" id="mic" aria-pressed="false" aria-label="Toggle microphone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="2" width="6" height="11" rx="3"/>
+        <path d="M5 10a7 7 0 0 0 14 0"/>
+        <path d="M12 17v4"/>
+      </svg>
+    </button>
+
+    <form class="dock__form" id="dockForm" autocomplete="off">
+      <label class="sr-only" for="dockInput">Type a command</label>
+      <span class="dock__prompt" aria-hidden="true">&gt;</span>
+      <input class="dock__input" id="dockInput" type="text"
+             placeholder="how's the app doing   ·   queue a post about shipping with AI   ·   press / to focus">
+      <button class="dock__send" type="submit">Run</button>
+    </form>
+
+    <button class="dock__btn" id="btnBrief">Brief me</button>
+    <button class="dock__btn" id="btnMute">voice</button>
+    <button class="dock__btn" id="btnHelp">?</button>
+  </div>
+
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<!-- ===================== HELP ===================== -->
+<div class="help" id="help" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="help__card">
+    <h2 class="help__title" id="helpTitle">What you can say</h2>
+    <p class="help__lede">
+      Say <b>“hey Jarvis”</b> and then the command, or hold nothing and just press
+      <b>space</b> to skip the wake word. No mic? Type any of these in the bar at the bottom —
+      every command works both ways.
+    </p>
+
+    <div class="help__grid">
+      <div class="help__group">
+        <h4>The briefing</h4>
+        <ul>
+          <li>Brief me <span>— everything, in order</span></li>
+          <li>How's the app doing</li>
+          <li>What's the revenue</li>
+          <li>How are downloads</li>
+          <li>How did content do</li>
+          <li>How's TikTok doing</li>
+          <li>What was the top post</li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Autonomy</h4>
+        <ul>
+          <li>What did you handle</li>
+          <li>What needs me</li>
+          <li>Refresh the numbers</li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Content ops</h4>
+        <ul>
+          <li>Queue a post about <i>…</i></li>
+          <li>Schedule a TikTok about <i>…</i> tomorrow</li>
+          <li>What's in the queue</li>
+          <li>Mark <i>…</i> as posted</li>
+          <li>Give me hooks about <i>…</i></li>
+          <li>Write a script about <i>…</i></li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Memory</h4>
+        <ul>
+          <li>Remember <i>…</i></li>
+          <li>Remind me to <i>…</i></li>
+          <li>What are my ideas</li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Keys</h4>
+        <ul>
+          <li><b>space</b> <span>— talk without the wake word</span></li>
+          <li><b>/</b> <span>— focus the command line</span></li>
+          <li><b>B</b> <span>— briefing</span></li>
+          <li><b>M</b> <span>— mic on / off</span></li>
+          <li><b>esc</b> <span>— shut it up</span></li>
+          <li><b>?</b> <span>— this panel</span></li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Honest notes</h4>
+        <ul>
+          <li><span>The metrics are <b>demo data</b> until you wire a feed — see the README.</span></li>
+          <li><span>The queue, ideas and reminders are real and save to this browser.</span></li>
+          <li><span>Wake word needs Chrome, Edge, Brave or Arc.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="help__close" id="helpClose">Close</button>
+  </div>
+</div>
+
+<script src="assets/js/util.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/voice.js"></script>
+<script src="assets/js/skills.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

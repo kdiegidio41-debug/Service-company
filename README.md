@@ -1,5 +1,10 @@
 # Everglow Holiday Lighting Co.
 
+> **Also in this repo:** [`jarvis/`](jarvis/) — a wake-word voice operations console
+> ("Hey Jarvis, how's the app doing?") for running an app and a content operation.
+> Separate project, separate stack, shares nothing with the site below.
+> See [`jarvis/README.md`](jarvis/README.md).
+
 Brand identity, marketing website, and full business plan for a Christmas light
 **installation and removal** company.
 
