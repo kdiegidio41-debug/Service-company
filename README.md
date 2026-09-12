@@ -18,7 +18,7 @@ Find-and-replace these across `index.html` and `quote.html`:
 | --- | --- | --- |
 | ~~`(555) 555-0142`~~ | ✅ Done — set to `(267) 853-0058` across both pages and `quote.js` | — |
 | `hello@everglowlighting.com` | Your real email | Both pages, `quote.js` |
-| `everglowlighting.com` | Your real domain | Both pages (canonical, OG tags, JSON-LD) — **and the yard-sign QR, see `docs/YARD_SIGN.md`** |
+| `everglowlighting.com` | Your real domain | Both pages (canonical, OG tags, JSON-LD). The yard sign no longer prints it — see `docs/YARD_SIGN.md`. |
 | Chestnut Hill, Blue Bell, Ambler, Flourtown, Lafayette Hill, Plymouth Meeting, Glenside, Dresher, Fort Washington, Wyndmoor, Horsham, Erdenheim | **Your** service area | `index.html` — service-area chips, the map SVG labels, and `areaServed` in the JSON-LD |
 | The 15-mile service radius | Your real radius, if different | `index.html` — service-area heading and the map label |
 
@@ -41,12 +41,13 @@ them, so they have to be true.
 ## The yard sign
 
 An 18×24 double-sided coroplast sign is ready to print at
-`assets/print/yard-sign.pdf`, with a scannable QR to the quote form and the phone
-number set large enough to read from the street.
+`assets/print/yard-sign.pdf`, with the phone number set large enough to read from
+the street and a QR that **needs no website**: scanning it opens the passer-by's
+messaging app with a quote request already typed, addressed to (267) 853-0058.
 
-**Do not order it until the domain is live** — the QR currently encodes the
-placeholder `everglowlighting.com`. `docs/YARD_SIGN.md` covers repointing the QR,
-the full printer spec, and where signs may legally be placed.
+`docs/YARD_SIGN.md` covers the full printer spec, testing the QR before you order
+a stack, switching it to a website link once the domain is live, and where signs
+may legally be placed.
 
 ![Yard sign, front and back](assets/print/yard-sign-front.png)
 

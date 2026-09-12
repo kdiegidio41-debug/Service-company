@@ -9,7 +9,8 @@ the brand plan budgets ~1 lead per 6–8 signs per season, at roughly $4–7 a s
 | `assets/print/yard-sign.pdf` | **Send this to the printer.** 2 pages, 18.25 × 24.25in, bleed included. |
 | `assets/print/yard-sign-front.png` | Proof, front face |
 | `assets/print/yard-sign-back.png` | Proof, back face |
-| `assets/print/qr-yard-sign.svg` | The QR code on its own, for reuse on door hangers, the trailer, invoices |
+| `assets/print/qr-yard-sign.svg` | The QR on the sign — a prefilled text message. Reuse it on door hangers, the trailer, invoices. |
+| `assets/print/qr-website.svg` | The website QR, parked until the domain is live |
 | `tools/make_qr.py` | Regenerates the QR for a different URL |
 | `tools/embed_fonts.py` | Re-embeds Fraunces + Inter (only needed if the type changes) |
 | `tools/build_signs.py` | Rebuilds the PDF and the proofs from the master |
@@ -27,7 +28,7 @@ So the front carries five things and nothing else, in the order a stranger reads
 | 2 | **EVERGLOW** wordmark, 1.8in caps | Legible at ~60ft. The O is the brand's lit bulb. |
 | 3 | TAKEDOWN & STORAGE INCLUDED | The one thing no competitor offers. It is the whole positioning. |
 | 4 | **(267) 853-0058**, 1.3in caps | The biggest actionable thing on the sign |
-| 5 | QR in a white panel | The walk-up ask, for people who won't dial a stranger |
+| 5 | QR in a white panel | The walk-up ask, for people who won't dial a stranger but will text one |
 
 Everything else — domain, "licensed & insured," the January 15 line — is the
 **walk-up read**, sized for someone standing on the sidewalk, not driving past.
@@ -52,62 +53,92 @@ the front works alone.
 
 ## 2. The QR code
 
-### What it points at
+### What it does
+
+The sign's QR is **not a website link.** It encodes a prefilled text message:
 
 ```
-https://everglowlighting.com/quote.html?utm_source=yard_sign&utm_medium=print
+sms:+12678530058?body=Hi Everglow! I'd like a quote for Christmas lights at:
 ```
 
-Straight to the quote form, not the homepage. Someone standing in front of a lit
-house has already been sold; don't make them navigate.
+Scanning it opens the phone's messaging app, addressed to you, with that
+sentence already typed and the cursor sitting after the colon. The homeowner
+adds their address and hits send.
 
-The `utm_` tags are how you find out whether signs are working. In Google
-Analytics, Traffic acquisition → Session source/medium → `yard_sign / print`.
-Every scan shows up there, separated from search and ads.
+This matters more than it sounds. A stranger walking past a lit house at 6pm
+will text a contractor far more readily than call one, and a text hands you
+their mobile number automatically — so you can follow up even if the
+conversation dies. It also needs **no website, no hosting, and no account.**
+It is tied to your phone number, which you own permanently. A QR pointing at a
+web host can go dark when a bill lapses; this one cannot.
 
-### ⚠ Before you print anything
+Your lead list is simply your text inbox. There is no analytics to set up.
 
-The QR encodes **`everglowlighting.com`, which is a placeholder in this repo and
-is not a live site yet.** A yard sign is permanent — a wrong QR means reprinting
-every sign you own. So, in order:
+### Why `sms:` and not `SMSTO:`
 
-1. Buy the domain and get the site live at it.
-2. Open the URL above on your phone. It must load the quote form.
-3. Regenerate the QR with the real URL and rebuild:
-   ```bash
-   pip install segno playwright pillow
-   python3 tools/make_qr.py --url "https://YOURDOMAIN.com/quote.html?utm_source=yard_sign&utm_medium=print"
-   python3 tools/build_signs.py
-   ```
-4. Scan the QR **off the rendered PNG on a screen** with two different phones
-   (one iPhone, one Android — the built-in camera app, not a QR app).
-5. Order **one** sign. Scan the physical sign, outdoors, in daylight, from 4 feet.
-   Then order the rest.
+Both spellings exist and `tools/make_qr.py` generates either. They are not
+interchangeable:
 
-Step 5 is not optional paranoia. It's the difference between a $6 mistake and a
-$300 one.
+| Spelling | Recognised by |
+| --- | --- |
+| **`sms:`** ← the sign uses this | A real URI scheme, so native iPhone and Android camera apps act on it without a QR app installed |
+| `SMSTO:` | The older ZXing convention — best in standalone scanner apps, ignored by some native cameras |
 
-### Don't want to run the script?
+Customers scan with whatever camera their phone came with, so `sms:` is the
+safer bet across handsets you'll never see. Both were tested and worked; `sms:`
+wins on breadth, not on this phone.
 
-Any free generator works — [qr.io](https://qr.io), [qrcode-monkey.com](https://www.qrcode-monkey.com),
-or Chrome's built-in one (right-click a page → *Create QR code for this page*).
-Two things matter: **download it as SVG or a 1000px+ PNG**, and don't use a
-generator that charges you later to keep the code alive. Which brings us to:
+The message body is kept short on purpose. The longer wording pushed the symbol
+to version 7; trimming it to version 6 gives **18% larger modules**, which
+survives dirt, rain and distance noticeably better.
 
-### Never use a "dynamic" or free-trial QR service
+### Changing the message or the number
 
-Services like QR Code Generator's free tier hand you a QR pointing at *their*
-domain, then redirect to yours. When the trial ends or the company folds, every
-sign in your service area points at a dead link or an ad. Your QR must encode
-**your own domain, directly.** You own the redirect either way: if the quote page
-ever moves, add a redirect at the old path — the printed signs keep working.
+```bash
+pip install segno playwright pillow
+python3 tools/make_qr.py --message "Your wording here: "
+python3 tools/build_signs.py
+```
+
+Add `--number "+1XXXXXXXXXX"` to change the destination, or `--sms smsto` to
+switch spellings. Keep the body under ~60 characters or the code gets denser
+and harder to scan.
+
+### Switching to a website QR later
+
+Once the domain is live and you want scans landing on the quote form instead:
+
+```bash
+python3 tools/make_qr.py --url "https://YOURDOMAIN.com/quote.html?utm_source=yard_sign&utm_medium=print"
+python3 tools/build_signs.py
+```
+
+Then change the caption in `yard-sign.html` from "SCAN TO TEXT FOR A QUOTE"
+back to something accurate, and put the domain line back in the footer. The
+`utm_` tags let you separate sign traffic from search and ads in Google
+Analytics (Traffic acquisition → Session source/medium → `yard_sign / print`).
+
+Signs already in the ground keep texting you. That's fine — two ways in is
+better than one.
+
+### ⚠ Test on real hardware before you order a stack
+
+1. Scan the QR **off a screen** with two phones — one iPhone, one Android —
+   using the built-in camera, not a QR app.
+2. Confirm it opens Messages addressed to (267) 853-0058 with the wording
+   filled in.
+3. Order **one** sign. Scan the physical sign outdoors, in daylight, from four
+   feet.
+4. Then order the rest.
+
+Step 3 is not paranoia. It's the difference between a $6 mistake and a $300 one.
 
 ### Why it's a white box on a dark sign
 
 Scanners expect **dark modules on a light background**. Inverted QRs (light code
 on dark) fail on a meaningful share of phones, including older Android cameras.
-The Snow panel also gives the code its required **quiet zone** — 4 modules of
-clear space on all sides — which is why the panel is bigger than the code.
+The Snow panel also supplies the required **quiet zone** — 4 modules of clear
+space on all sides — which is why the panel is bigger than the code.
 
 ### Size vs. scan distance
 
@@ -119,11 +150,27 @@ Rule of thumb: **a QR scans from about 10× its own width.**
 | 4in | ~3 ft |
 | **6.2in (this sign)** | **~5 ft** |
 
-6.2in is sized for someone who has stopped walking and is standing at the edge of
-the lawn. Nobody scans a yard sign from a moving car — that's what the phone
-number is for. Don't shrink it below 4in to make room for more copy.
+Sized for someone who has stopped walking and is standing at the edge of the
+lawn. Nobody scans a yard sign from a moving car — that's what the phone number
+is for. Don't shrink it below 4in to make room for more copy.
 
 ---
+
+## 2a. What the sign does *not* say, and why
+
+Two lines were deliberately left off. Both are easy to add back.
+
+**The web address.** `everglowlighting.com` does not resolve yet. A printed URL
+that goes nowhere is the one claim a skeptical homeowner can disprove in three
+seconds, and a sign is permanent in a way a webpage isn't. The footer carries
+`FREE ESTIMATES · NO LADDERS · DOWN BY JAN 15` instead — all true today. Put the
+domain back for next season's print run once the site is live.
+
+**"Licensed & insured to $2M."** This is an advertising claim about your
+business, and it needs to be true on the day it goes in someone's lawn. It was
+removed pending confirmation of coverage. The moment you have the policy, add it
+back — it's one of the strongest lines you can put on a sign in this trade, and
+the whole brand is built to sell it.
 
 ## 3. Print specification
 
@@ -178,7 +225,7 @@ already licensed — most printers won't ask.
 
 ```bash
 pip install segno playwright pillow
-python3 tools/make_qr.py --url "https://YOURDOMAIN.com/quote.html?..."   # only when the URL changes
+python3 tools/make_qr.py                      # only when the message or number changes
 python3 tools/build_signs.py                                             # PDF + both proofs
 ```
 
