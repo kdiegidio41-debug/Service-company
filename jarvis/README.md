@@ -12,6 +12,11 @@ python3 -m http.server 8000
 # → http://localhost:8000/jarvis/
 ```
 
+Or skip all of that: **`jarvis-standalone.html`** is the entire app — HTML, CSS and all
+seven scripts — inlined into one 100 KB file. Save it anywhere and double-click it. No
+server, no folder structure, nothing to install. It's a build of the same source, so
+edit the files under `assets/` and regenerate it rather than editing it directly.
+
 ---
 
 ## ⚠ What's real and what isn't
@@ -165,6 +170,7 @@ front of a model API and return the text. Keep the key on the proxy, not in the 
 ```
 jarvis/
 ├── index.html              The HUD
+├── jarvis-standalone.html  The whole thing in one file — save it, double-click it
 └── assets/
     ├── css/jarvis.css      Tokens, panels, reactor, boot, help, responsive
     └── js/

@@ -1,0 +1,2792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>J.A.R.V.I.S. — voice operations console</title>
+<meta name="description" content="A voice-controlled heads-up display for running an app and a content operation. Wake word, spoken briefings, content queue. Runs entirely in the browser.">
+<meta name="theme-color" content="#04070E">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzA0MDcwRSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjE1IiBmaWxsPSJub25lIiBzdHJva2U9IiM1RUQ2RkYiIHN0cm9rZS13aWR0aD0iMS4yIiBvcGFjaXR5PSIuNDUiLz4KICA8Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNUVENkZGIiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWRhc2hhcnJheT0iMzQgOSIvPgogIDxjaXJjbGUgY3g9IjIwIiBjeT0iMjAiIHI9IjYiIGZpbGw9IiM1RUQ2RkYiIG9wYWNpdHk9Ii4zIi8+CiAgPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMyIgZmlsbD0iI0M5RjJGRiIvPgo8L3N2Zz4K">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   J.A.R.V.I.S. — Heads-up display
+   Just A Rather Very Intelligent System.
+   Dark room, cold light, one warm accent. No dependencies.
+   ========================================================================= */
+
+/* --- 1. Tokens ----------------------------------------------------------- */
+:root {
+  --void:        #04070E;
+  --deep:        #070C17;
+  --panel:       rgba(10, 20, 36, .58);
+  --panel-edge:  rgba(94, 214, 255, .16);
+  --panel-edge-hot: rgba(94, 214, 255, .42);
+
+  --arc:         #5ED6FF;   /* the reactor cyan */
+  --arc-hot:     #C9F2FF;
+  --arc-deep:    #1B7FA8;
+  --gold:        #FFC46B;   /* thinking / alerts */
+  --gold-hot:    #FFE7C2;
+  --jade:        #45E0A8;   /* good news */
+  --rose:        #FF6B6B;   /* bad news */
+  --violet:      #A98BFF;
+
+  --text:        #DCEBF6;
+  --text-dim:    #7D95AC;
+  --text-faint:  #4A5E74;
+
+  --font-hud:    "Chakra Petch", "Rajdhani", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-body:   "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --r-sm: 4px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --ease: cubic-bezier(.22, .61, .36, 1);
+
+  --glow-arc:  0 0 18px rgba(94, 214, 255, .34), 0 0 54px rgba(94, 214, 255, .12);
+  --glow-gold: 0 0 18px rgba(255, 196, 107, .38), 0 0 54px rgba(255, 196, 107, .14);
+}
+
+/* --- 2. Reset ------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--void);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+h1, h2, h3, h4 { margin: 0; font-weight: 600; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+input { font: inherit; color: inherit; }
+ul { margin: 0; padding: 0; list-style: none; }
+:focus-visible { outline: 2px solid var(--arc); outline-offset: 2px; border-radius: 3px; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* --- 3. The room --------------------------------------------------------- */
+/* A vignette + grid + scanlines. Everything behind the HUD, nothing clickable. */
+.room {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 42%, rgba(27, 127, 168, .20) 0%, transparent 62%),
+    radial-gradient(80% 70% at 82% 88%, rgba(169, 139, 255, .10) 0%, transparent 70%),
+    var(--void);
+}
+.room::before {           /* grid */
+  content: ""; position: absolute; inset: -2px;
+  background-image:
+    linear-gradient(rgba(94, 214, 255, .055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 214, 255, .055) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(120% 95% at 50% 45%, #000 10%, transparent 78%);
+  -webkit-mask-image: radial-gradient(120% 95% at 50% 45%, #000 10%, transparent 78%);
+}
+.room::after {            /* scanlines */
+  content: ""; position: absolute; inset: 0; opacity: .34;
+  background: repeating-linear-gradient(
+    to bottom, rgba(94, 214, 255, .05) 0 1px, transparent 1px 3px);
+}
+
+/* --- 4. Shell ------------------------------------------------------------ */
+.hud {
+  position: relative; z-index: 1;
+  height: 100dvh; min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 340px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "bar   bar    bar"
+    "left  stage  right"
+    "dock  dock   dock";
+  gap: 14px;
+  padding: 14px clamp(12px, 2vw, 22px) 14px;
+}
+
+/* --- 5. Top bar ---------------------------------------------------------- */
+.bar {
+  grid-area: bar;
+  display: flex; align-items: center; gap: 16px;
+  padding: 9px 14px;
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+.bar__mark { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bar__mark svg { width: 26px; height: 26px; filter: drop-shadow(0 0 7px rgba(94,214,255,.6)); }
+.bar__name {
+  font-family: var(--font-hud);
+  font-size: .92rem; font-weight: 700;
+  letter-spacing: .30em; text-transform: uppercase;
+  color: var(--arc-hot);
+  text-shadow: 0 0 14px rgba(94, 214, 255, .55);
+  white-space: nowrap;
+}
+.bar__sub {
+  font-family: var(--font-hud);
+  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--text-faint); white-space: nowrap;
+}
+.bar__spacer { flex: 1 1 auto; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 5px 11px;
+  font-family: var(--font-hud);
+  font-size: .64rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--r-sm);
+  white-space: nowrap;
+}
+.chip__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-faint); flex: none;
+  transition: background .3s var(--ease), box-shadow .3s var(--ease);
+}
+.chip.is-live { color: var(--arc); border-color: var(--panel-edge-hot); }
+.chip.is-live .chip__dot { background: var(--arc); box-shadow: 0 0 9px var(--arc); animation: blip 2s ease-in-out infinite; }
+.chip.is-warn { color: var(--gold); border-color: rgba(255, 196, 107, .34); }
+.chip.is-warn .chip__dot { background: var(--gold); box-shadow: 0 0 9px var(--gold); }
+.chip.is-off { color: var(--text-faint); }
+@keyframes blip { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+.bar__clock {
+  font-family: var(--font-hud);
+  font-size: 1.02rem; font-weight: 600; letter-spacing: .11em;
+  color: var(--text); font-variant-numeric: tabular-nums;
+}
+.bar__date {
+  font-family: var(--font-hud);
+  font-size: .58rem; letter-spacing: .17em; text-transform: uppercase;
+  color: var(--text-faint); text-align: right;
+}
+
+/* --- 6. Panels ----------------------------------------------------------- */
+.col {
+  display: flex; flex-direction: column; gap: 12px;
+  min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding-right: 3px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(94, 214, 255, .26) transparent;
+}
+.col--left { grid-area: left; }
+.col--right { grid-area: right; }
+.col::-webkit-scrollbar { width: 5px; }
+.col::-webkit-scrollbar-thumb { background: rgba(94, 214, 255, .26); border-radius: 3px; }
+
+.panel {
+  position: relative;
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  padding: 12px 13px 13px;
+  flex: none;
+  opacity: 0;
+  transform: translateY(9px);
+  transition: opacity .5s var(--ease), transform .5s var(--ease), border-color .4s var(--ease);
+}
+.is-booted .panel { opacity: 1; transform: none; }
+.panel::before {   /* corner bracket, top-left */
+  content: ""; position: absolute; top: -1px; left: -1px;
+  width: 13px; height: 13px;
+  border-top: 2px solid var(--arc); border-left: 2px solid var(--arc);
+  border-top-left-radius: var(--r-md);
+  opacity: .55;
+}
+.panel::after {    /* corner bracket, bottom-right */
+  content: ""; position: absolute; bottom: -1px; right: -1px;
+  width: 13px; height: 13px;
+  border-bottom: 2px solid var(--arc); border-right: 2px solid var(--arc);
+  border-bottom-right-radius: var(--r-md);
+  opacity: .55;
+}
+.panel.is-hot { border-color: var(--panel-edge-hot); box-shadow: var(--glow-arc); }
+
+.panel__head {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 10px;
+}
+.panel__title {
+  font-family: var(--font-hud);
+  font-size: .63rem; font-weight: 700;
+  letter-spacing: .21em; text-transform: uppercase;
+  color: var(--arc);
+}
+.panel__note {
+  font-family: var(--font-hud);
+  font-size: .57rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--text-faint); margin-left: auto; white-space: nowrap;
+}
+
+/* Stat rows */
+.stat { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.stat + .stat { margin-top: 11px; padding-top: 11px; border-top: 1px solid rgba(94, 214, 255, .09); }
+.stat__label {
+  font-family: var(--font-hud);
+  font-size: .6rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.stat__val {
+  font-family: var(--font-hud);
+  font-size: 1.5rem; font-weight: 700; line-height: 1;
+  color: var(--text); font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 16px rgba(94, 214, 255, .28);
+}
+.stat__val--sm { font-size: 1.12rem; }
+.stat__val--gold { color: var(--gold-hot); text-shadow: var(--glow-gold); }
+.stat__delta {
+  font-family: var(--font-hud);
+  font-size: .63rem; font-weight: 600; letter-spacing: .06em;
+  font-variant-numeric: tabular-nums;
+}
+.stat__delta.up { color: var(--jade); }
+.stat__delta.down { color: var(--rose); }
+.stat__delta.flat { color: var(--text-faint); }
+.stat__right { text-align: right; }
+
+/* Sparkline */
+.spark { display: block; width: 100%; height: 38px; margin-top: 9px; overflow: visible; }
+.spark__line { fill: none; stroke: var(--arc); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(94, 214, 255, .55)); }
+.spark__area { fill: url(#sparkfade); opacity: .5; }
+.spark__dot { fill: var(--arc-hot); filter: drop-shadow(0 0 5px var(--arc)); }
+
+/* Bars (per-platform) */
+.plat + .plat { margin-top: 9px; }
+.plat__top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.plat__name {
+  font-family: var(--font-hud);
+  font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-dim);
+}
+.plat__val {
+  font-family: var(--font-hud);
+  font-size: .78rem; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums;
+}
+.plat__track { height: 5px; border-radius: 3px; background: rgba(94, 214, 255, .10); overflow: hidden; }
+.plat__fill {
+  height: 100%; width: 0; border-radius: 3px;
+  background: linear-gradient(90deg, var(--arc-deep), var(--arc));
+  box-shadow: 0 0 11px rgba(94, 214, 255, .6);
+  transition: width 1.1s var(--ease);
+}
+.plat__fill--gold { background: linear-gradient(90deg, #B97D2E, var(--gold)); box-shadow: 0 0 11px rgba(255,196,107,.55); }
+.plat__fill--violet { background: linear-gradient(90deg, #6247B5, var(--violet)); box-shadow: 0 0 11px rgba(169,139,255,.55); }
+.plat__fill--jade { background: linear-gradient(90deg, #1E7D5C, var(--jade)); box-shadow: 0 0 11px rgba(69,224,168,.55); }
+
+/* Feed / log lists */
+.feed { display: flex; flex-direction: column; gap: 9px; }
+.feed__item { display: flex; gap: 9px; align-items: flex-start; }
+.feed__icon {
+  width: 17px; height: 17px; flex: none; margin-top: 1px;
+  border-radius: 50%;
+  border: 1px solid rgba(94, 214, 255, .34);
+  display: grid; place-items: center;
+  font-family: var(--font-hud); font-size: .55rem; font-weight: 700;
+  color: var(--arc);
+}
+.feed__icon.ok { border-color: rgba(69, 224, 168, .45); color: var(--jade); }
+.feed__icon.warn { border-color: rgba(255, 196, 107, .45); color: var(--gold); }
+.feed__icon.bad { border-color: rgba(255, 107, 107, .45); color: var(--rose); }
+.feed__body { min-width: 0; display: block; }
+.feed__text { display: block; font-size: .78rem; line-height: 1.42; color: var(--text); }
+.feed__meta {
+  display: block;
+  font-family: var(--font-hud);
+  font-size: .55rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--text-faint); margin-top: 3px;
+}
+.feed__empty { font-size: .76rem; color: var(--text-faint); font-style: italic; }
+
+/* Queue items */
+.q { display: flex; gap: 9px; align-items: flex-start; }
+.q + .q { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(94, 214, 255, .09); }
+.q__when {
+  font-family: var(--font-hud);
+  font-size: .58rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--arc); flex: none; width: 52px; padding-top: 1px;
+}
+.q__text { font-size: .78rem; line-height: 1.42; min-width: 0; }
+.q__tag {
+  display: inline-block; margin-top: 3px; padding: 1px 6px;
+  font-family: var(--font-hud); font-size: .53rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-dim); border: 1px solid var(--panel-edge); border-radius: 3px;
+}
+
+/* --- 7. Stage (the reactor) ---------------------------------------------- */
+.stage {
+  grid-area: stage;
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; min-height: 0;
+}
+.reactor {
+  position: relative;
+  width: min(50vh, 100%, 440px);
+  aspect-ratio: 1;
+  flex: none;
+  display: grid; place-items: center;
+}
+.reactor__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.reactor__center {
+  position: relative; z-index: 2;
+  text-align: center; pointer-events: none;
+  max-width: 62%;
+}
+.reactor__state {
+  font-family: var(--font-hud);
+  font-size: .66rem; font-weight: 700; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--arc-hot);
+  text-shadow: 0 0 16px rgba(94, 214, 255, .8), 0 1px 8px rgba(4, 7, 14, .95);
+}
+.reactor__hint {
+  font-family: var(--font-hud);
+  font-size: .58rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--text-dim); margin-top: 6px; line-height: 1.6;
+  text-shadow: 0 1px 8px rgba(4, 7, 14, .95);
+}
+.reactor.is-thinking .reactor__state { color: var(--gold-hot); text-shadow: var(--glow-gold); }
+
+/* Caption strip under the reactor — what it heard / what it said */
+.caption {
+  width: min(680px, 100%);
+  min-height: 76px;
+  display: flex; flex-direction: column; gap: 7px;
+  text-align: center;
+}
+.caption__heard {
+  font-family: var(--font-hud);
+  font-size: .64rem; letter-spacing: .17em; text-transform: uppercase;
+  color: var(--text-faint);
+  min-height: 1.1em;
+}
+.caption__heard b { color: var(--arc); font-weight: 700; }
+.caption__said {
+  font-size: clamp(.95rem, .86rem + .42vw, 1.22rem);
+  line-height: 1.45; color: var(--text);
+  text-shadow: 0 0 22px rgba(94, 214, 255, .22);
+  min-height: 1.4em;
+}
+.caption__said .cursor {
+  display: inline-block; width: 8px; height: 1.05em; margin-left: 2px;
+  background: var(--arc); vertical-align: text-bottom;
+  animation: caret .85s step-end infinite;
+}
+@keyframes caret { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* --- 8. Dock (input) ----------------------------------------------------- */
+.dock {
+  grid-area: dock;
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--r-md);
+  background: var(--panel);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+}
+.mic {
+  position: relative;
+  width: 40px; height: 40px; flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--panel-edge-hot);
+  display: grid; place-items: center;
+  color: var(--arc);
+  transition: color .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
+}
+.mic svg { width: 17px; height: 17px; }
+.mic:hover { background: rgba(94, 214, 255, .10); }
+.mic.is-live { color: var(--void); background: var(--arc); border-color: var(--arc); box-shadow: var(--glow-arc); }
+.mic.is-live::after {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%;
+  border: 1px solid var(--arc); opacity: .6;
+  animation: ping 1.7s var(--ease) infinite;
+}
+@keyframes ping { 0% { transform: scale(.9); opacity: .7; } 100% { transform: scale(1.5); opacity: 0; } }
+
+.dock__form { flex: 1 1 auto; display: flex; align-items: center; gap: 9px; min-width: 0; }
+.dock__prompt {
+  font-family: var(--font-hud); font-size: .9rem; font-weight: 700;
+  color: var(--arc); flex: none;
+}
+.dock__input {
+  flex: 1 1 auto; min-width: 0;
+  background: none; border: 0; outline: none;
+  font-family: var(--font-hud);
+  font-size: .88rem; letter-spacing: .04em; color: var(--text);
+  padding: 7px 0;
+}
+.dock__input::placeholder { color: var(--text-faint); }
+.dock__send {
+  flex: none; padding: 7px 15px;
+  font-family: var(--font-hud);
+  font-size: .63rem; font-weight: 700; letter-spacing: .17em; text-transform: uppercase;
+  color: var(--arc);
+  border: 1px solid var(--panel-edge-hot); border-radius: var(--r-sm);
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.dock__send:hover { background: var(--arc); color: var(--void); }
+
+.dock__btn {
+  flex: none; padding: 8px 12px;
+  font-family: var(--font-hud);
+  font-size: .6rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--panel-edge); border-radius: var(--r-sm);
+  transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.dock__btn:hover { color: var(--arc); border-color: var(--panel-edge-hot); }
+.dock__btn.is-off { color: var(--text-faint); text-decoration: line-through; }
+
+/* --- 9. Boot ------------------------------------------------------------- */
+.boot {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(4, 7, 14, .86);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: grid; place-items: center;
+  transition: opacity .7s var(--ease), visibility .7s;
+}
+.boot.is-done { opacity: 0; visibility: hidden; }
+.boot__inner { width: min(560px, 88vw); }
+.boot__log {
+  font-family: var(--font-hud);
+  font-size: .74rem; line-height: 1.85; letter-spacing: .07em;
+  color: var(--arc); text-shadow: 0 0 11px rgba(94, 214, 255, .4);
+  min-height: 250px;
+}
+.boot__log b { color: var(--arc-hot); font-weight: 700; }
+.boot__log i { color: var(--text-faint); font-style: normal; }
+.boot__log s { color: var(--jade); text-decoration: none; }
+.boot__bar { height: 2px; margin-top: 18px; background: rgba(94, 214, 255, .14); overflow: hidden; }
+.boot__fill { height: 100%; width: 0; background: var(--arc); box-shadow: 0 0 13px var(--arc); transition: width .32s linear; }
+.boot__start {
+  display: block; width: 100%; margin-top: 22px; padding: 13px;
+  font-family: var(--font-hud);
+  font-size: .72rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--void); background: var(--arc); border-radius: var(--r-sm);
+  box-shadow: var(--glow-arc);
+  transition: transform .2s var(--ease), background .2s var(--ease);
+}
+.boot__start:hover { transform: translateY(-1px); background: var(--arc-hot); }
+.boot__start[hidden] { display: none; }
+.boot__hint {
+  font-family: var(--font-hud);
+  font-size: .58rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-faint); text-align: center; margin-top: 11px; line-height: 1.7;
+}
+
+/* --- 10. Help overlay ---------------------------------------------------- */
+.help {
+  position: fixed; inset: 0; z-index: 40;
+  background: rgba(4, 7, 14, .86);
+  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  display: grid; place-items: center;
+  padding: 20px;
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s var(--ease), visibility .3s;
+}
+.help.is-open { opacity: 1; visibility: visible; }
+.help__card {
+  width: min(760px, 100%); max-height: 84dvh; overflow-y: auto;
+  border: 1px solid var(--panel-edge-hot); border-radius: var(--r-lg);
+  background: rgba(8, 15, 27, .96);
+  padding: 24px clamp(18px, 3vw, 30px) 26px;
+  box-shadow: var(--glow-arc);
+}
+.help__title {
+  font-family: var(--font-hud);
+  font-size: .78rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--arc); margin-bottom: 4px;
+}
+.help__lede { font-size: .84rem; color: var(--text-dim); margin: 0 0 20px; line-height: 1.6; }
+.help__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(224px, 1fr)); gap: 18px 26px; }
+.help__group h4 {
+  font-family: var(--font-hud);
+  font-size: .6rem; letter-spacing: .19em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+}
+.help__group li {
+  font-size: .8rem; line-height: 1.5; color: var(--text);
+  padding: 4px 0 4px 13px; position: relative;
+}
+.help__group li::before {
+  content: "›"; position: absolute; left: 0; color: var(--arc); font-weight: 700;
+}
+.help__group li span { color: var(--text-faint); font-size: .74rem; }
+.help__close {
+  display: block; margin: 22px auto 0; padding: 10px 26px;
+  font-family: var(--font-hud);
+  font-size: .63rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--arc); border: 1px solid var(--panel-edge-hot); border-radius: var(--r-sm);
+}
+.help__close:hover { background: var(--arc); color: var(--void); }
+
+/* --- 11. Toast ----------------------------------------------------------- */
+.toast {
+  position: fixed; left: 50%; bottom: 88px; z-index: 45;
+  transform: translate(-50%, 14px);
+  padding: 10px 18px;
+  font-family: var(--font-hud);
+  font-size: .66rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--void); background: var(--arc);
+  border-radius: var(--r-sm); box-shadow: var(--glow-arc);
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s;
+}
+.toast.is-on { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.toast.is-warn { background: var(--gold); }
+.toast.is-bad { background: var(--rose); color: #fff; }
+
+/* --- 12. Responsive ------------------------------------------------------ */
+@media (max-width: 1100px) {
+  .hud {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+    grid-template-areas:
+      "bar    bar"
+      "stage  right"
+      "left   left"
+      "dock   dock";
+    grid-template-rows: auto minmax(300px, 1fr) auto auto;
+    height: auto; min-height: 100dvh;
+  }
+  body { overflow-y: auto; }
+  .col--left { flex-direction: row; flex-wrap: wrap; overflow: visible; }
+  .col--left .panel { flex: 1 1 262px; }
+}
+@media (max-width: 760px) {
+  .hud {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "bar" "stage" "right" "left" "dock";
+    grid-template-rows: auto auto auto auto auto;
+    gap: 11px;
+  }
+  .col { overflow: visible; }
+  .col--left { flex-direction: column; }
+  /* The tablet rule sets flex-basis for a ROW; once we're back to a column
+     that basis becomes a height floor, padding every panel out. */
+  .col--left .panel { flex: none; }
+  .bar { flex-wrap: wrap; gap: 9px 14px; }
+  .bar__sub, .bar__date { display: none; }
+  .reactor { width: min(72vw, 330px); }
+  .dock { flex-wrap: wrap; }
+  .dock__form { order: 3; width: 100%; }
+  .stage { padding: 6px 0; }
+}
+
+/* --- 13. Reduced motion -------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  .room::after { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="room" aria-hidden="true"></div>
+
+<!-- ===================== BOOT ===================== -->
+<div class="boot" id="boot">
+  <div class="boot__inner">
+    <div class="boot__log" id="bootLog" aria-live="polite"></div>
+    <div class="boot__bar"><div class="boot__fill" id="bootFill"></div></div>
+    <button class="boot__start" id="bootStart" hidden>Initialize</button>
+    <p class="boot__hint">
+      Allow the microphone when prompted — that's how the wake word works.<br>
+      Nothing leaves your machine except the speech recognition itself.
+    </p>
+  </div>
+</div>
+
+<!-- ===================== HUD ===================== -->
+<main class="hud">
+
+  <!-- ---------- top bar ---------- -->
+  <header class="bar">
+    <div class="bar__mark">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="#5ED6FF" stroke-width="1.4" opacity=".5"/>
+        <circle cx="20" cy="20" r="13" fill="none" stroke="#5ED6FF" stroke-width="1.8" stroke-dasharray="42 10"/>
+        <circle cx="20" cy="20" r="7" fill="#5ED6FF" opacity=".28"/>
+        <circle cx="20" cy="20" r="3.4" fill="#C9F2FF"/>
+      </svg>
+      <div>
+        <div class="bar__name">Jarvis</div>
+        <div class="bar__sub">voice operations console</div>
+      </div>
+    </div>
+
+    <div class="bar__spacer"></div>
+
+    <span class="chip is-off" id="micChip">
+      <span class="chip__dot"></span><span id="micLabel">mic off</span>
+    </span>
+    <span class="chip is-warn" id="dataChip">
+      <span class="chip__dot"></span><span id="dataMode">demo data</span>
+    </span>
+
+    <div>
+      <div class="bar__clock" id="clock">--:--</div>
+      <div class="bar__date" id="date"></div>
+    </div>
+  </header>
+
+  <!-- ---------- left column: the numbers ---------- -->
+  <div class="col col--left">
+
+    <section class="panel" id="pRevenue">
+      <div class="panel__head">
+        <h2 class="panel__title">Revenue</h2>
+        <span class="panel__note">7 days</span>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">MRR</div>
+          <div class="stat__val stat__val--gold" id="mMrr">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Last 7</div>
+          <div class="stat__val stat__val--sm" id="mRev7">—</div>
+          <div class="stat__delta flat" id="mRevDelta">—</div>
+        </div>
+      </div>
+      <svg class="spark" id="sparkRev" aria-hidden="true"></svg>
+    </section>
+
+    <section class="panel" id="pGrowth">
+      <div class="panel__head">
+        <h2 class="panel__title">Growth</h2>
+        <span class="panel__note">7 days</span>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">Downloads</div>
+          <div class="stat__val" id="mDl">—</div>
+          <div class="stat__delta flat" id="mDlDelta">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Active</div>
+          <div class="stat__val stat__val--sm" id="mActive">—</div>
+        </div>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">Trial → paid</div>
+          <div class="stat__val stat__val--sm" id="mConv">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Churn</div>
+          <div class="stat__val stat__val--sm" id="mChurn">—</div>
+        </div>
+      </div>
+      <svg class="spark" id="sparkDl" aria-hidden="true"></svg>
+    </section>
+
+    <section class="panel" id="pContent">
+      <div class="panel__head">
+        <h2 class="panel__title">Content</h2>
+        <span class="panel__note">7 days</span>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="stat__label">Views</div>
+          <div class="stat__val" id="mViews">—</div>
+          <div class="stat__delta flat" id="mViewsDelta">—</div>
+        </div>
+        <div class="stat__right">
+          <div class="stat__label">Posts / followers</div>
+          <div class="stat__val stat__val--sm">
+            <span id="mPosts">—</span> <span style="opacity:.4">/</span> <span id="mFollowers">—</span>
+          </div>
+        </div>
+      </div>
+      <ul id="platforms" style="margin-top:12px"></ul>
+    </section>
+
+    <section class="panel" id="pTop">
+      <div class="panel__head">
+        <h2 class="panel__title">Top performer</h2>
+      </div>
+      <p style="font-size:.86rem; line-height:1.45; margin:0 0 6px" id="topHook">—</p>
+      <div class="feed__meta" id="topMeta">—</div>
+    </section>
+
+  </div>
+
+  <!-- ---------- stage: the reactor ---------- -->
+  <div class="stage">
+    <div class="reactor is-idle" id="reactor">
+      <canvas class="reactor__canvas" id="reactorCanvas" aria-hidden="true"></canvas>
+      <div class="reactor__center">
+        <div class="reactor__state" id="reactorState">standing by</div>
+        <div class="reactor__hint" id="reactorHint"></div>
+      </div>
+    </div>
+
+    <div class="caption" aria-live="polite">
+      <div class="caption__heard" id="capHeard"></div>
+      <p class="caption__said" id="capSaid"></p>
+    </div>
+  </div>
+
+  <!-- ---------- right column: the work ---------- -->
+  <div class="col col--right">
+
+    <section class="panel" id="pNeeds">
+      <div class="panel__head">
+        <h2 class="panel__title">Needs you</h2>
+      </div>
+      <ul class="feed" id="needsFeed"></ul>
+    </section>
+
+    <section class="panel" id="pHandled">
+      <div class="panel__head">
+        <h2 class="panel__title">Handled</h2>
+        <span class="panel__note">autonomous</span>
+      </div>
+      <ul class="feed" id="handledFeed"></ul>
+    </section>
+
+    <section class="panel" id="pQueue">
+      <div class="panel__head">
+        <h2 class="panel__title">Content queue</h2>
+        <span class="panel__note" id="queueCount">0 posts</span>
+      </div>
+      <ul id="queueList"></ul>
+    </section>
+
+    <section class="panel" id="pBeats" hidden>
+      <div class="panel__head">
+        <h2 class="panel__title">Script beats</h2>
+      </div>
+      <ul id="beatList"></ul>
+    </section>
+
+    <section class="panel" id="pIdeas">
+      <div class="panel__head">
+        <h2 class="panel__title">Ideas &amp; notes</h2>
+        <span class="panel__note"><span id="ideaCount">0</span> saved</span>
+      </div>
+      <ul class="feed" id="ideaList"></ul>
+    </section>
+
+  </div>
+
+  <!-- ---------- dock ---------- -->
+  <div class="dock">
+    <button class="mic" id="mic" aria-pressed="false" aria-label="Toggle microphone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="2" width="6" height="11" rx="3"/>
+        <path d="M5 10a7 7 0 0 0 14 0"/>
+        <path d="M12 17v4"/>
+      </svg>
+    </button>
+
+    <form class="dock__form" id="dockForm" autocomplete="off">
+      <label class="sr-only" for="dockInput">Type a command</label>
+      <span class="dock__prompt" aria-hidden="true">&gt;</span>
+      <input class="dock__input" id="dockInput" type="text"
+             placeholder="how's the app doing   ·   queue a post about shipping with AI   ·   press / to focus">
+      <button class="dock__send" type="submit">Run</button>
+    </form>
+
+    <button class="dock__btn" id="btnBrief">Brief me</button>
+    <button class="dock__btn" id="btnMute">voice</button>
+    <button class="dock__btn" id="btnHelp">?</button>
+  </div>
+
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<!-- ===================== HELP ===================== -->
+<div class="help" id="help" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="help__card">
+    <h2 class="help__title" id="helpTitle">What you can say</h2>
+    <p class="help__lede">
+      Say <b>“hey Jarvis”</b> and then the command, or hold nothing and just press
+      <b>space</b> to skip the wake word. No mic? Type any of these in the bar at the bottom —
+      every command works both ways.
+    </p>
+
+    <div class="help__grid">
+      <div class="help__group">
+        <h4>The briefing</h4>
+        <ul>
+          <li>Brief me <span>— everything, in order</span></li>
+          <li>How's the app doing</li>
+          <li>What's the revenue</li>
+          <li>How are downloads</li>
+          <li>How did content do</li>
+          <li>How's TikTok doing</li>
+          <li>What was the top post</li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Autonomy</h4>
+        <ul>
+          <li>What did you handle</li>
+          <li>What needs me</li>
+          <li>Refresh the numbers</li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Content ops</h4>
+        <ul>
+          <li>Queue a post about <i>…</i></li>
+          <li>Schedule a TikTok about <i>…</i> tomorrow</li>
+          <li>What's in the queue</li>
+          <li>Mark <i>…</i> as posted</li>
+          <li>Give me hooks about <i>…</i></li>
+          <li>Write a script about <i>…</i></li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Memory</h4>
+        <ul>
+          <li>Remember <i>…</i></li>
+          <li>Remind me to <i>…</i></li>
+          <li>What are my ideas</li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Keys</h4>
+        <ul>
+          <li><b>space</b> <span>— talk without the wake word</span></li>
+          <li><b>/</b> <span>— focus the command line</span></li>
+          <li><b>B</b> <span>— briefing</span></li>
+          <li><b>M</b> <span>— mic on / off</span></li>
+          <li><b>esc</b> <span>— shut it up</span></li>
+          <li><b>?</b> <span>— this panel</span></li>
+        </ul>
+      </div>
+
+      <div class="help__group">
+        <h4>Honest notes</h4>
+        <ul>
+          <li><span>The metrics are <b>demo data</b> until you wire a feed — see the README.</span></li>
+          <li><span>The queue, ideas and reminders are real and save to this browser.</span></li>
+          <li><span>Wake word needs Chrome, Edge, Brave or Arc.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <button class="help__close" id="helpClose">Close</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   JARVIS — small shared helpers
+   ========================================================================= */
+window.JARVIS = window.JARVIS || {};
+
+JARVIS.util = (function () {
+  'use strict';
+
+  function commas(n) {
+    return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  /* 12,400 → "12.4k" for tight HUD panels. */
+  function compact(n) {
+    n = Math.round(n);
+    if (Math.abs(n) >= 1000000) return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + 'M';
+    if (Math.abs(n) >= 1000) return (n / 1000).toFixed(Math.abs(n) < 10000 ? 1 : 0) + 'k';
+    return String(n);
+  }
+
+  function money(n, cur) {
+    return (cur || '$') + commas(n);
+  }
+
+  /* Spoken numbers want to be readable, not exact: "about twelve thousand". */
+  function spoken(n) {
+    n = Math.round(n);
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + ' million';
+    if (n >= 10000) return commas(Math.round(n / 100) * 100);
+    return commas(n);
+  }
+
+  function pct(n, digits) {
+    var d = digits === undefined ? 1 : digits;
+    return (n >= 0 ? '+' : '') + n.toFixed(d) + '%';
+  }
+
+  function dir(n) {
+    if (n > 1) return 'up';
+    if (n < -1) return 'down';
+    return 'flat';
+  }
+
+  /* "up 12 percent" / "down 4 percent" / "about flat" — for speech. */
+  function dirSpoken(n) {
+    var a = Math.abs(n);
+    if (a < 1.5) return 'about flat week over week';
+    return (n > 0 ? 'up ' : 'down ') + a.toFixed(0) + ' percent week over week';
+  }
+
+  function greeting() {
+    var h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 18) return 'Good afternoon';
+    return 'Good evening';
+  }
+
+  function clockTime(d) {
+    d = d || new Date();
+    var h = d.getHours(), m = d.getMinutes();
+    var ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+  }
+
+  function ago(ts) {
+    var s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + 'm ago';
+    if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+    return Math.floor(s / 86400) + 'd ago';
+  }
+
+  /* Title-case a topic the user spoke, without mangling acronyms. */
+  function clean(s) {
+    return (s || '').replace(/\s+/g, ' ').trim().replace(/[.!?,]+$/, '');
+  }
+
+  function pick(arr, n) {
+    var copy = arr.slice(), out = [];
+    while (copy.length && out.length < n) {
+      out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+    }
+    return out;
+  }
+
+  return {
+    commas: commas, compact: compact, money: money, spoken: spoken,
+    pct: pct, dir: dir, dirSpoken: dirSpoken,
+    greeting: greeting, clockTime: clockTime, ago: ago,
+    clean: clean, pick: pick
+  };
+})();
+
+</script>
+<script>
+/* =========================================================================
+   JARVIS — data layer
+   -------------------------------------------------------------------------
+   Everything Jarvis knows about your business lives here.
+
+   ⚠ THE NUMBERS BELOW ARE DEMO DATA. They are invented so the HUD has
+   something to display out of the box. Nothing here is fetched from a real
+   account until you wire it up — see `configure()` at the bottom and
+   jarvis/README.md §"Wiring up real data".
+
+   The shape is the contract. A real feed only has to return this shape.
+   ========================================================================= */
+window.JARVIS = window.JARVIS || {};
+
+JARVIS.data = (function () {
+  'use strict';
+
+  /* --- 1. Product identity ---------------------------------------------- */
+  /* Change these to your own product. Jarvis speaks the name out loud. */
+  var PRODUCT = {
+    name: 'the app',            // "How's the app doing?" → spoken back
+    currency: '$',
+    owner: ''                   // e.g. 'Noe' — used in greetings, blank is fine
+  };
+
+  /* --- 2. Demo feed ------------------------------------------------------ */
+  /* Seeded pseudo-random so the same day gives the same numbers — the HUD
+     doesn't reshuffle every refresh, which would look broken. */
+  function seeded(seed) {
+    var s = seed % 2147483647;
+    if (s <= 0) s += 2147483646;
+    return function () {
+      s = (s * 16807) % 2147483647;
+      return (s - 1) / 2147483646;
+    };
+  }
+
+  function dayIndex() {
+    return Math.floor(Date.now() / 86400000);
+  }
+
+  /* A 14-day series that trends gently upward with believable noise. */
+  function series(base, growth, noise, rnd, n) {
+    var out = [], v = base;
+    for (var i = 0; i < n; i++) {
+      v = v * (1 + growth) * (1 + (rnd() - 0.5) * noise);
+      out.push(Math.max(0, Math.round(v)));
+    }
+    return out;
+  }
+
+  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+
+  function buildDemo() {
+    var rnd = seeded(dayIndex() * 7919);
+
+    var downloads = series(300, 0.012, 0.30, rnd, 14);
+    var revenue   = series(560, 0.014, 0.26, rnd, 14);
+    var views     = series(11000, 0.02, 0.55, rnd, 14);
+
+    var last7 = function (a) { return a.slice(-7); };
+    var prev7 = function (a) { return a.slice(-14, -7); };
+    var delta = function (a) {
+      var p = sum(prev7(a));
+      if (!p) return 0;
+      return ((sum(last7(a)) - p) / p) * 100;
+    };
+
+    var mrr = Math.round(sum(last7(revenue)) * 4.34 / 100) * 100;
+
+    return {
+      generatedAt: new Date().toISOString(),
+      demo: true,
+
+      revenue: {
+        mrr: mrr,
+        last7: sum(last7(revenue)),
+        delta7: delta(revenue),
+        series: revenue,
+        arpu: +(sum(last7(revenue)) / Math.max(1, sum(last7(downloads)))).toFixed(2)
+      },
+
+      growth: {
+        downloads7: sum(last7(downloads)),
+        delta7: delta(downloads),
+        series: downloads,
+        activeUsers: 18400 + Math.round(rnd() * 2600),
+        trialConversion: +(6.5 + rnd() * 3.2).toFixed(1),
+        churn: +(3.1 + rnd() * 1.6).toFixed(1)
+      },
+
+      content: {
+        views7: sum(last7(views)),
+        delta7: delta(views),
+        series: views,
+        posts7: 11 + Math.floor(rnd() * 7),
+        followers: 42800 + Math.round(rnd() * 5000),
+        platforms: [
+          { name: 'TikTok',    views: Math.round(sum(last7(views)) * 0.58), tone: '' },
+          { name: 'Instagram', views: Math.round(sum(last7(views)) * 0.24), tone: 'gold' },
+          { name: 'YouTube',   views: Math.round(sum(last7(views)) * 0.13), tone: 'violet' },
+          { name: 'X',         views: Math.round(sum(last7(views)) * 0.05), tone: 'jade' }
+        ],
+        top: {
+          hook: 'I let an AI run my app for 7 days',
+          platform: 'TikTok',
+          views: Math.round(sum(last7(views)) * 0.31),
+          saves: 1840 + Math.round(rnd() * 900)
+        }
+      },
+
+      /* Things Jarvis says it handled on its own. In demo mode these are
+         illustrative. Wire real ones in via configure({ endpoint }). */
+      handled: [
+        { kind: 'ok',   text: 'Resolved 13 support tickets — 11 were the same iOS 18 sign-in bug.', when: 'today' },
+        { kind: 'ok',   text: 'Replied to 38 comments across TikTok and Instagram.', when: 'today' },
+        { kind: 'ok',   text: 'Scheduled tomorrow\'s post from the approved hook list.', when: '2h ago' },
+        { kind: 'warn', text: 'Paused the Meta ad set — CPA crossed $14, your ceiling is $12.', when: '5h ago' },
+        { kind: 'ok',   text: 'Refunded 2 duplicate charges and emailed both customers.', when: 'yesterday' }
+      ],
+
+      /* Things Jarvis wants a human decision on. */
+      needsYou: [
+        { kind: 'warn', text: 'App Store review 2.1 rejection — needs a screenshot swap before resubmit.', when: 'waiting 1d' },
+        { kind: 'bad',  text: 'Stripe dispute on a $79 annual plan. Evidence due Friday.', when: 'due 3d' }
+      ]
+    };
+  }
+
+  /* --- 3. Content queue (real, persisted locally) ------------------------ */
+  /* Unlike the metrics, this is genuinely yours — it saves to localStorage
+     and survives refreshes. Jarvis adds to it when you tell it to. */
+  var SEED_QUEUE = [
+    { when: 'Today 6pm',  text: 'POV: the AI ships while you sleep', tag: 'TikTok' },
+    { when: 'Tue 8am',    text: 'Teardown: what $4k MRR actually costs to run', tag: 'YouTube' },
+    { when: 'Wed 7pm',    text: '3 prompts that replaced my whole support inbox', tag: 'Instagram' }
+  ];
+
+  /* --- 4. Live adapter --------------------------------------------------- */
+  /* Point this at anything that returns the shape built by buildDemo():
+     your own /api/metrics, a Cloudflare Worker that fans out to RevenueCat +
+     App Store Connect + the TikTok API, an n8n webhook, a Google Sheet as
+     JSON. Jarvis does not care, it just needs the shape. */
+  var CONFIG = {
+    endpoint: null,       // e.g. 'https://api.yoursite.com/jarvis/metrics'
+    refreshMs: 5 * 60 * 1000
+  };
+
+  var current = buildDemo();
+  var listeners = [];
+
+  function emit() {
+    listeners.forEach(function (fn) { fn(current); });
+  }
+
+  function refresh() {
+    if (!CONFIG.endpoint) {
+      current = buildDemo();
+      emit();
+      return Promise.resolve(current);
+    }
+    return fetch(CONFIG.endpoint, { headers: { accept: 'application/json' } })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (json) {
+        json.demo = false;
+        current = json;
+        emit();
+        return current;
+      })
+      .catch(function (err) {
+        /* Never blank the HUD on a network blip — keep the last good data
+           and let the caller decide whether to announce the failure. */
+        if (window.console) console.warn('[jarvis] metrics fetch failed:', err.message);
+        throw err;
+      });
+  }
+
+  return {
+    product: PRODUCT,
+    seedQueue: SEED_QUEUE,
+    get: function () { return current; },
+    isDemo: function () { return !!current.demo; },
+    onUpdate: function (fn) { listeners.push(fn); },
+    refresh: refresh,
+    configure: function (opts) {
+      for (var k in opts) if (Object.prototype.hasOwnProperty.call(opts, k)) CONFIG[k] = opts[k];
+      if (CONFIG.endpoint) refresh().catch(function () {});
+    },
+    /* exposed for tests / console poking */
+    _buildDemo: buildDemo
+  };
+})();
+
+</script>
+<script>
+/* =========================================================================
+   JARVIS — local store
+   -------------------------------------------------------------------------
+   The parts of Jarvis that are genuinely yours and genuinely persist:
+   the content queue, your idea list, reminders, and the log of what you
+   asked it to do. All localStorage, all offline, no account.
+   ========================================================================= */
+window.JARVIS = window.JARVIS || {};
+
+JARVIS.store = (function () {
+  'use strict';
+
+  var KEY = 'jarvis.v1';
+
+  var blank = {
+    queue:     [],   // { id, when, text, tag, done }
+    ideas:     [],   // { id, text, at }
+    reminders: [],   // { id, text, at, fireAt }
+    log:       [],   // { id, text, at, kind }
+    seeded:    false
+  };
+
+  var state;
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return JSON.parse(JSON.stringify(blank));
+      var parsed = JSON.parse(raw);
+      /* Merge forward so an older saved state doesn't break a newer build. */
+      for (var k in blank) {
+        if (!Object.prototype.hasOwnProperty.call(parsed, k)) parsed[k] = blank[k];
+      }
+      return parsed;
+    } catch (e) {
+      return JSON.parse(JSON.stringify(blank));
+    }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (e) {
+      /* Private mode / quota. Jarvis keeps working for this session only. */
+      if (window.console) console.warn('[jarvis] could not save:', e.message);
+    }
+    emit();
+  }
+
+  var listeners = [];
+  function emit() { listeners.forEach(function (fn) { fn(state); }); }
+
+  function id() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  state = load();
+
+  /* First run: drop the sample queue in so the panel isn't empty, and mark
+     it so we never re-seed over the user's own items. */
+  function seed(items) {
+    if (state.seeded) return;
+    state.seeded = true;
+    items.forEach(function (it) {
+      state.queue.push({ id: id(), when: it.when, text: it.text, tag: it.tag, done: false, sample: true });
+    });
+    save();
+  }
+
+  return {
+    get: function () { return state; },
+    onChange: function (fn) { listeners.push(fn); },
+    seed: seed,
+
+    queueAdd: function (text, when, tag) {
+      var item = { id: id(), when: when || 'Unscheduled', text: text, tag: tag || 'Draft', done: false };
+      state.queue.push(item);
+      save();
+      return item;
+    },
+    queueDone: function (match) {
+      var hit = state.queue.filter(function (q) {
+        return !q.done && (!match || q.text.toLowerCase().indexOf(match.toLowerCase()) > -1);
+      })[0];
+      if (!hit) return null;
+      hit.done = true;
+      save();
+      return hit;
+    },
+    queueOpen: function () {
+      return state.queue.filter(function (q) { return !q.done; });
+    },
+    queueClear: function () {
+      state.queue = [];
+      save();
+    },
+
+    ideaAdd: function (text) {
+      var item = { id: id(), text: text, at: Date.now() };
+      state.ideas.unshift(item);
+      save();
+      return item;
+    },
+    ideas: function () { return state.ideas; },
+
+    remindAdd: function (text, fireAt) {
+      var item = { id: id(), text: text, at: Date.now(), fireAt: fireAt || null };
+      state.reminders.unshift(item);
+      save();
+      return item;
+    },
+    reminders: function () { return state.reminders; },
+    remindClear: function (id2) {
+      state.reminders = state.reminders.filter(function (r) { return r.id !== id2; });
+      save();
+    },
+
+    logAdd: function (text, kind) {
+      state.log.unshift({ id: id(), text: text, at: Date.now(), kind: kind || 'ok' });
+      if (state.log.length > 60) state.log.length = 60;
+      save();
+    },
+    log: function () { return state.log; },
+
+    wipe: function () {
+      state = JSON.parse(JSON.stringify(blank));
+      save();
+    }
+  };
+})();
+
+</script>
+<script>
+/* =========================================================================
+   JARVIS — voice
+   -------------------------------------------------------------------------
+   Two halves:
+     ears   — SpeechRecognition, always-on, listening for the wake word
+     mouth  — SpeechSynthesis, the reply
+
+   Browser reality check: always-on recognition is Chromium-only
+   (Chrome, Edge, Brave, Arc). Firefox and Safari have no SpeechRecognition,
+   so the HUD falls back to the typed command line — everything still works,
+   Jarvis just can't hear you. Speaking works everywhere.
+   ========================================================================= */
+window.JARVIS = window.JARVIS || {};
+
+JARVIS.voice = (function () {
+  'use strict';
+
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var synth = window.speechSynthesis;
+
+  /* Wake phrases. Recognition mishears "Jarvis" constantly, so accept the
+     near misses too — this is the difference between a demo that works and
+     one that makes you say the word nine times. */
+  var WAKE = /\b(hey |ok |okay |yo )?(jarvis|jarvice|jarviz|jervis|charvis|javis|service)\b/i;
+
+  var state = {
+    supported: !!SR,
+    listening: false,     // recognition is running
+    awake: false,         // wake word heard, capturing a command
+    speaking: false,
+    muted: false,
+    denied: false
+  };
+
+  var rec = null;
+  var handlers = {};
+  var wakeTimer = null;
+  var restartDelay = 400;
+  var wantListening = false;   // user intent, survives auto-restarts
+
+  function on(name, fn) { handlers[name] = fn; }
+  function fire(name, a, b) { if (handlers[name]) handlers[name](a, b); }
+
+  /* --- Ears -------------------------------------------------------------- */
+  function build() {
+    if (!SR) return null;
+    var r = new SR();
+    r.continuous = true;
+    r.interimResults = true;
+    r.lang = 'en-US';
+    r.maxAlternatives = 1;
+
+    r.onstart = function () {
+      state.listening = true;
+      restartDelay = 400;
+      fire('state', state);
+    };
+
+    r.onresult = function (e) {
+      /* Walk only the results we haven't consumed. */
+      for (var i = e.resultIndex; i < e.results.length; i++) {
+        var res = e.results[i];
+        var text = (res[0] && res[0].transcript || '').trim();
+        if (!text) continue;
+
+        if (!res.isFinal) {
+          fire('interim', text, state.awake);
+          /* Let the wake word trip on an interim result so the HUD lights up
+             the instant you say it, not a second later. */
+          if (!state.awake && WAKE.test(text)) wake(text);
+          continue;
+        }
+
+        fire('final', text, state.awake);
+
+        if (state.awake) {
+          var cmd = strip(text);
+          if (cmd) { sleep(); fire('command', cmd); }
+          continue;
+        }
+
+        if (WAKE.test(text)) {
+          wake(text);
+          /* "Hey Jarvis, how's the app doing" — wake word and command in one
+             breath. If there's anything after the wake word, run it now. */
+          var tail = strip(text);
+          if (tail) { sleep(); fire('command', tail); }
+        }
+      }
+    };
+
+    r.onerror = function (e) {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+        state.denied = true;
+        wantListening = false;
+        fire('error', 'mic-denied');
+      } else if (e.error === 'no-speech' || e.error === 'aborted') {
+        /* Normal. Chrome fires these constantly on a quiet room. */
+      } else if (e.error === 'network') {
+        fire('error', 'network');
+      }
+      fire('state', state);
+    };
+
+    r.onend = function () {
+      state.listening = false;
+      fire('state', state);
+      /* Chrome kills recognition every ~60s and after every pause. If the
+         user still wants it on, bring it back — with a backoff so a hard
+         failure can't spin the CPU. */
+      if (wantListening && !state.speaking) {
+        setTimeout(function () {
+          if (wantListening && !state.speaking) start();
+        }, restartDelay);
+        restartDelay = Math.min(restartDelay * 1.6, 6000);
+      }
+    };
+
+    return r;
+  }
+
+  /* Remove the wake phrase and any leading filler from a heard line. */
+  function strip(text) {
+    var out = text.replace(WAKE, ' ');
+    out = out.replace(/^[\s,.!?-]+/, '');
+    out = out.replace(/^(please|can you|could you|would you|i want you to|i need you to)\s+/i, '');
+    return out.trim();
+  }
+
+  function wake(heard) {
+    state.awake = true;
+    fire('state', state);
+    fire('wake', heard);
+    clearTimeout(wakeTimer);
+    /* If nothing follows the wake word, stand back down rather than sitting
+       awake forever eating whatever it hears next. */
+    wakeTimer = setTimeout(function () {
+      if (state.awake) { sleep(); fire('timeout'); }
+    }, 9000);
+  }
+
+  function sleep() {
+    clearTimeout(wakeTimer);
+    state.awake = false;
+    fire('state', state);
+  }
+
+  function start() {
+    if (!SR || state.listening) return;
+    if (!rec) rec = build();
+    try {
+      rec.start();
+      wantListening = true;
+    } catch (e) {
+      /* InvalidStateError = already running. Harmless. */
+    }
+  }
+
+  function stop() {
+    wantListening = false;
+    sleep();
+    if (rec) { try { rec.abort(); } catch (e) {} }
+    state.listening = false;
+    fire('state', state);
+  }
+
+  /* --- Mouth ------------------------------------------------------------- */
+  var voice = null;
+
+  /* Pick the most Jarvis-sounding voice available. British male first —
+     that's the whole bit — then any male, then whatever en- voice exists. */
+  var WANT = [
+    /daniel/i, /google uk english male/i, /arthur/i, /oliver/i,
+    /microsoft (ryan|george|guy)/i, /alex/i, /google us english/i
+  ];
+
+  function pickVoice() {
+    if (!synth) return;
+    var all = synth.getVoices().filter(function (v) { return /^en/i.test(v.lang); });
+    if (!all.length) return;
+    for (var i = 0; i < WANT.length; i++) {
+      var hit = all.filter(function (v) { return WANT[i].test(v.name); })[0];
+      if (hit) { voice = hit; return; }
+    }
+    voice = all[0];
+  }
+
+  if (synth) {
+    pickVoice();
+    /* Chrome populates voices asynchronously. */
+    synth.addEventListener('voiceschanged', pickVoice);
+  }
+
+  function say(text, opts) {
+    opts = opts || {};
+    fire('say', text);
+    if (!synth || state.muted) {
+      /* Still drive the caption timing so the HUD reads the same muted. */
+      var ms = Math.min(9000, 400 + text.length * 46);
+      state.speaking = true; fire('state', state);
+      setTimeout(function () {
+        state.speaking = false; fire('state', state); fire('said', text);
+        if (opts.then) opts.then();
+      }, ms);
+      return;
+    }
+
+    /* Never let the mic hear Jarvis and answer itself. */
+    var wasListening = wantListening;
+    if (wasListening) stop();
+
+    synth.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    if (voice) { u.voice = voice; u.lang = voice.lang; }
+    u.rate = opts.rate || 1.04;
+    u.pitch = opts.pitch || 0.92;
+    u.volume = 1;
+
+    u.onstart = function () { state.speaking = true; fire('state', state); };
+    u.onend = function () {
+      state.speaking = false;
+      fire('state', state);
+      fire('said', text);
+      if (wasListening) setTimeout(start, 320);
+      if (opts.then) opts.then();
+    };
+    u.onerror = function () {
+      state.speaking = false;
+      fire('state', state);
+      if (wasListening) setTimeout(start, 320);
+      if (opts.then) opts.then();
+    };
+
+    synth.speak(u);
+  }
+
+  function shutUp() {
+    if (synth) synth.cancel();
+    state.speaking = false;
+    fire('state', state);
+  }
+
+  return {
+    state: state,
+    on: on,
+    start: start,
+    stop: stop,
+    sleep: sleep,
+    forceWake: function () { wake(''); },
+    say: say,
+    shutUp: shutUp,
+    setMuted: function (m) { state.muted = m; if (m) shutUp(); fire('state', state); },
+    voiceName: function () { return voice ? voice.name : 'system default'; },
+    supported: !!SR
+  };
+})();
+
+</script>
+<script>
+/* =========================================================================
+   JARVIS — skills
+   -------------------------------------------------------------------------
+   A skill is { id, match, run }. `match` is a RegExp tested against the
+   heard/typed line; `run` returns { say, panel, toast, action }.
+
+   Order matters — the first match wins, so put the specific ones above the
+   general ones. Adding your own is three lines at the bottom of the list.
+   ========================================================================= */
+window.JARVIS = window.JARVIS || {};
+
+JARVIS.skills = (function () {
+  'use strict';
+
+  var U = JARVIS.util;
+
+  function D() { return JARVIS.data.get(); }
+  function P() { return JARVIS.data.product; }
+
+  /* ---- Hook / script generation ----------------------------------------
+     Template-driven, on purpose: it runs offline with no key and no cost.
+     If you want real generation, set JARVIS.brain.endpoint (see README) and
+     these fall through to your model instead. */
+  var HOOKS = [
+    'POV: {t} — and nobody told you it was this easy',
+    'I tried {t} for 30 days. Here\'s the part nobody posts.',
+    'Stop doing {t} like it\'s 2023.',
+    'The {t} mistake that cost me a month',
+    '{t}, explained in 40 seconds',
+    'Nobody is talking about {t} and it\'s making people money',
+    'I asked 3 people about {t}. All 3 were wrong.',
+    'Watch me do {t} in real time — no cuts',
+    'If you\'re doing {t}, you\'re one step from quitting. Do this instead.',
+    'The {t} setup I\'d build if I started over today'
+  ];
+
+  var BEATS = [
+    ['0:00–0:03  HOOK', 'Say the sharpest claim first. No intro, no name, no "hey guys".'],
+    ['0:03–0:10  STAKES', 'Why they should care in one line. Name the cost of getting it wrong.'],
+    ['0:10–0:35  PROOF', 'Show the screen. Real numbers, real clicks. This is the retention engine.'],
+    ['0:35–0:50  TURN', 'The counter-intuitive bit — the thing they did not expect.'],
+    ['0:50–1:00  CTA', 'One ask. Comment a keyword, or follow for part two. Never two asks.']
+  ];
+
+  function hooksFor(topic) {
+    var t = U.clean(topic) || 'this';
+    return U.pick(HOOKS, 3).map(function (h) { return h.replace(/\{t\}/g, t); });
+  }
+
+  /* ---- Briefings -------------------------------------------------------- */
+  function revenueLine() {
+    var r = D().revenue;
+    return 'Revenue over the last seven days is ' + U.money(r.last7, P().currency) +
+           ', ' + U.dirSpoken(r.delta7) + '. Monthly recurring sits at ' +
+           U.money(r.mrr, P().currency) + '.';
+  }
+
+  function growthLine() {
+    var g = D().growth;
+    return 'We picked up ' + U.spoken(g.downloads7) + ' new downloads, ' +
+           U.dirSpoken(g.delta7) + '. Trial conversion is ' + g.trialConversion +
+           ' percent, churn ' + g.churn + ' percent.';
+  }
+
+  function contentLine() {
+    var c = D().content;
+    var top = c.platforms.slice().sort(function (a, b) { return b.views - a.views; })[0];
+    return 'Content reached ' + U.spoken(c.views7) + ' views across ' + c.posts7 +
+           ' posts, ' + U.dirSpoken(c.delta7) + '. ' + top.name +
+           ' is carrying it with ' + U.spoken(top.views) + '.';
+  }
+
+  function handledLine() {
+    var h = D().handled;
+    if (!h.length) return 'Nothing needed handling today.';
+    return 'I handled ' + h.length + ' things on my own. ' +
+           h.slice(0, 2).map(function (x) { return x.text.replace(/\.$/, ''); }).join('. ') + '.';
+  }
+
+  function needsLine() {
+    var n = D().needsYou;
+    if (!n.length) return 'Nothing is waiting on you. You\'re clear.';
+    return n.length + (n.length === 1 ? ' thing needs you. ' : ' things need you. ') +
+           n.map(function (x) { return x.text.replace(/\.$/, ''); }).join('. ') + '.';
+  }
+
+  /* ---- The skill list --------------------------------------------------- */
+  var LIST = [
+
+    /* — control ———————————————————————————————————— */
+    {
+      id: 'stop',
+      match: /\b(stop|shut up|be quiet|quiet|nevermind|never mind|cancel|go to sleep|stand down)\b/i,
+      run: function () {
+        JARVIS.voice.shutUp();
+        return { say: '', toast: 'Standing by' };
+      }
+    },
+    {
+      id: 'help',
+      match: /\b(what can you do|help|commands|what do you do|options)\b/i,
+      run: function () {
+        return {
+          say: 'I can brief you on revenue, downloads and content, tell you what I handled, ' +
+               'write hooks and scripts, and run your posting queue. The full list is on screen.',
+          action: 'help'
+        };
+      }
+    },
+    {
+      id: 'refresh',
+      match: /\b(refresh|reload|update the (numbers|stats|data)|pull.*(latest|fresh))\b/i,
+      run: function () {
+        return { say: 'Pulling the latest numbers now.', action: 'refresh' };
+      }
+    },
+
+    /* — the queue ————————————————————————————————— */
+    {
+      id: 'queueAdd',
+      match: /\b(?:add|schedule|queue|post|line up)\b.*?\b(?:to|in)?\s*(?:the )?(?:queue|calendar)?\b.*/i,
+      /* Guarded below — only fires when we can actually extract a subject. */
+      test: function (line) {
+        return /^(add|schedule|queue up|queue|line up|post)\b/i.test(line.trim()) &&
+               /\b(about|on|saying|called|titled|:)\b|["“]/.test(line);
+      },
+      run: function (m, line) {
+        var topic = line.replace(/^(add|schedule|queue up|queue|line up|post)\b/i, '')
+                        .replace(/\b(a |an |the )?(post|video|short|reel|tiktok|clip)\b/ig, ' ')
+                        .replace(/\bto (the )?(queue|calendar)\b/ig, ' ')
+                        .replace(/^.*?\b(about|on|saying|called|titled)\b/i, '')
+                        .replace(/["“”]/g, '')
+                        .trim();
+        topic = U.clean(topic);
+        if (!topic) return { say: 'What should the post be about?' };
+
+        var when = 'Unscheduled';
+        if (/\btomorrow\b/i.test(line)) { when = 'Tomorrow'; topic = topic.replace(/\btomorrow\b/ig, '').trim(); }
+        else if (/\btonight\b/i.test(line)) { when = 'Tonight'; topic = topic.replace(/\btonight\b/ig, '').trim(); }
+        else if (/\btoday\b/i.test(line)) { when = 'Today'; topic = topic.replace(/\btoday\b/ig, '').trim(); }
+
+        var tag = 'Draft';
+        var plat = line.match(/\b(tiktok|instagram|youtube|reel|short)\b/i);
+        if (plat) tag = plat[1].toLowerCase() === 'reel' ? 'Instagram'
+                     : plat[1].toLowerCase() === 'short' ? 'YouTube'
+                     : plat[1][0].toUpperCase() + plat[1].slice(1).toLowerCase();
+
+        JARVIS.store.queueAdd(U.clean(topic), when, tag);
+        JARVIS.store.logAdd('Queued: ' + U.clean(topic), 'ok');
+        return {
+          say: 'Added to the queue for ' + when.toLowerCase() + '. ' +
+               'That\'s ' + JARVIS.store.queueOpen().length + ' posts lined up.',
+          panel: 'queue',
+          toast: 'Queued'
+        };
+      }
+    },
+    {
+      id: 'queueRead',
+      match: /\b(queue|what('s| is) (scheduled|next|coming|lined up|posting)|calendar|posting schedule|what am i posting)\b/i,
+      run: function () {
+        var q = JARVIS.store.queueOpen();
+        if (!q.length) return { say: 'The queue is empty. Tell me what to line up.', panel: 'queue' };
+        return {
+          say: 'You have ' + q.length + (q.length === 1 ? ' post' : ' posts') + ' queued. Next up, ' +
+               q[0].when.toLowerCase() + ': ' + q[0].text + '.',
+          panel: 'queue'
+        };
+      }
+    },
+    {
+      id: 'queueDone',
+      match: /\b(mark.*(done|posted)|i posted|done with|posted it|shipped it)\b/i,
+      run: function (m, line) {
+        var what = line.replace(/^.*?\b(mark|i posted|done with|posted)\b/i, '')
+                       .replace(/\b(as )?(done|posted)\b/ig, '').trim();
+        var hit = JARVIS.store.queueDone(what);
+        if (!hit) return { say: 'I couldn\'t find that one in the queue.', panel: 'queue' };
+        JARVIS.store.logAdd('Marked posted: ' + hit.text, 'ok');
+        return { say: 'Nice. Marked "' + hit.text + '" as posted.', panel: 'queue', toast: 'Marked posted' };
+      }
+    },
+
+    /* — making things ————————————————————————————— */
+    {
+      id: 'hooks',
+      match: /\b(hooks?|ideas? for|content ideas|titles?|angles?)\b/i,
+      run: function (m, line) {
+        var topic = line.replace(/^.*?\b(hooks?|ideas?|titles?|angles?)\b/i, '')
+                        .replace(/^\s*(for|about|on)\s+/i, '')
+                        .trim();
+        topic = U.clean(topic);
+        if (!topic) return { say: 'What topic? Say, hooks about shipping with AI.' };
+        var hooks = hooksFor(topic);
+        hooks.forEach(function (h) { JARVIS.store.ideaAdd(h); });
+        return {
+          say: 'Three angles on ' + topic + '. One. ' + hooks[0] + '. Two. ' + hooks[1] +
+               '. Three. ' + hooks[2] + '. I saved all three to your ideas.',
+          panel: 'ideas',
+          toast: '3 hooks saved'
+        };
+      }
+    },
+    {
+      id: 'script',
+      match: /\b(script|outline|structure|storyboard|beats)\b/i,
+      run: function (m, line) {
+        var topic = U.clean(line.replace(/^.*?\b(script|outline|structure|storyboard|beats)\b/i, '')
+                                .replace(/^\s*(for|about|on)\s+/i, ''));
+        if (!topic) topic = 'your next video';
+        var hook = hooksFor(topic)[0];
+        JARVIS.store.ideaAdd('SCRIPT — ' + topic + ' — open with: ' + hook);
+        return {
+          say: 'Here\'s the shape. Open on the hook: ' + hook + '. ' +
+               'Three seconds of stakes, twenty five seconds of screen proof with real numbers, ' +
+               'then the counter-intuitive turn, then one call to action. Never two. ' +
+               'Full beat sheet is on screen and saved to your ideas.',
+          panel: 'ideas',
+          beats: BEATS,
+          toast: 'Script outline saved'
+        };
+      }
+    },
+    {
+      id: 'remember',
+      match: /\b(remember|make a note|note that|write (this )?down|jot|capture this)\b/i,
+      run: function (m, line) {
+        var what = U.clean(line.replace(/^.*?\b(remember|make a note|note that|write (this )?down|jot|capture this)\b/i, '')
+                               .replace(/^\s*(to|that|this|down|about)\s+/i, ''));
+        if (!what) return { say: 'Remember what?' };
+        JARVIS.store.ideaAdd(what);
+        return { say: 'Noted. ' + what, panel: 'ideas', toast: 'Saved to ideas' };
+      }
+    },
+    {
+      id: 'ideasRead',
+      match: /\b(my ideas|read.*(ideas|notes)|what.*(ideas|notes)|idea list)\b/i,
+      run: function () {
+        var ideas = JARVIS.store.ideas();
+        if (!ideas.length) return { say: 'Your idea list is empty.', panel: 'ideas' };
+        return {
+          say: 'You have ' + ideas.length + (ideas.length === 1 ? ' idea' : ' ideas') + '. Most recent: ' +
+               ideas.slice(0, 3).map(function (i) { return i.text; }).join('. ') + '.',
+          panel: 'ideas'
+        };
+      }
+    },
+    {
+      id: 'remind',
+      match: /\bremind me\b/i,
+      run: function (m, line) {
+        var what = U.clean(line.replace(/^.*?\bremind me\b/i, '').replace(/^\s*(to|about|that)\s+/i, ''));
+        if (!what) return { say: 'Remind you to do what?' };
+        JARVIS.store.remindAdd(what);
+        return { say: 'I\'ll keep that in front of you. ' + what + '.', panel: 'ideas', toast: 'Reminder set' };
+      }
+    },
+
+    /* — the money question ————————————————————————— */
+    {
+      id: 'briefing',
+      match: /\b(brief|briefing|rundown|status report|catch me up|debrief|full (report|picture)|how are we doing|how('s| is) everything|what('s| is) up|state of (play|things))\b/i,
+      run: function () {
+        return {
+          say: U.greeting() + '. ' + revenueLine() + ' ' + growthLine() + ' ' +
+               contentLine() + ' ' + handledLine() + ' ' + needsLine(),
+          panel: 'all'
+        };
+      }
+    },
+    {
+      id: 'app',
+      match: /\b(how('s| is) the app|app (doing|stats|performance)|how('s| is) (it|the product|the business) (doing|going)|numbers)\b/i,
+      run: function () {
+        return {
+          say: 'Pulling up our app stats now. ' + revenueLine() + ' ' + growthLine(),
+          panel: 'revenue'
+        };
+      }
+    },
+    {
+      id: 'revenue',
+      match: /\b(revenue|money|mrr|sales|earnings|income|how much did we (make|earn)|cash)\b/i,
+      run: function () {
+        var r = D().revenue;
+        return {
+          say: revenueLine() + ' That works out to ' + P().currency + r.arpu +
+               ' per download.',
+          panel: 'revenue'
+        };
+      }
+    },
+    {
+      id: 'growth',
+      match: /\b(downloads|installs|users|growth|sign ?ups|new customers|churn|conversion|retention)\b/i,
+      run: function () { return { say: growthLine(), panel: 'growth' }; }
+    },
+
+    /* — content ————————————————————————————————— */
+    {
+      id: 'topPost',
+      match: /\b(top|best|winning|highest) (post|video|performer|content)|what (worked|performed|popped)\b/i,
+      run: function () {
+        var t = D().content.top;
+        return {
+          say: 'Your best performer is "' + t.hook + '" on ' + t.platform +
+               '. ' + U.spoken(t.views) + ' views and ' + U.spoken(t.saves) +
+               ' saves. The save rate is the signal there — make a part two.',
+          panel: 'content'
+        };
+      }
+    },
+    {
+      id: 'platform',
+      match: /\b(tiktok|instagram|youtube|twitter|\bx\b)\b/i,
+      run: function (m, line) {
+        var want = line.match(/tiktok|instagram|youtube|twitter|\bx\b/i)[0].toLowerCase();
+        if (want === 'twitter') want = 'x';
+        var hit = D().content.platforms.filter(function (p) {
+          return p.name.toLowerCase() === want;
+        })[0];
+        if (!hit) return { say: 'I\'m not tracking that platform yet.' };
+        var share = (hit.views / D().content.views7 * 100).toFixed(0);
+        return {
+          say: hit.name + ' did ' + U.spoken(hit.views) + ' views this week, ' +
+               share + ' percent of your total reach.',
+          panel: 'content'
+        };
+      }
+    },
+    {
+      id: 'content',
+      match: /\b(content|views|reach|posts|impressions|social|how did (the )?content)\b/i,
+      run: function () { return { say: contentLine(), panel: 'content' }; }
+    },
+
+    /* — autonomy ————————————————————————————————— */
+    {
+      id: 'handled',
+      match: /\b(what did you (do|handle|fix|resolve)|handled|anything automatic|on your own|what have you done)\b/i,
+      run: function () {
+        return { say: handledLine(), panel: 'handled' };
+      }
+    },
+    {
+      id: 'needsMe',
+      match: /\b(needs? (me|you|my|a decision)|blocked|blockers|waiting on|anything i (need|should)|my attention|approve)\b/i,
+      run: function () {
+        return { say: needsLine(), panel: 'needs' };
+      }
+    },
+
+    /* — pleasantries ————————————————————————————— */
+    {
+      id: 'time',
+      match: /\b(what time|the time|what('s| is) the date|what day)\b/i,
+      run: function () {
+        var d = new Date();
+        return {
+          say: 'It\'s ' + U.clockTime(d) + ' on ' +
+               d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }) + '.'
+        };
+      }
+    },
+    {
+      id: 'thanks',
+      match: /\b(thanks|thank you|cheers|appreciate|nice work|good job)\b/i,
+      run: function () {
+        return { say: U.pick([
+          'Any time.',
+          'That\'s what I\'m here for.',
+          'Always a pleasure.',
+          'Noted. Back to work.'
+        ], 1)[0] };
+      }
+    },
+    {
+      id: 'hello',
+      match: /\b(hello|hi|hey|good (morning|afternoon|evening)|you (there|awake|up)|wake up)\b/i,
+      run: function () {
+        var d = D();
+        var owner = P().owner ? ', ' + P().owner : '';
+        return {
+          say: U.greeting() + owner + '. All systems are up. ' +
+               'Revenue is ' + U.money(d.revenue.last7, P().currency) + ' over seven days and ' +
+               d.needsYou.length + (d.needsYou.length === 1 ? ' item needs' : ' items need') +
+               ' your call. Ask me for the full briefing when you\'re ready.'
+        };
+      }
+    },
+    {
+      id: 'whoAreYou',
+      match: /\b(who are you|what are you|your name)\b/i,
+      run: function () {
+        return {
+          say: 'I\'m Jarvis. I watch the numbers, handle what I can, and tell you ' +
+               'what actually needs you. Running locally in your browser.'
+        };
+      }
+    }
+  ];
+
+  /* --- Dispatch ---------------------------------------------------------- */
+  function run(line) {
+    var text = U.clean(line);
+    if (!text) return null;
+
+    for (var i = 0; i < LIST.length; i++) {
+      var s = LIST[i];
+      var hit = s.test ? s.test(text) : s.match.test(text);
+      if (!hit) continue;
+      var m = s.match ? text.match(s.match) : null;
+      var out = s.run(m, text) || {};
+      out.id = s.id;
+      return out;
+    }
+
+    /* Nothing matched. Say so plainly rather than inventing an answer. */
+    return {
+      id: 'unknown',
+      say: U.pick([
+        'I didn\'t catch a command in that. Ask me for the briefing, or say what can you do.',
+        'That one\'s not in my skill list yet. Try: how\'s the app doing.',
+        'I\'m not wired for that yet. Say help for what I can actually do.'
+      ], 1)[0],
+      unknown: true
+    };
+  }
+
+  return {
+    run: run,
+    list: LIST,
+    hooksFor: hooksFor,
+    beats: BEATS,
+    /* Add your own at runtime: JARVIS.skills.add({id, match, run}) */
+    add: function (skill, atTop) {
+      if (atTop) LIST.unshift(skill); else LIST.push(skill);
+    }
+  };
+})();
+
+</script>
+<script>
+/* =========================================================================
+   JARVIS — core
+   -------------------------------------------------------------------------
+   The reactor (canvas) and the panels (DOM). Nothing in here knows about
+   speech; it only reacts to a state string and a data object.
+   ========================================================================= */
+window.JARVIS = window.JARVIS || {};
+
+JARVIS.core = (function () {
+  'use strict';
+
+  var U = JARVIS.util;
+  var reduce = window.matchMedia &&
+               window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===================================================================== *
+     1. The reactor
+   * ===================================================================== */
+  var Reactor = (function () {
+    var cv, ctx, dpr = 1, w = 0, h = 0, raf = null;
+    var t = 0;
+    var mode = 'idle';        // idle | listening | thinking | speaking
+    var level = 0;            // 0..1 mic / speech amplitude
+    var levelTarget = 0;
+
+    var PALETTE = {
+      idle:      { core: '94, 214, 255', ring: '94, 214, 255', speed: 0.22, alpha: 0.55 },
+      listening: { core: '201, 242, 255', ring: '94, 214, 255', speed: 0.75, alpha: 1.00 },
+      thinking:  { core: '255, 231, 194', ring: '255, 196, 107', speed: 1.70, alpha: 0.95 },
+      speaking:  { core: '255, 255, 255', ring: '94, 214, 255', speed: 1.05, alpha: 1.00 }
+    };
+
+    function size() {
+      if (!cv) return;
+      var r = cv.getBoundingClientRect();
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = Math.max(1, Math.round(r.width));
+      h = Math.max(1, Math.round(r.height));
+      cv.width = w * dpr;
+      cv.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function ring(cx, cy, r, from, to, width, color, alpha) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, from, to);
+      ctx.strokeStyle = 'rgba(' + color + ',' + alpha + ')';
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    function draw() {
+      var p = PALETTE[mode] || PALETTE.idle;
+      t += reduce ? 0 : 0.016 * p.speed;
+
+      /* Ease the amplitude so the core breathes instead of strobing. */
+      level += (levelTarget - level) * 0.18;
+
+      ctx.clearRect(0, 0, w, h);
+
+      var cx = w / 2, cy = h / 2;
+      var R = Math.min(w, h) / 2;
+      var pulse = reduce ? 0 : Math.sin(t * 1.7) * 0.5 + 0.5;
+
+      /* --- outer tick ring ------------------------------------------- */
+      var ticks = 72;
+      for (var i = 0; i < ticks; i++) {
+        var a = (i / ticks) * Math.PI * 2 + t * 0.10;
+        var major = i % 6 === 0;
+        var len = major ? R * 0.055 : R * 0.028;
+        var r0 = R * 0.965;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
+        ctx.lineTo(cx + Math.cos(a) * (r0 - len), cy + Math.sin(a) * (r0 - len));
+        ctx.strokeStyle = 'rgba(' + p.ring + ',' + (major ? 0.55 : 0.22) * p.alpha + ')';
+        ctx.lineWidth = major ? 1.6 : 1;
+        ctx.stroke();
+      }
+
+      /* --- outer arc segments, clockwise ------------------------------ */
+      var segs = [[0, 1.15], [1.6, 2.5], [3.0, 4.4], [4.9, 5.7]];
+      for (var s = 0; s < segs.length; s++) {
+        ring(cx, cy, R * 0.885, segs[s][0] + t * 0.42, segs[s][1] + t * 0.42,
+             2.2, p.ring, 0.62 * p.alpha);
+      }
+
+      /* --- mid ring, counter-clockwise -------------------------------- */
+      var segs2 = [[0.3, 2.0], [2.6, 3.4], [4.1, 5.9]];
+      for (var s2 = 0; s2 < segs2.length; s2++) {
+        ring(cx, cy, R * 0.735, segs2[s2][0] - t * 0.66, segs2[s2][1] - t * 0.66,
+             3.4, p.ring, 0.48 * p.alpha);
+      }
+
+      /* --- dashed data ring ------------------------------------------- */
+      ctx.save();
+      ctx.setLineDash([3, 9]);
+      ring(cx, cy, R * 0.645, 0, Math.PI * 2, 1.4, p.ring, 0.4 * p.alpha);
+      ctx.restore();
+
+      /* --- amplitude ring: the thing that makes it feel alive --------- */
+      var bars = 96;
+      var base = R * 0.50;
+      for (var b = 0; b < bars; b++) {
+        var ba = (b / bars) * Math.PI * 2 - Math.PI / 2;
+        /* Deterministic per-bar wobble so it looks like a spectrum, not noise */
+        var wob = Math.sin(b * 0.7 + t * 3.1) * 0.5 + Math.sin(b * 2.3 - t * 1.9) * 0.5;
+        var amp = (0.25 + level * 1.5) * (0.5 + wob * 0.5);
+        var len2 = Math.max(1.5, R * 0.085 * amp);
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(ba) * base, cy + Math.sin(ba) * base);
+        ctx.lineTo(cx + Math.cos(ba) * (base + len2), cy + Math.sin(ba) * (base + len2));
+        ctx.strokeStyle = 'rgba(' + p.core + ',' + (0.16 + level * 0.6) * p.alpha + ')';
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+
+      /* --- inner ring + core glow ------------------------------------- */
+      ring(cx, cy, R * 0.46, 0, Math.PI * 2, 1.2, p.ring, 0.55 * p.alpha);
+
+      var coreR = R * (0.30 + level * 0.07 + pulse * 0.018);
+      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR);
+      g.addColorStop(0, 'rgba(' + p.core + ',' + (0.82 * p.alpha) + ')');
+      g.addColorStop(0.28, 'rgba(' + p.core + ',' + (0.26 * p.alpha) + ')');
+      g.addColorStop(1, 'rgba(' + p.core + ',0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
+      ctx.fill();
+
+      /* Three coil pads around the core — the arc-reactor tell. A rotating
+         triangle here reads as a play button over the glow, so: arcs. */
+      for (var c = 0; c < 3; c++) {
+        var ca = (c / 3) * Math.PI * 2 - Math.PI / 2 - t * 0.30;
+        ring(cx, cy, R * 0.375, ca - 0.42, ca + 0.42, R * 0.055, p.core, 0.30 * p.alpha);
+      }
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    return {
+      mount: function (canvas) {
+        cv = canvas;
+        ctx = cv.getContext('2d');
+        size();
+        window.addEventListener('resize', size);
+        if (raf) cancelAnimationFrame(raf);
+        draw();
+      },
+      setMode: function (m) { mode = m; },
+      setLevel: function (l) { levelTarget = Math.max(0, Math.min(1, l)); }
+    };
+  })();
+
+  /* ===================================================================== *
+     2. Mic amplitude (optional — drives the reactor from your actual voice)
+   * ===================================================================== */
+  var Meter = (function () {
+    var analyser = null, buf = null, raf = null, stream = null;
+
+    function loop() {
+      analyser.getByteTimeDomainData(buf);
+      var peak = 0;
+      for (var i = 0; i < buf.length; i++) {
+        var v = Math.abs(buf[i] - 128) / 128;
+        if (v > peak) peak = v;
+      }
+      Reactor.setLevel(Math.min(1, peak * 2.6));
+      raf = requestAnimationFrame(loop);
+    }
+
+    return {
+      start: function () {
+        if (analyser || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          return Promise.resolve(false);
+        }
+        return navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+          stream = s;
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return false;
+          var ac = new AC();
+          var src = ac.createMediaStreamSource(s);
+          analyser = ac.createAnalyser();
+          analyser.fftSize = 1024;
+          buf = new Uint8Array(analyser.fftSize);
+          src.connect(analyser);
+          loop();
+          return true;
+        }).catch(function () { return false; });
+      },
+      stop: function () {
+        if (raf) cancelAnimationFrame(raf);
+        if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
+        analyser = null; stream = null; raf = null;
+      },
+      active: function () { return !!analyser; }
+    };
+  })();
+
+  /* ===================================================================== *
+     3. Panels
+   * ===================================================================== */
+  function el(id) { return document.getElementById(id); }
+
+  function sparkline(node, data, w, h) {
+    if (!node || !data || data.length < 2) return;
+    w = w || 100; h = h || 34;
+    var min = Math.min.apply(null, data);
+    var max = Math.max.apply(null, data);
+    var span = (max - min) || 1;
+    var step = w / (data.length - 1);
+
+    var pts = data.map(function (v, i) {
+      return [i * step, h - ((v - min) / span) * (h - 4) - 2];
+    });
+    var d = pts.map(function (p, i) {
+      return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1);
+    }).join(' ');
+    var area = d + ' L ' + w + ' ' + h + ' L 0 ' + h + ' Z';
+    var last = pts[pts.length - 1];
+
+    node.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    node.setAttribute('preserveAspectRatio', 'none');
+    node.innerHTML =
+      '<defs><linearGradient id="sparkfade" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#5ED6FF" stop-opacity=".42"/>' +
+      '<stop offset="100%" stop-color="#5ED6FF" stop-opacity="0"/>' +
+      '</linearGradient></defs>' +
+      '<path class="spark__area" d="' + area + '"/>' +
+      '<path class="spark__line" d="' + d + '"/>' +
+      '<circle class="spark__dot" cx="' + last[0].toFixed(1) + '" cy="' + last[1].toFixed(1) + '" r="2.6"/>';
+  }
+
+  /* Count a number up on change — the HUD tell that data just landed. */
+  function countTo(node, value, render) {
+    if (!node) return;
+    var from = parseFloat(node.getAttribute('data-v') || '0');
+    var to = value;
+    node.setAttribute('data-v', String(to));
+    if (reduce || from === to) { node.textContent = render(to); return; }
+    var start = performance.now(), dur = 800;
+    (function step(now) {
+      var k = Math.min(1, (now - start) / dur);
+      var eased = 1 - Math.pow(1 - k, 3);
+      node.textContent = render(from + (to - from) * eased);
+      if (k < 1) requestAnimationFrame(step);
+    })(start);
+  }
+
+  function delta(node, v) {
+    if (!node) return;
+    node.textContent = U.pct(v);
+    node.className = 'stat__delta ' + U.dir(v);
+  }
+
+  function feed(node, items, emptyText) {
+    if (!node) return;
+    if (!items || !items.length) {
+      node.innerHTML = '<li class="feed__empty">' + (emptyText || 'Nothing here.') + '</li>';
+      return;
+    }
+    node.innerHTML = items.map(function (it) {
+      var mark = it.kind === 'bad' ? '!' : it.kind === 'warn' ? '?' : '✓';
+      return '<li class="feed__item">' +
+        '<span class="feed__icon ' + (it.kind || 'ok') + '" aria-hidden="true">' + mark + '</span>' +
+        '<span class="feed__body">' +
+          '<span class="feed__text">' + esc(it.text) + '</span>' +
+          '<span class="feed__meta">' + esc(it.when || '') + '</span>' +
+        '</span></li>';
+    }).join('');
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderMetrics(d) {
+    var cur = JARVIS.data.product.currency;
+
+    countTo(el('mMrr'), d.revenue.mrr, function (v) { return U.money(v, cur); });
+    countTo(el('mRev7'), d.revenue.last7, function (v) { return U.money(v, cur); });
+    delta(el('mRevDelta'), d.revenue.delta7);
+    sparkline(el('sparkRev'), d.revenue.series);
+
+    countTo(el('mDl'), d.growth.downloads7, function (v) { return U.commas(v); });
+    delta(el('mDlDelta'), d.growth.delta7);
+    countTo(el('mActive'), d.growth.activeUsers, function (v) { return U.compact(v); });
+    el('mConv').textContent = d.growth.trialConversion + '%';
+    el('mChurn').textContent = d.growth.churn + '%';
+    sparkline(el('sparkDl'), d.growth.series);
+
+    countTo(el('mViews'), d.content.views7, function (v) { return U.compact(v); });
+    delta(el('mViewsDelta'), d.content.delta7);
+    el('mPosts').textContent = d.content.posts7;
+    el('mFollowers').textContent = U.compact(d.content.followers);
+
+    var maxV = Math.max.apply(null, d.content.platforms.map(function (p) { return p.views; })) || 1;
+    var tones = { gold: 'plat__fill--gold', violet: 'plat__fill--violet', jade: 'plat__fill--jade' };
+    el('platforms').innerHTML = d.content.platforms.map(function (p) {
+      return '<li class="plat">' +
+        '<span class="plat__top"><span class="plat__name">' + esc(p.name) + '</span>' +
+        '<span class="plat__val">' + U.compact(p.views) + '</span></span>' +
+        '<span class="plat__track"><span class="plat__fill ' + (tones[p.tone] || '') +
+        '" style="width:' + ((p.views / maxV) * 100).toFixed(1) + '%"></span></span></li>';
+    }).join('');
+
+    el('topHook').textContent = '“' + d.content.top.hook + '”';
+    el('topMeta').textContent = d.content.top.platform + ' · ' +
+      U.compact(d.content.top.views) + ' views · ' + U.compact(d.content.top.saves) + ' saves';
+
+    feed(el('handledFeed'), d.handled, 'Nothing needed handling.');
+    feed(el('needsFeed'), d.needsYou, 'Nothing is waiting on you.');
+
+    el('dataMode').textContent = d.demo ? 'demo data' : 'live';
+    el('dataChip').className = 'chip ' + (d.demo ? 'is-warn' : 'is-live');
+  }
+
+  function renderStore(s) {
+    var open = s.queue.filter(function (q) { return !q.done; });
+    var qNode = el('queueList');
+    if (!open.length) {
+      qNode.innerHTML = '<li class="feed__empty">Queue is empty. Say “queue a post about…”.</li>';
+    } else {
+      qNode.innerHTML = open.slice(0, 6).map(function (q) {
+        return '<li class="q">' +
+          '<span class="q__when">' + esc(q.when) + '</span>' +
+          '<span class="q__text">' + esc(q.text) +
+          '<br><span class="q__tag">' + esc(q.tag) + '</span></span></li>';
+      }).join('');
+    }
+    el('queueCount').textContent = open.length + (open.length === 1 ? ' post' : ' posts');
+
+    var ideas = s.ideas.concat(s.reminders.map(function (r) {
+      return { id: r.id, text: '⏰ ' + r.text, at: r.at };
+    })).sort(function (a, b) { return b.at - a.at; });
+
+    var iNode = el('ideaList');
+    if (!ideas.length) {
+      iNode.innerHTML = '<li class="feed__empty">Say “remember…” and it lands here.</li>';
+    } else {
+      iNode.innerHTML = ideas.slice(0, 7).map(function (i) {
+        return '<li class="feed__item">' +
+          '<span class="feed__icon" aria-hidden="true">•</span>' +
+          '<span class="feed__body"><span class="feed__text">' + esc(i.text) + '</span>' +
+          '<span class="feed__meta">' + U.ago(i.at) + '</span></span></li>';
+      }).join('');
+    }
+    el('ideaCount').textContent = ideas.length;
+  }
+
+  /* Flash a panel when Jarvis is talking about it. */
+  function highlight(name) {
+    var map = {
+      revenue: ['pRevenue'], growth: ['pGrowth'], content: ['pContent', 'pTop'],
+      handled: ['pHandled'], needs: ['pNeeds'], queue: ['pQueue'], ideas: ['pIdeas'],
+      all: ['pRevenue', 'pGrowth', 'pContent', 'pHandled', 'pNeeds']
+    };
+    var ids = map[name];
+    if (!ids) return;
+    ids.forEach(function (id) {
+      var n = el(id);
+      if (!n) return;
+      n.classList.add('is-hot');
+      setTimeout(function () { n.classList.remove('is-hot'); }, 3200);
+    });
+    var first = el(ids[0]);
+    if (first && first.scrollIntoView) {
+      first.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
+    }
+  }
+
+  return {
+    reactor: Reactor,
+    meter: Meter,
+    renderMetrics: renderMetrics,
+    renderStore: renderStore,
+    highlight: highlight,
+    esc: esc,
+    reduce: reduce
+  };
+})();
+
+</script>
+<script>
+/* =========================================================================
+   JARVIS — app
+   -------------------------------------------------------------------------
+   Boot sequence, event wiring, captions. The glue.
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  var U = JARVIS.util;
+  var core = JARVIS.core;
+  var voice = JARVIS.voice;
+
+  function el(id) { return document.getElementById(id); }
+
+  /* ===================================================================== *
+     1. Boot
+   * ===================================================================== */
+  var BOOT_LINES = [
+    '<i>booting</i> J.A.R.V.I.S. <i>v1.0.0</i>',
+    'loading speech interface ............ <s>ok</s>',
+    'loading skill registry .............. <s>' + JARVIS.skills.list.length + ' skills</s>',
+    'mounting reactor .................... <s>ok</s>',
+    'connecting metrics feed ............. <b>DEMO DATA</b>',
+    'restoring local queue and ideas ..... <s>ok</s>',
+    'calibrating audio ................... <s>ok</s>',
+    '<b>all systems nominal.</b>'
+  ];
+
+  function runBoot(done) {
+    var log = el('bootLog');
+    var fill = el('bootFill');
+    var start = el('bootStart');
+    var i = 0;
+
+    /* Respect reduced motion — dump the log and offer the button. */
+    if (core.reduce) {
+      log.innerHTML = BOOT_LINES.map(function (l) { return '<div>' + l + '</div>'; }).join('');
+      fill.style.width = '100%';
+      start.hidden = false;
+      start.focus();
+      return;
+    }
+
+    (function next() {
+      if (i >= BOOT_LINES.length) {
+        fill.style.width = '100%';
+        setTimeout(function () { start.hidden = false; start.focus(); }, 260);
+        return;
+      }
+      var div = document.createElement('div');
+      div.innerHTML = BOOT_LINES[i];
+      log.appendChild(div);
+      i++;
+      fill.style.width = (i / BOOT_LINES.length * 100) + '%';
+      setTimeout(next, 150 + Math.random() * 180);
+    })();
+  }
+
+  /* ===================================================================== *
+     2. Captions
+   * ===================================================================== */
+  var saidNode, heardNode, typeTimer = null;
+
+  function showHeard(text, awake) {
+    if (!text) { heardNode.innerHTML = ''; return; }
+    heardNode.innerHTML = (awake ? '<b>▸</b> ' : '') + core.esc(text);
+  }
+
+  function typeOut(text, done) {
+    clearTimeout(typeTimer);
+    if (!text) { saidNode.innerHTML = ''; if (done) done(); return; }
+    if (core.reduce) { saidNode.textContent = text; if (done) done(); return; }
+    var i = 0;
+    /* Pace the type-out to roughly track the speaking rate so the words
+       land with the voice instead of racing ahead of it. */
+    var perChar = Math.max(16, Math.min(42, 2600 / text.length));
+    (function step() {
+      i += 2;
+      saidNode.innerHTML = core.esc(text.slice(0, i)) +
+        (i < text.length ? '<span class="cursor"></span>' : '');
+      if (i < text.length) typeTimer = setTimeout(step, perChar);
+      else if (done) done();
+    })();
+  }
+
+  /* ===================================================================== *
+     3. Toast
+   * ===================================================================== */
+  var toastTimer = null;
+  function toast(msg, kind) {
+    var t = el('toast');
+    t.textContent = msg;
+    t.className = 'toast is-on' + (kind ? ' is-' + kind : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      t.className = 'toast' + (kind ? ' is-' + kind : '');
+    }, 2600);
+  }
+
+  /* ===================================================================== *
+     4. Reactor state
+   * ===================================================================== */
+  function setState(mode, label, hint) {
+    core.reactor.setMode(mode);
+    el('reactor').className = 'reactor is-' + mode;
+    el('reactorState').textContent = label;
+    if (hint !== undefined) el('reactorHint').innerHTML = hint;
+  }
+
+  function idleHint() {
+    if (!voice.supported) return 'type a command below<br>voice needs chrome or edge';
+    if (voice.state.denied) return 'mic blocked — type below<br>or allow the mic and reload';
+    if (!voice.state.listening) return 'mic off — press <b>M</b> or type below';
+    return 'say <b>“hey jarvis”</b><br>or press <b>space</b>';
+  }
+
+  function refreshIdle() {
+    if (voice.state.speaking || voice.state.awake) return;
+    setState('idle', 'standing by', idleHint());
+  }
+
+  /* ===================================================================== *
+     5. Running a command
+   * ===================================================================== */
+  var busy = false;
+
+  function execute(line) {
+    if (!line) return;
+    showHeard(line, true);
+    JARVIS.store.logAdd('“' + line + '”', 'ok');
+
+    setState('thinking', 'processing', '');
+    busy = true;
+
+    /* A beat of "thinking" — it reads as deliberate, and it gives the
+       speech synthesis voices time to be ready on a cold start. */
+    setTimeout(function () {
+      var out;
+      try {
+        out = JARVIS.skills.run(line);
+      } catch (err) {
+        if (window.console) console.error('[jarvis] skill error:', err);
+        out = { say: 'That command threw an error. Check the console.', unknown: true };
+      }
+      if (!out) { busy = false; refreshIdle(); return; }
+
+      if (out.action === 'refresh') {
+        JARVIS.data.refresh().then(function () {
+          toast('Metrics refreshed');
+        }).catch(function () {
+          toast('Metrics feed unreachable', 'bad');
+        });
+      }
+      if (out.action === 'help') openHelp();
+      if (out.panel) core.highlight(out.panel);
+      if (out.toast) toast(out.toast);
+      if (out.beats) showBeats(out.beats);
+
+      if (!out.say) {
+        /* "stop" and friends: kill the in-flight type-out too, or the last
+           answer keeps writing itself after being told to shut up. */
+        clearTimeout(typeTimer);
+        saidNode.innerHTML = '';
+        busy = false; refreshIdle(); return;
+      }
+
+      setState('speaking', 'speaking', '');
+
+      /* With no mic meter running, fake a little motion in the reactor so
+         it still looks like it's talking. */
+      var fakeLevel = null;
+      if (!core.meter.active()) {
+        fakeLevel = setInterval(function () {
+          core.reactor.setLevel(0.25 + Math.random() * 0.5);
+        }, 110);
+      }
+
+      var pending = 2;
+      var settle = function () {
+        if (--pending > 0) return;
+        if (fakeLevel) { clearInterval(fakeLevel); core.reactor.setLevel(0); }
+        busy = false;
+        refreshIdle();
+      };
+
+      typeOut(out.say, settle);
+      voice.say(out.say, { then: settle });
+    }, 380);
+  }
+
+  function showBeats(beats) {
+    var node = el('beatList');
+    node.innerHTML = beats.map(function (b) {
+      return '<li class="q"><span class="q__when">' + core.esc(b[0].split('  ')[0]) + '</span>' +
+        '<span class="q__text"><b>' + core.esc(b[0].split('  ')[1] || '') + '</b><br>' +
+        core.esc(b[1]) + '</span></li>';
+    }).join('');
+    el('pBeats').hidden = false;
+    core.highlight('ideas');
+  }
+
+  /* ===================================================================== *
+     6. Help overlay
+   * ===================================================================== */
+  function openHelp() { el('help').classList.add('is-open'); el('helpClose').focus(); }
+  function closeHelp() { el('help').classList.remove('is-open'); }
+
+  /* ===================================================================== *
+     7. Wiring
+   * ===================================================================== */
+  function wire() {
+    saidNode = el('capSaid');
+    heardNode = el('capHeard');
+
+    core.reactor.mount(el('reactorCanvas'));
+
+    /* --- data --- */
+    JARVIS.store.seed(JARVIS.data.seedQueue);
+    JARVIS.data.onUpdate(core.renderMetrics);
+    JARVIS.store.onChange(core.renderStore);
+    core.renderMetrics(JARVIS.data.get());
+    core.renderStore(JARVIS.store.get());
+
+    /* --- clock --- */
+    (function tick() {
+      var d = new Date();
+      el('clock').textContent = U.clockTime(d);
+      el('date').textContent = d.toLocaleDateString(undefined, {
+        weekday: 'short', month: 'short', day: 'numeric'
+      });
+      setTimeout(tick, 10000);
+    })();
+
+    /* --- voice events --- */
+    voice.on('wake', function () {
+      if (busy) return;
+      setState('listening', 'listening', 'go ahead');
+      showHeard('', true);
+    });
+
+    voice.on('interim', function (text, awake) {
+      if (awake && !busy) showHeard(text, true);
+    });
+
+    voice.on('command', function (line) { execute(line); });
+
+    voice.on('timeout', function () {
+      if (!busy) { showHeard('', false); refreshIdle(); }
+    });
+
+    voice.on('state', function (s) {
+      var mic = el('mic');
+      mic.classList.toggle('is-live', s.listening && !s.speaking);
+      mic.setAttribute('aria-pressed', String(s.listening));
+      var chip = el('micChip');
+      if (!voice.supported) {
+        chip.className = 'chip is-off';
+        el('micLabel').textContent = 'voice n/a';
+      } else if (s.denied) {
+        chip.className = 'chip is-warn';
+        el('micLabel').textContent = 'mic blocked';
+      } else if (s.listening) {
+        chip.className = 'chip is-live';
+        el('micLabel').textContent = s.awake ? 'listening' : 'wake word';
+      } else {
+        chip.className = 'chip is-off';
+        el('micLabel').textContent = 'mic off';
+      }
+    });
+
+    voice.on('error', function (kind) {
+      if (kind === 'mic-denied') {
+        toast('Mic blocked — type commands instead', 'warn');
+        refreshIdle();
+      } else if (kind === 'network') {
+        toast('Speech service unreachable', 'bad');
+      }
+    });
+
+    /* --- dock --- */
+    el('dockForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = el('dockInput').value.trim();
+      if (!v) return;
+      el('dockInput').value = '';
+      execute(v);
+    });
+
+    el('mic').addEventListener('click', function () {
+      if (!voice.supported) { el('dockInput').focus(); return; }
+      if (voice.state.listening) { voice.stop(); toast('Mic off'); }
+      else { voice.start(); core.meter.start(); toast('Listening for “hey jarvis”'); }
+      refreshIdle();
+    });
+
+    el('btnMute').addEventListener('click', function () {
+      var next = !voice.state.muted;
+      voice.setMuted(next);
+      this.classList.toggle('is-off', next);
+      this.textContent = next ? 'muted' : 'voice';
+      toast(next ? 'Voice muted' : 'Voice on');
+    });
+
+    el('btnHelp').addEventListener('click', openHelp);
+    el('helpClose').addEventListener('click', closeHelp);
+    el('help').addEventListener('click', function (e) {
+      if (e.target === this) closeHelp();
+    });
+
+    el('btnBrief').addEventListener('click', function () { execute('give me the briefing'); });
+
+    /* --- keyboard --- */
+    document.addEventListener('keydown', function (e) {
+      var typing = /input|textarea/i.test(e.target.tagName);
+
+      if (e.key === 'Escape') {
+        if (el('help').classList.contains('is-open')) { closeHelp(); return; }
+        voice.shutUp(); voice.sleep(); busy = false; refreshIdle();
+        return;
+      }
+      if (typing) return;
+
+      if (e.key === '/') { e.preventDefault(); el('dockInput').focus(); }
+      else if (e.key === '?') { e.preventDefault(); openHelp(); }
+      else if (e.key === ' ') {
+        /* Push-to-talk: skip the wake word entirely. */
+        e.preventDefault();
+        if (!voice.supported) { el('dockInput').focus(); return; }
+        if (!voice.state.listening) { voice.start(); core.meter.start(); }
+        voice.forceWake();
+        setState('listening', 'listening', 'go ahead');
+      }
+      else if (e.key === 'm' || e.key === 'M') { el('mic').click(); }
+      else if (e.key === 'b' || e.key === 'B') { execute('give me the briefing'); }
+    });
+
+    /* --- periodic metric refresh --- */
+    setInterval(function () {
+      JARVIS.data.refresh().catch(function () {});
+    }, 5 * 60 * 1000);
+  }
+
+  /* ===================================================================== *
+     8. Go
+   * ===================================================================== */
+  function begin() {
+    document.body.classList.add('is-booted');
+    el('boot').classList.add('is-done');
+
+    /* Everything below needs the user gesture we just got from the button:
+       mic permission and speech synthesis both require it. */
+    if (voice.supported) {
+      voice.start();
+      core.meter.start();
+    }
+    refreshIdle();
+
+    setTimeout(function () {
+      execute(voice.supported ? 'hello' : 'hello');
+    }, 700);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    wire();
+    refreshIdle();
+    /* Bring the panels up behind the boot overlay rather than after it, so
+       the console is populated the moment anyone lands on the page. */
+    setTimeout(function () { document.body.classList.add('is-booted'); }, 60);
+    runBoot();
+    el('bootStart').addEventListener('click', begin);
+  });
+})();
+
+</script>
+</body>
+</html>

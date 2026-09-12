@@ -363,6 +363,9 @@
   document.addEventListener('DOMContentLoaded', function () {
     wire();
     refreshIdle();
+    /* Bring the panels up behind the boot overlay rather than after it, so
+       the console is populated the moment anyone lands on the page. */
+    setTimeout(function () { document.body.classList.add('is-booted'); }, 60);
     runBoot();
     el('bootStart').addEventListener('click', begin);
   });

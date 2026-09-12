@@ -439,7 +439,9 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* --- 9. Boot ------------------------------------------------------------- */
 .boot {
   position: fixed; inset: 0; z-index: 50;
-  background: var(--void);
+  background: rgba(4, 7, 14, .86);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: grid; place-items: center;
   transition: opacity .7s var(--ease), visibility .7s;
 }
