@@ -14,6 +14,7 @@
 import { createServer } from 'node:http';
 import { readFileSync, existsSync } from 'node:fs';
 import { collect } from './sources.js';
+import { think, taskNames } from './brain.js';
 
 /* A tiny .env reader — not worth a dependency for six lines. */
 function loadEnv(file) {
@@ -47,7 +48,9 @@ const server = createServer(async (req, res) => {
   };
 
   if (req.method === 'OPTIONS') { send(204, {}); return; }
-  if (req.method !== 'GET') { send(405, { error: 'GET only' }); return; }
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    send(405, { error: 'GET or POST only' }); return;
+  }
 
   if (env.JARVIS_TOKEN) {
     const sent = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
@@ -55,13 +58,32 @@ const server = createServer(async (req, res) => {
   }
 
   const url = new URL(req.url, 'http://localhost');
+
   if (url.pathname.endsWith('/health')) {
     send(200, {
       ok: true,
       configured: {
         stripe: !!env.STRIPE_SECRET_KEY,
         youtube: !!(env.YOUTUBE_API_KEY && env.YOUTUBE_CHANNEL_ID),
-        sheet: !!env.SHEET_CSV_URL
+        sheet: !!env.SHEET_CSV_URL,
+        agents: !!env.ANTHROPIC_API_KEY
+      },
+      tasks: taskNames()
+    });
+    return;
+  }
+
+  /* Thinking agents — never cached, every call is one the user asked for. */
+  if (url.pathname.endsWith('/agent')) {
+    if (req.method !== 'POST') { send(405, { error: 'POST to /agent' }); return; }
+    let raw = '';
+    req.on('data', (c) => { raw += c; if (raw.length > 1e6) req.destroy(); });
+    req.on('end', async () => {
+      try {
+        const body = JSON.parse(raw || '{}');
+        send(200, await think(env, body.task, body.context || {}, body.topic || ''));
+      } catch (err) {
+        send(400, { error: String(err && err.message || err) });
       }
     });
     return;

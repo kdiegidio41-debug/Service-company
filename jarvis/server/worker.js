@@ -8,6 +8,7 @@
    this calls Stripe and the others. Keys stay here.
    ========================================================================= */
 import { collect } from './sources.js';
+import { think, taskNames } from './brain.js';
 
 /* The page sends its token in a header, so the origin must be allowed to
    send that header. Set ALLOWED_ORIGIN to your installed app's origin. */
@@ -35,7 +36,9 @@ export default {
     const headers = cors(env, request);
 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
-    if (request.method !== 'GET') return json({ error: 'GET only' }, 405, headers);
+    if (request.method !== 'GET' && request.method !== 'POST') {
+      return json({ error: 'GET or POST only' }, 405, headers);
+    }
 
     /* A bearer token, so this endpoint isn't a free read of your business
        for anyone who finds the URL. Set JARVIS_TOKEN to a long random
@@ -48,15 +51,32 @@ export default {
     }
 
     const url = new URL(request.url);
+
     if (url.pathname.endsWith('/health')) {
       return json({
         ok: true,
         configured: {
           stripe: !!env.STRIPE_SECRET_KEY,
           youtube: !!(env.YOUTUBE_API_KEY && env.YOUTUBE_CHANNEL_ID),
-          sheet: !!env.SHEET_CSV_URL
-        }
+          sheet: !!env.SHEET_CSV_URL,
+          agents: !!env.ANTHROPIC_API_KEY
+        },
+        tasks: taskNames()
       }, 200, headers);
+    }
+
+    /* Thinking agents. Never cached — the whole point is a fresh read, and
+       caching a paid call that the user explicitly asked for would be worse
+       than the cost it saves. */
+    if (url.pathname.endsWith('/agent')) {
+      if (request.method !== 'POST') return json({ error: 'POST to /agent' }, 405, headers);
+      try {
+        const body = await request.json();
+        const out = await think(env, body.task, body.context || {}, body.topic || '');
+        return json(out, 200, headers);
+      } catch (err) {
+        return json({ error: String(err && err.message || err) }, 400, headers);
+      }
     }
 
     /* Upstream APIs are rate limited and slow; the HUD polls every five

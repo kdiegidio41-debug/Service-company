@@ -128,6 +128,54 @@ word nine times.
 
 ---
 
+## Agents
+
+Two kinds, and the difference is the whole design.
+
+### Watchers — free, local, running already
+
+They read your own logged numbers in the browser. No key, no network, no cost. They run
+every time you open Jarvis, and on **"run the agents"**.
+
+| Watcher | What it says |
+| --- | --- |
+| **Logging cadence** | Nothing logged for N days — every figure on screen is N days stale |
+| **Revenue watch** | A week-over-week fall over 25%, only when there's a prior week to compare |
+| **Dry spell** | Consecutive zero-revenue days, only for someone who has taken money before |
+| **Queue depth** | The posting queue is empty or down to one |
+| **Posting gap** | No post recorded in 5+ days |
+| **Stale items** | Your own flags, once they've sat for a week |
+| **Monthly pace** | Projects the month from the last 7 days against your goal (set one first) |
+
+Two rules they follow. **A watcher never states anything it can't derive from your data** —
+with an empty store they stay quiet rather than inventing problems. And **each one owns its
+findings**: when the condition stops holding, the finding disappears by itself. A revenue
+drop clears when revenue recovers; you never dismiss it. Flags you raised by hand are never
+touched.
+
+Toggle any of them in **D → Agents**. Switching one off retires its findings too.
+
+### Thinking agents — real reasoning, real cost
+
+These call Claude through the proxy. They need `ANTHROPIC_API_KEY` set on it, and they
+**cost money per run**, so nothing triggers them but you — no timer, no boot, no polling.
+
+| Say | What it does |
+| --- | --- |
+| *What should I focus on* | Reads the week and gives three concrete actions, ordered by impact, each naming the metric it moves |
+| *Give me a proper briefing* | The briefing in natural prose instead of the template |
+| *Give me hooks about …* | Hooks written against your actual top performer |
+| *Write a script about …* | An outline using your real numbers as the proof beat |
+
+Hooks and scripts already work without a key — they fall back to templates. Connect a proxy
+and the same commands get the model instead.
+
+Every task is handed only your figures, and its system prompt forbids inventing any. A
+zero is reported as "nothing logged", never dressed up as a trend. Model defaults to
+`claude-opus-5`; override with `AGENT_MODEL` on the proxy.
+
+---
+
 ## Connecting real sources
 
 Logging by hand works forever. When it becomes the annoying part, there's a metrics proxy
@@ -144,7 +192,7 @@ The keys live on the proxy, never in the page — a static page can't hold a sec
 
 **How it merges:** a source that answers wins; a source that doesn't is ignored rather than
 treated as zero. So connecting Stripe never blanks your view counts. Your flags, handled
-items, queue and notes are never touched by any feed — no API produces those.
+items, queue and notes are never touched by any feed.
 
 Full setup, including where to click for each key: **[`server/README.md`](server/README.md)**.
 
@@ -188,6 +236,8 @@ jarvis/
         ├── store.js        Your data. localStorage. ← start here
         ├── data.js         Derives the metrics from the store
         ├── voice.js        Wake word, recognition lifecycle, speech
+        ├── brain.js        Calls the thinking agents on the proxy
+        ├── agents.js       The watchers ← add your own here
         ├── skills.js       The command registry ← and here
         ├── core.js         Reactor canvas, mic meter, panel rendering
         └── app.js          Boot, wiring, settings, captions

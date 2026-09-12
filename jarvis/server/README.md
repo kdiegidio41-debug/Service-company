@@ -93,6 +93,26 @@ date,revenue,downloads,tiktok,instagram,youtube,x
 without submitting an app for review, which takes weeks and is refused for personal
 projects. Pasting a row a day into a sheet takes ten seconds and gives you every chart.
 
+### Anthropic — the thinking agents
+
+| | |
+| --- | --- |
+| Set | `ANTHROPIC_API_KEY`, optionally `AGENT_MODEL` |
+| Get it | [console.anthropic.com](https://console.anthropic.com) → API keys |
+| Gives you | `POST /agent` — strategy, prose briefings, hooks and scripts written against your real figures |
+
+**This one costs money per call.** Nothing triggers it automatically — not a timer, not the
+page load, not the metrics refresh. Only a command you give. Responses are never cached,
+because caching a paid call the user just asked for is worse than the cost it saves.
+
+Model defaults to `claude-opus-5`. Set `AGENT_MODEL` to something cheaper if you'd rather;
+that's your call, not a default I'll make for you. Each task sets its own effort and token
+ceiling in `brain.js` — the strategist runs at high effort, the briefing at low.
+
+Every task's system prompt forbids inventing figures: it works only from the JSON it's
+handed and is told to say "nothing logged" rather than imply a trend. If the model declines
+a request, the proxy surfaces that as an error rather than returning empty text.
+
 ### Figures with no API worth calling
 
 `ACTIVE_USERS`, `TRIAL_CONVERSION`, `CHURN` — set them as plain vars, or just leave them
@@ -127,7 +147,8 @@ Press **Disconnect** and everything falls back to your local data, untouched.
 - Responses are cached about four minutes, so many open tabs are still one round of
   upstream calls. Add `?fresh=1` to bypass.
 
-`GET /health` reports which sources are configured without revealing any values — the
+`GET /health` reports which sources are configured (including `agents`) and lists the
+available tasks, without revealing any values — the
 quickest way to check a deploy landed.
 
 ---
@@ -154,7 +175,8 @@ know rather than `0`, and keep the day keys as `YYYY-MM-DD` local dates.
 
 ```
 server/
-├── sources.js          The adapters and the shaping. Shared. ← add sources here
+├── sources.js          The metric adapters and shaping. Shared. ← add sources here
+├── brain.js            The thinking agents: prompts, model call, guardrails
 ├── worker.js           Cloudflare entry: auth, CORS, caching
 ├── local.js            Node entry: same, for running on your machine
 ├── wrangler.toml       Cloudflare config (no secrets)

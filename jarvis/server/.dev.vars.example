@@ -23,6 +23,12 @@ YOUTUBE_CHANNEL_ID=
 # Header row must be:  date,revenue,downloads,tiktok,instagram,youtube,x
 SHEET_CSV_URL=
 
+# --- Anthropic: the thinking agents (COSTS MONEY PER CALL) -----------------
+# console.anthropic.com -> API keys. Only ever called by a command you give.
+ANTHROPIC_API_KEY=
+# Optional. Defaults to claude-opus-5.
+AGENT_MODEL=
+
 # --- Figures with no API worth calling -------------------------------------
 ACTIVE_USERS=0
 TRIAL_CONVERSION=0

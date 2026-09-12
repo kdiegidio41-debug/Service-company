@@ -17,6 +17,8 @@ var SHELL = [
   './assets/js/store.js',
   './assets/js/data.js',
   './assets/js/voice.js',
+  './assets/js/brain.js',
+  './assets/js/agents.js',
   './assets/js/skills.js',
   './assets/js/core.js',
   './assets/js/app.js',

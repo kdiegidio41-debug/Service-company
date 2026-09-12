@@ -704,3 +704,41 @@ ul { margin: 0; padding: 0; list-style: none; }
 .set__status .ok { color: var(--jade); }
 .set__status .off { color: var(--text-faint); }
 .set__status .bad { color: var(--rose); word-break: break-word; }
+
+/* --- 16. Agent roster ---------------------------------------------------- */
+.agentlist { display: flex; flex-direction: column; gap: 1px; }
+.agentlist li {
+  display: flex; align-items: flex-start; gap: 11px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(94, 214, 255, .07);
+}
+.agentlist li:last-child { border-bottom: 0; }
+.agent__body { min-width: 0; flex: 1 1 auto; display: block; }
+.agent__name {
+  display: block;
+  font-family: var(--font-hud);
+  font-size: .66rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--text);
+}
+.agent__desc { display: block; font-size: .74rem; line-height: 1.45; color: var(--text-dim); margin-top: 2px; }
+.agent__hits {
+  display: block;
+  font-family: var(--font-hud); font-size: .58rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gold); margin-top: 3px;
+}
+.agent__toggle {
+  flex: none; margin-top: 2px;
+  width: 38px; height: 21px; border-radius: 999px;
+  background: rgba(94, 214, 255, .14);
+  border: 1px solid var(--panel-edge);
+  position: relative; cursor: pointer;
+  transition: background .22s var(--ease), border-color .22s var(--ease);
+}
+.agent__toggle::after {
+  content: ""; position: absolute; top: 2px; left: 2px;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: var(--text-faint);
+  transition: transform .22s var(--ease), background .22s var(--ease);
+}
+.agent__toggle[aria-pressed="true"] { background: rgba(94, 214, 255, .3); border-color: var(--arc); }
+.agent__toggle[aria-pressed="true"]::after { transform: translateX(17px); background: var(--arc); }

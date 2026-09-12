@@ -157,6 +157,43 @@
       if (out.toast) toast(out.toast);
       if (out.beats) showBeats(out.beats);
 
+      /* A skill that defers to a model. The round trip takes seconds, so
+         hold the thinking state and say what's happening first. */
+      if (out.thinking) {
+        if (out.panel) core.highlight(out.panel);
+        setState('thinking', 'thinking', 'asking the model');
+        typeOut('');
+        showHeard(line, true);
+
+        JARVIS.brain.ask(out.thinking, out.topic).then(function (res) {
+          if (!res.text) throw new Error('the model returned nothing');
+          /* Anything worth speaking is worth keeping. */
+          if (out.thinking === 'hooks' || out.thinking === 'script') {
+            res.text.split('\n').map(function (l) { return l.trim(); })
+              .filter(Boolean).slice(0, 8)
+              .forEach(function (l) { JARVIS.store.ideaAdd(l); });
+            toast('Saved to ideas');
+          }
+          setState('speaking', 'speaking', '');
+          var pending2 = 2;
+          var settle2 = function () {
+            if (--pending2 > 0) return;
+            busy = false; refreshIdle();
+          };
+          typeOut(res.text, settle2);
+          voice.say(res.text, { then: settle2 });
+        }).catch(function (err) {
+          var msg = 'The thinking agent failed. ' + err.message;
+          setState('speaking', 'speaking', '');
+          var pending3 = 2;
+          var settle3 = function () { if (--pending3 > 0) return; busy = false; refreshIdle(); };
+          typeOut(msg, settle3);
+          voice.say(msg, { then: settle3 });
+          toast('Agent failed', 'bad');
+        });
+        return;
+      }
+
       if (!out.say) {
         /* "stop" and friends: kill the in-flight type-out too, or the last
            answer keeps writing itself after being told to shut up. */
@@ -226,6 +263,7 @@
     el('setFollowers').value = p.followers || '';
     el('setConv').value = p.trialConversion || '';
     el('setChurn').value = p.churn || '';
+    el('setGoal').value = p.goalMonthly || '';
 
     if (!el('setDate').value) el('setDate').value = JARVIS.store.today();
     loadDay();
@@ -240,7 +278,35 @@
     el('setToken').value = feed.token || '';
     renderFeedStatus();
 
+    renderAgents();
+
     el('setJson').value = JARVIS.store.exportJSON();
+  }
+
+  function renderAgents() {
+    var findings = JARVIS.store.needsYou();
+    el('agentList').innerHTML = JARVIS.agents.list().map(function (a) {
+      var hits = findings.filter(function (n) { return n.by === a.id; }).length;
+      return '<li>' +
+        '<span class="agent__body">' +
+          '<span class="agent__name">' + core.esc(a.name) + '</span>' +
+          '<span class="agent__desc">' + core.esc(a.desc) + '</span>' +
+          (hits ? '<span class="agent__hits">' + hits + ' open finding' +
+                  (hits === 1 ? '' : 's') + '</span>' : '') +
+        '</span>' +
+        '<button class="agent__toggle" data-agent="' + core.esc(a.id) + '" ' +
+          'aria-pressed="' + (a.enabled ? 'true' : 'false') + '" ' +
+          'aria-label="' + core.esc(a.name) + '"></button>' +
+      '</li>';
+    }).join('');
+
+    var run = JARVIS.agents.lastRun();
+    el('agentTag').textContent = run ? 'last run ' + JARVIS.util.ago(run) : '';
+    el('agentTag').className = 'set__tag is-on';
+
+    el('brainStatus').innerHTML = JARVIS.brain.available()
+      ? '<ul><li><b>status</b><span class="ok">proxy connected — ask for a strategy</span></li></ul>'
+      : '<ul><li><b>status</b><span class="off">no proxy connected</span></li></ul>';
   }
 
   /* Show which sources actually answered — "connected" on its own tells you
@@ -316,7 +382,8 @@
       activeUsers: Math.round(num('setActive')),
       followers: Math.round(num('setFollowers')),
       trialConversion: num('setConv'),
-      churn: num('setChurn')
+      churn: num('setChurn'),
+      goalMonthly: num('setGoal')
     });
   }
 
@@ -464,7 +531,7 @@
     });
 
     ['setName', 'setOwner', 'setCurrency', 'setMrr', 'setActive',
-     'setFollowers', 'setConv', 'setChurn'].forEach(function (id2) {
+     'setFollowers', 'setConv', 'setChurn', 'setGoal'].forEach(function (id2) {
       el(id2).addEventListener('change', saveProfile);
     });
 
@@ -500,6 +567,22 @@
     el('setTestVoice').addEventListener('click', function () {
       JARVIS.voice.say('Revenue over the last seven days is up eleven percent. ' +
                        'Two items need your attention.');
+    });
+
+    el('agentList').addEventListener('click', function (e) {
+      var btn = e.target.closest('.agent__toggle');
+      if (!btn) return;
+      var on = btn.getAttribute('aria-pressed') !== 'true';
+      JARVIS.store.setAgentEnabled(btn.getAttribute('data-agent'), on);
+      JARVIS.agents.runAll();
+      renderAgents();
+      toast(on ? 'Watcher on' : 'Watcher off');
+    });
+
+    el('setRunAgents').addEventListener('click', function () {
+      var report = JARVIS.agents.runAll();
+      renderAgents();
+      toast(JARVIS.agents.describe(report).replace(/^Agents ran\. /, '') || 'All clear');
     });
 
     el('setConnect').addEventListener('click', function () { connectFeed(true); });
@@ -602,9 +685,15 @@
     showMicNote();
     refreshIdle();
 
-    setTimeout(function () {
-      execute(voice.supported ? 'hello' : 'hello');
-    }, 700);
+    /* Watchers are local and cost nothing, so run them on open. The
+       thinking agents never auto-run — those cost money per call. */
+    try {
+      JARVIS.agents.runAll();
+    } catch (e) {
+      if (window.console) console.warn('[jarvis] agents failed:', e.message);
+    }
+
+    setTimeout(function () { execute('hello'); }, 700);
   }
 
   /* Service worker: what makes this installable and offline-capable.

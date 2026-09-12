@@ -291,6 +291,8 @@
           <input type="number" id="setConv" min="0" max="100" step="0.1" placeholder="0"></label>
         <label class="set__field"><span>Churn %</span>
           <input type="number" id="setChurn" min="0" max="100" step="0.1" placeholder="0"></label>
+        <label class="set__field"><span>Monthly goal <i>lets the pace agent work</i></span>
+          <input type="number" id="setGoal" min="0" step="1" placeholder="0"></label>
       </div>
     </div>
 
@@ -354,6 +356,24 @@
         <button class="set__btn" id="setDisconnect">Disconnect</button>
       </div>
       <div class="set__status" id="feedStatus"></div>
+    </div>
+
+    <div class="set">
+      <h4 class="set__head">Agents <i class="set__tag" id="agentTag"></i></h4>
+      <p class="set__note">
+        <b>Watchers</b> run here, over your own logged numbers. No key, no network, no cost —
+        they run every time you open Jarvis. Each one clears its own findings when they stop
+        being true. Say <b>“run the agents”</b> to sweep on demand.
+      </p>
+      <ul class="agentlist" id="agentList"></ul>
+      <button class="set__btn" id="setRunAgents">Run watchers now</button>
+
+      <p class="set__note" style="margin-top:18px">
+        <b>Thinking agents</b> call Claude through the proxy and <b>cost money per run</b>, so
+        nothing triggers them but you. Set <code>ANTHROPIC_API_KEY</code> on the proxy, then
+        ask for a strategy, hooks, or a script.
+      </p>
+      <div class="set__status" id="brainStatus"></div>
     </div>
 
     <div class="set">
@@ -473,6 +493,8 @@
 <script src="assets/js/store.js"></script>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/voice.js"></script>
+<script src="assets/js/brain.js"></script>
+<script src="assets/js/agents.js"></script>
 <script src="assets/js/skills.js"></script>
 <script src="assets/js/core.js"></script>
 <script src="assets/js/app.js"></script>

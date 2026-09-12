@@ -36,7 +36,8 @@ JARVIS.store = (function () {
         followers: 0,
         activeUsers: 0,
         trialConversion: 0,
-        churn: 0
+        churn: 0,
+        goalMonthly: 0
       },
       entries: {},
       posts: [],
@@ -47,7 +48,9 @@ JARVIS.store = (function () {
       reminders: [],
       log: [],
       voiceName: null,
-      feed: { endpoint: '', token: '' }
+      feed: { endpoint: '', token: '' },
+      agentsOff: {},
+      agentsRunAt: 0
     };
   }
 
@@ -260,6 +263,55 @@ JARVIS.store = (function () {
       save();
     },
     feed: function () { return state.feed || { endpoint: '', token: '' }; },
+
+    /* --- agents ---------------------------------------------------------
+       An agent owns its findings. Re-running replaces that agent's set, so
+       a finding that no longer holds disappears by itself — "revenue is
+       down 30%" should clear when revenue recovers, not sit there forever.
+       Items you raised by hand are untouched: they have no `by`. */
+    syncAgentFindings: function (agentId, findings) {
+      var mine = state.needsYou.filter(function (n) { return n.by === agentId; });
+      var seen = {};
+      var added = 0;
+
+      findings.forEach(function (f) {
+        seen[f.key] = true;
+        var existing = mine.filter(function (n) { return n.key === f.key; })[0];
+        if (existing) {
+          existing.text = f.text;
+          existing.kind = f.kind || 'warn';
+        } else {
+          state.needsYou.unshift({
+            id: id(), text: f.text, kind: f.kind || 'warn',
+            at: Date.now(), due: '', by: agentId, key: f.key
+          });
+          added++;
+        }
+      });
+
+      var cleared = mine.filter(function (n) { return !seen[n.key]; }).length;
+      state.needsYou = state.needsYou.filter(function (n) {
+        return n.by !== agentId || seen[n.key];
+      });
+
+      save();
+      return { added: added, cleared: cleared, total: findings.length };
+    },
+    agentEnabled: function (agentId) { return !state.agentsOff[agentId]; },
+    setAgentEnabled: function (agentId, on) {
+      if (on) delete state.agentsOff[agentId];
+      else {
+        state.agentsOff[agentId] = true;
+        /* Switching an agent off retires its findings too. */
+        state.needsYou = state.needsYou.filter(function (n) { return n.by !== agentId; });
+      }
+      save();
+    },
+    agentsRunAt: function (ts) {
+      if (ts === undefined) return state.agentsRunAt || 0;
+      state.agentsRunAt = ts;
+      save();
+    },
 
     /* --- your data, portable -------------------------------------------- */
     exportJSON: function () { return JSON.stringify(state, null, 2); },

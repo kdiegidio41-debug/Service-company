@@ -152,6 +152,63 @@ JARVIS.skills = (function () {
       run: function () { return { say: 'Recalculating.', action: 'refresh' }; }
     },
 
+    /* — agents ————————————————————————————————— */
+    {
+      id: 'runAgents',
+      match: /\b(run the agents?|run agents?|check everything|scan|sweep|run the watchers?|any issues)\b/i,
+      run: function () {
+        var report = JARVIS.agents.runAll();
+        return {
+          say: JARVIS.agents.describe(report),
+          panel: 'needs',
+          toast: report.added ? report.added + ' new' : 'All clear'
+        };
+      }
+    },
+    {
+      id: 'agentList',
+      match: /\b(what agents|which agents|list agents|your agents|who('s| is) watching)\b/i,
+      run: function () {
+        var on = JARVIS.agents.list().filter(function (a) { return a.enabled; });
+        return {
+          say: on.length + ' watchers are on: ' +
+               on.map(function (a) { return a.name; }).join(', ') +
+               '. They run over your own logged data — no model, no cost.' +
+               (JARVIS.brain.available()
+                 ? ' The thinking agents are connected too: ask me to strategise.'
+                 : ' Connect a proxy to add the thinking agents.'),
+          action: 'settings'
+        };
+      }
+    },
+    {
+      id: 'strategist',
+      match: /\b(strateg(y|ise|ize)|what should i (do|focus|work on)|advise me|the plan|game ?plan|what('s| is) the play)\b/i,
+      run: function () {
+        if (!JARVIS.brain.available()) {
+          return {
+            say: 'The strategist needs a connected proxy with an Anthropic key. ' +
+                 'The watchers work without one — say, run the agents.',
+            action: 'settings'
+          };
+        }
+        if (JARVIS.data.isEmpty()) {
+          return { say: 'There is nothing logged for it to reason about yet.' };
+        }
+        return { thinking: 'strategist', panel: 'all' };
+      }
+    },
+    {
+      id: 'smartBriefing',
+      match: /\b(proper briefing|real briefing|full briefing|brief me properly)\b/i,
+      run: function () {
+        if (!JARVIS.brain.available()) {
+          return { say: 'That needs a connected proxy. Say, brief me, for the standard briefing.' };
+        }
+        return { thinking: 'briefing', panel: 'all' };
+      }
+    },
+
     /* — logging: this is how data gets in ——————————————— */
     {
       id: 'logRevenue',
@@ -375,6 +432,9 @@ JARVIS.skills = (function () {
         var topic = U.clean(line.replace(/^.*?\b(hooks?|ideas?|titles?|angles?)\b/i, '')
                                 .replace(/^\s*(for|about|on)\s+/i, ''));
         if (!topic) return { say: 'What topic?' };
+        /* A connected proxy writes these against your actual top performer;
+           without one they come from templates. */
+        if (JARVIS.brain.available()) return { thinking: 'hooks', topic: topic, panel: 'ideas' };
         var hooks = hooksFor(topic);
         hooks.forEach(function (h) { S.ideaAdd(h); });
         return {
@@ -391,6 +451,7 @@ JARVIS.skills = (function () {
         var topic = U.clean(line.replace(/^.*?\b(script|outline|structure|storyboard|beats)\b/i, '')
                                 .replace(/^\s*(for|about|on)\s+/i, ''));
         if (!topic) topic = 'your next video';
+        if (JARVIS.brain.available()) return { thinking: 'script', topic: topic, panel: 'ideas' };
         var hook = hooksFor(topic)[0];
         S.ideaAdd('SCRIPT — ' + topic + ' — open with: ' + hook);
         return {

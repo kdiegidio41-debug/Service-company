@@ -8,6 +8,9 @@
     "start": "node local.js",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "test": "node test.mjs"
+    "test": "node test.mjs && node test-brain.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.125.0"
   }
 }
