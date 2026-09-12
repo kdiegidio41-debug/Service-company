@@ -27,6 +27,25 @@ except ImportError:
 DEFAULT_URL = "https://everglowlighting.com/quote.html?utm_source=yard_sign&utm_medium=print"
 DEFAULT_OUT = "assets/print/qr-yard-sign.svg"
 
+# A text-message QR needs no website at all: the scan opens the phone's
+# messaging app with the number and body already filled in.
+#
+# The two spellings below are NOT interchangeable, and this is the whole
+# reason both exist. "sms:" is a real URI scheme, so the native iPhone and
+# Android camera apps recognise it without a QR app installed. "SMSTO:" is
+# the older ZXing convention that standalone scanner apps handle best but
+# some native cameras ignore. Which one wins depends on the phone, so test
+# both on real hardware before printing 50 signs -- see docs/YARD_SIGN.md.
+SMS_NUMBER = "+12678530058"
+SMS_BODY = "Hi Everglow! I'd like a quote for Christmas lights. My address is: "
+
+
+def sms_payload(number: str, body: str, style: str) -> str:
+    from urllib.parse import quote
+    if style == "sms":
+        return f"sms:{number}?body={quote(body)}"
+    return f"SMSTO:{number}:{body}"
+
 
 def build(url: str, out: pathlib.Path, error: str, border: int) -> None:
     qr = segno.make(url, error=error)
@@ -56,8 +75,13 @@ def main() -> None:
     p.add_argument("--out", default=DEFAULT_OUT, type=pathlib.Path, help="output SVG path")
     p.add_argument("--error", default="m", choices=["l", "m", "q", "h"], help="error correction level")
     p.add_argument("--border", default=4, type=int, help="quiet zone in modules (4 is the spec minimum)")
+    p.add_argument("--sms", choices=["sms", "smsto"],
+                   help="encode a prefilled text message instead of a URL")
+    p.add_argument("--number", default=SMS_NUMBER, help="destination number for --sms")
+    p.add_argument("--message", default=SMS_BODY, help="prefilled message body for --sms")
     a = p.parse_args()
-    build(a.url, a.out, a.error, a.border)
+    url = sms_payload(a.number, a.message, a.sms) if a.sms else a.url
+    build(url, a.out, a.error, a.border)
 
 
 if __name__ == "__main__":
