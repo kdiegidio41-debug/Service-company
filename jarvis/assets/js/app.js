@@ -20,8 +20,8 @@
     'loading speech interface ............ <s>ok</s>',
     'loading skill registry .............. <s>' + JARVIS.skills.list.length + ' skills</s>',
     'mounting reactor .................... <s>ok</s>',
-    'connecting metrics feed ............. <b>DEMO DATA</b>',
-    'restoring local queue and ideas ..... <s>ok</s>',
+    'opening local ledger ............... <s>ok</s>',
+    'restoring queue, ideas and notes .... <s>ok</s>',
     'calibrating audio ................... <s>ok</s>',
     '<b>all systems nominal.</b>'
   ];
@@ -108,10 +108,10 @@
   }
 
   function idleHint() {
-    if (!voice.supported) return 'type a command below<br>voice needs chrome or edge';
-    if (voice.state.denied) return 'mic blocked — type below<br>or allow the mic and reload';
+    var d = voice.diagnose();
+    if (!d.ok) return core.esc(d.short) + ' — type below<br>press <b>?</b> for why';
     if (!voice.state.listening) return 'mic off — press <b>M</b> or type below';
-    return 'say <b>“hey jarvis”</b><br>or press <b>space</b>';
+    return 'say <b>\u201Chey jarvis\u201D</b><br>or press <b>space</b>';
   }
 
   function refreshIdle() {
@@ -152,6 +152,7 @@
         });
       }
       if (out.action === 'help') openHelp();
+      if (out.action === 'settings') openSettings();
       if (out.panel) core.highlight(out.panel);
       if (out.toast) toast(out.toast);
       if (out.beats) showBeats(out.beats);
@@ -200,10 +201,100 @@
   }
 
   /* ===================================================================== *
-     6. Help overlay
+     6. Overlays
    * ===================================================================== */
   function openHelp() { el('help').classList.add('is-open'); el('helpClose').focus(); }
   function closeHelp() { el('help').classList.remove('is-open'); }
+
+  function openSettings() {
+    fillSettings();
+    el('settings').classList.add('is-open');
+    el('setName').focus();
+  }
+  function closeSettings() { el('settings').classList.remove('is-open'); }
+
+  /* Load the store into the form every time it opens, so it always shows
+     what is actually saved rather than a stale snapshot. */
+  function fillSettings() {
+    var st = JARVIS.store.get();
+    var p = st.profile;
+    el('setName').value = p.name === 'the app' ? '' : p.name;
+    el('setOwner').value = p.owner || '';
+    el('setCurrency').value = p.currency || '$';
+    el('setMrr').value = p.mrr || '';
+    el('setActive').value = p.activeUsers || '';
+    el('setFollowers').value = p.followers || '';
+    el('setConv').value = p.trialConversion || '';
+    el('setChurn').value = p.churn || '';
+
+    if (!el('setDate').value) el('setDate').value = JARVIS.store.today();
+    loadDay();
+
+    fillVoices();
+    var t = JARVIS.voice.getTune();
+    el('setRate').value = t.rate;   el('setRateVal').textContent = t.rate.toFixed(2);
+    el('setPitch').value = t.pitch; el('setPitchVal').textContent = t.pitch.toFixed(2);
+
+    el('setJson').value = JARVIS.store.exportJSON();
+  }
+
+  /* Show whatever is already recorded for the chosen date. */
+  function loadDay() {
+    var e = JARVIS.store.entry(el('setDate').value) || { revenue: 0, downloads: 0, views: {} };
+    el('setRev').value = e.revenue || '';
+    el('setDl').value = e.downloads || '';
+    JARVIS.store.PLATFORMS.forEach(function (name) {
+      var node = el('setV' + name);
+      if (node) node.value = (e.views && e.views[name]) || '';
+    });
+  }
+
+  function num(id2) {
+    var v = parseFloat(el(id2).value);
+    return isNaN(v) ? 0 : v;
+  }
+
+  function saveProfile() {
+    JARVIS.store.setProfile({
+      name: el('setName').value.trim() || 'the app',
+      owner: el('setOwner').value.trim(),
+      currency: el('setCurrency').value.trim() || '$',
+      mrr: num('setMrr'),
+      activeUsers: Math.round(num('setActive')),
+      followers: Math.round(num('setFollowers')),
+      trialConversion: num('setConv'),
+      churn: num('setChurn')
+    });
+  }
+
+  function fillVoices() {
+    var sel = el('setVoice');
+    var list = JARVIS.voice.voices();
+    if (!list.length) {
+      sel.innerHTML = '<option>system default</option>';
+      return;
+    }
+    var currentName = JARVIS.voice.voiceName();
+    sel.innerHTML = list.map(function (v) {
+      return '<option value="' + core.esc(v.name) + '"' +
+             (v.name === currentName ? ' selected' : '') + '>' +
+             core.esc(v.name) + '</option>';
+    }).join('');
+  }
+
+  /* ===================================================================== *
+     6b. Microphone status
+   * ===================================================================== */
+  var micNoteDismissed = false;
+
+  function showMicNote() {
+    var d = JARVIS.voice.diagnose();
+    var note = el('micNote');
+    if (d.ok || micNoteDismissed) { note.classList.remove('is-on'); return; }
+    el('micNoteTitle').textContent = d.code === 'unsupported' ? 'Voice unavailable' : 'Microphone off';
+    el('micNoteText').innerHTML = core.esc(d.message) + ' <b>' + core.esc(d.fix) + '</b>';
+    note.classList.add('is-on');
+  }
 
   /* ===================================================================== *
      7. Wiring
@@ -215,7 +306,6 @@
     core.reactor.mount(el('reactorCanvas'));
 
     /* --- data --- */
-    JARVIS.store.seed(JARVIS.data.seedQueue);
     JARVIS.data.onUpdate(core.renderMetrics);
     JARVIS.store.onChange(core.renderStore);
     core.renderMetrics(JARVIS.data.get());
@@ -230,6 +320,10 @@
       });
       setTimeout(tick, 10000);
     })();
+
+    /* --- voice: restore the saved choice --- */
+    var savedVoice = JARVIS.store.get().voiceName;
+    if (savedVoice) voice.setVoice(savedVoice);
 
     /* --- voice events --- */
     voice.on('wake', function () {
@@ -253,12 +347,10 @@
       mic.classList.toggle('is-live', s.listening && !s.speaking);
       mic.setAttribute('aria-pressed', String(s.listening));
       var chip = el('micChip');
-      if (!voice.supported) {
-        chip.className = 'chip is-off';
-        el('micLabel').textContent = 'voice n/a';
-      } else if (s.denied) {
-        chip.className = 'chip is-warn';
-        el('micLabel').textContent = 'mic blocked';
+      var diag = voice.diagnose();
+      if (!diag.ok && !s.listening) {
+        chip.className = 'chip ' + (diag.code === 'unsupported' ? 'is-off' : 'is-warn');
+        el('micLabel').textContent = diag.short;
       } else if (s.listening) {
         chip.className = 'chip is-live';
         el('micLabel').textContent = s.awake ? 'listening' : 'wake word';
@@ -268,13 +360,11 @@
       }
     });
 
-    voice.on('error', function (kind) {
-      if (kind === 'mic-denied') {
-        toast('Mic blocked — type commands instead', 'warn');
-        refreshIdle();
-      } else if (kind === 'network') {
-        toast('Speech service unreachable', 'bad');
-      }
+    voice.on('error', function (d) {
+      micNoteDismissed = false;
+      showMicNote();
+      toast(d.short || 'Microphone problem', d.code === 'network' ? 'bad' : 'warn');
+      refreshIdle();
     });
 
     /* --- dock --- */
@@ -307,6 +397,91 @@
       if (e.target === this) closeHelp();
     });
 
+    /* --- settings --- */
+    el('btnData').addEventListener('click', openSettings);
+    el('setClose').addEventListener('click', function () { saveProfile(); closeSettings(); });
+    el('settings').addEventListener('click', function (e) {
+      if (e.target === this) { saveProfile(); closeSettings(); }
+    });
+
+    ['setName', 'setOwner', 'setCurrency', 'setMrr', 'setActive',
+     'setFollowers', 'setConv', 'setChurn'].forEach(function (id2) {
+      el(id2).addEventListener('change', saveProfile);
+    });
+
+    el('setDate').addEventListener('change', loadDay);
+
+    el('setSaveDay').addEventListener('click', function () {
+      var views = {};
+      JARVIS.store.PLATFORMS.forEach(function (name) {
+        var node = el('setV' + name);
+        if (node) views[name] = Math.round(num('setV' + name));
+      });
+      JARVIS.store.setEntry(el('setDate').value, {
+        revenue: num('setRev'),
+        downloads: Math.round(num('setDl')),
+        views: views
+      });
+      el('setJson').value = JARVIS.store.exportJSON();
+      toast('Saved ' + el('setDate').value);
+    });
+
+    el('setVoice').addEventListener('change', function () {
+      JARVIS.voice.setVoice(this.value);
+      JARVIS.store.setVoice(this.value);
+    });
+    el('setRate').addEventListener('input', function () {
+      JARVIS.voice.tune({ rate: parseFloat(this.value) });
+      el('setRateVal').textContent = parseFloat(this.value).toFixed(2);
+    });
+    el('setPitch').addEventListener('input', function () {
+      JARVIS.voice.tune({ pitch: parseFloat(this.value) });
+      el('setPitchVal').textContent = parseFloat(this.value).toFixed(2);
+    });
+    el('setTestVoice').addEventListener('click', function () {
+      JARVIS.voice.say('Revenue over the last seven days is up eleven percent. ' +
+                       'Two items need your attention.');
+    });
+
+    el('setCopy').addEventListener('click', function () {
+      var box = el('setJson');
+      box.value = JARVIS.store.exportJSON();
+      box.select();
+      /* The sandbox blocks clipboard writes in some contexts, so select the
+         text as well — worst case the user hits copy themselves. */
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(box.value)
+          .then(function () { toast('Backup copied'); })
+          .catch(function () { toast('Selected — press copy', 'warn'); });
+      } else {
+        toast('Selected — press copy', 'warn');
+      }
+    });
+
+    el('setImport').addEventListener('click', function () {
+      try {
+        JARVIS.store.importJSON(el('setJson').value);
+        JARVIS.data.recompute();
+        fillSettings();
+        toast('Data restored');
+      } catch (err) {
+        toast('That is not valid backup JSON', 'bad');
+      }
+    });
+
+    el('setWipe').addEventListener('click', function () {
+      if (!window.confirm('Erase every number, note and queued post? This cannot be undone.')) return;
+      JARVIS.store.wipe();
+      JARVIS.data.recompute();
+      fillSettings();
+      toast('Everything erased', 'warn');
+    });
+
+    el('micNoteX').addEventListener('click', function () {
+      micNoteDismissed = true;
+      el('micNote').classList.remove('is-on');
+    });
+
     el('btnBrief').addEventListener('click', function () { execute('give me the briefing'); });
 
     /* --- keyboard --- */
@@ -314,6 +489,7 @@
       var typing = /input|textarea/i.test(e.target.tagName);
 
       if (e.key === 'Escape') {
+        if (el('settings').classList.contains('is-open')) { saveProfile(); closeSettings(); return; }
         if (el('help').classList.contains('is-open')) { closeHelp(); return; }
         voice.shutUp(); voice.sleep(); busy = false; refreshIdle();
         return;
@@ -332,6 +508,7 @@
       }
       else if (e.key === 'm' || e.key === 'M') { el('mic').click(); }
       else if (e.key === 'b' || e.key === 'B') { execute('give me the briefing'); }
+      else if (e.key === 'd' || e.key === 'D') { openSettings(); }
     });
 
     /* --- periodic metric refresh --- */
@@ -349,10 +526,11 @@
 
     /* Everything below needs the user gesture we just got from the button:
        mic permission and speech synthesis both require it. */
-    if (voice.supported) {
+    if (voice.diagnose().ok) {
       voice.start();
       core.meter.start();
     }
+    showMicNote();
     refreshIdle();
 
     setTimeout(function () {
@@ -360,7 +538,17 @@
     }, 700);
   }
 
+  /* Service worker: what makes this installable and offline-capable.
+     It needs a secure context, so it simply doesn't register on file://. */
+  function registerWorker() {
+    if (!('serviceWorker' in navigator) || !window.isSecureContext) return;
+    navigator.serviceWorker.register('sw.js').catch(function (err) {
+      if (window.console) console.warn('[jarvis] worker not registered:', err.message);
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    registerWorker();
     wire();
     refreshIdle();
     /* Bring the panels up behind the boot overlay rather than after it, so

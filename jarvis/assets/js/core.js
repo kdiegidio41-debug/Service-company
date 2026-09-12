@@ -249,6 +249,11 @@ JARVIS.core = (function () {
 
   function delta(node, v) {
     if (!node) return;
+    if (v === null || v === undefined) {
+      node.textContent = 'new';
+      node.className = 'stat__delta flat';
+      return;
+    }
     node.textContent = U.pct(v);
     node.className = 'stat__delta ' + U.dir(v);
   }
@@ -261,11 +266,12 @@ JARVIS.core = (function () {
     }
     node.innerHTML = items.map(function (it) {
       var mark = it.kind === 'bad' ? '!' : it.kind === 'warn' ? '?' : '✓';
+      var when = typeof it.when === 'number' ? U.ago(it.when) : (it.when || '');
       return '<li class="feed__item">' +
         '<span class="feed__icon ' + (it.kind || 'ok') + '" aria-hidden="true">' + mark + '</span>' +
         '<span class="feed__body">' +
           '<span class="feed__text">' + esc(it.text) + '</span>' +
-          '<span class="feed__meta">' + esc(it.when || '') + '</span>' +
+          '<span class="feed__meta">' + esc(when) + '</span>' +
         '</span></li>';
     }).join('');
   }
@@ -277,7 +283,8 @@ JARVIS.core = (function () {
   }
 
   function renderMetrics(d) {
-    var cur = JARVIS.data.product.currency;
+    var cur = JARVIS.data.product.currency || '$';
+    document.body.classList.toggle('is-empty', !!d.empty);
 
     countTo(el('mMrr'), d.revenue.mrr, function (v) { return U.money(v, cur); });
     countTo(el('mRev7'), d.revenue.last7, function (v) { return U.money(v, cur); });
@@ -306,15 +313,23 @@ JARVIS.core = (function () {
         '" style="width:' + ((p.views / maxV) * 100).toFixed(1) + '%"></span></span></li>';
     }).join('');
 
-    el('topHook').textContent = '“' + d.content.top.hook + '”';
-    el('topMeta').textContent = d.content.top.platform + ' · ' +
-      U.compact(d.content.top.views) + ' views · ' + U.compact(d.content.top.saves) + ' saves';
+    if (d.content.top) {
+      el('topHook').textContent = '\u201C' + d.content.top.hook + '\u201D';
+      var bits = [d.content.top.platform];
+      if (d.content.top.views) bits.push(U.compact(d.content.top.views) + ' views');
+      if (d.content.top.saves) bits.push(U.compact(d.content.top.saves) + ' saves');
+      el('topMeta').textContent = bits.join(' \u00B7 ');
+    } else {
+      el('topHook').innerHTML = '<span class="feed__empty">No posts recorded yet.</span>';
+      el('topMeta').textContent = 'say \u201Cpublished \u2026 on tiktok\u201D';
+    }
 
-    feed(el('handledFeed'), d.handled, 'Nothing needed handling.');
+    feed(el('handledFeed'), d.handled, 'Nothing logged yet.');
     feed(el('needsFeed'), d.needsYou, 'Nothing is waiting on you.');
 
-    el('dataMode').textContent = d.demo ? 'demo data' : 'live';
-    el('dataChip').className = 'chip ' + (d.demo ? 'is-warn' : 'is-live');
+    var mode = JARVIS.data.isLive() ? 'live feed' : 'local';
+    el('dataMode').textContent = mode;
+    el('dataChip').className = 'chip ' + (JARVIS.data.isLive() ? 'is-live' : 'is-off');
   }
 
   function renderStore(s) {

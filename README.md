@@ -1,7 +1,8 @@
 # Everglow Holiday Lighting Co.
 
 > **Also in this repo:** [`jarvis/`](jarvis/) — a wake-word voice operations console
-> ("Hey Jarvis, how's the app doing?") for running an app and a content operation.
+> ("Hey Jarvis, how's the app doing?"), built as an installable personal app. Tracks
+> revenue, growth and content from numbers you log; starts empty, no demo data.
 > Separate project, separate stack, shares nothing with the site below.
 > See [`jarvis/README.md`](jarvis/README.md).
 

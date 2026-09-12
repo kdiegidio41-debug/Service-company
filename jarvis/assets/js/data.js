@@ -1,164 +1,138 @@
 /* =========================================================================
-   JARVIS — data layer
+   JARVIS — metrics
    -------------------------------------------------------------------------
-   Everything Jarvis knows about your business lives here.
+   Every number on the HUD is derived from JARVIS.store — your own logged
+   entries. Nothing is generated, estimated or filled in. An empty store
+   reads zero, and zero is the truth until you log something.
 
-   ⚠ THE NUMBERS BELOW ARE DEMO DATA. They are invented so the HUD has
-   something to display out of the box. Nothing here is fetched from a real
-   account until you wire it up — see `configure()` at the bottom and
-   jarvis/README.md §"Wiring up real data".
-
-   The shape is the contract. A real feed only has to return this shape.
+   Later, when you connect real sources (Stripe, App Store Connect, the
+   TikTok API), point `configure({ endpoint })` at a proxy that returns the
+   same shape and it takes over. See jarvis/README.md.
    ========================================================================= */
 window.JARVIS = window.JARVIS || {};
 
 JARVIS.data = (function () {
   'use strict';
 
-  /* --- 1. Product identity ---------------------------------------------- */
-  /* Change these to your own product. Jarvis speaks the name out loud. */
-  var PRODUCT = {
-    name: 'the app',            // "How's the app doing?" → spoken back
-    currency: '$',
-    owner: ''                   // e.g. 'Noe' — used in greetings, blank is fine
-  };
+  var S = JARVIS.store;
 
-  /* --- 2. Demo feed ------------------------------------------------------ */
-  /* Seeded pseudo-random so the same day gives the same numbers — the HUD
-     doesn't reshuffle every refresh, which would look broken. */
-  function seeded(seed) {
-    var s = seed % 2147483647;
-    if (s <= 0) s += 2147483646;
-    return function () {
-      s = (s * 16807) % 2147483647;
-      return (s - 1) / 2147483646;
-    };
-  }
-
-  function dayIndex() {
-    return Math.floor(Date.now() / 86400000);
-  }
-
-  /* A 14-day series that trends gently upward with believable noise. */
-  function series(base, growth, noise, rnd, n) {
-    var out = [], v = base;
-    for (var i = 0; i < n; i++) {
-      v = v * (1 + growth) * (1 + (rnd() - 0.5) * noise);
-      out.push(Math.max(0, Math.round(v)));
-    }
-    return out;
-  }
-
-  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
-
-  function buildDemo() {
-    var rnd = seeded(dayIndex() * 7919);
-
-    var downloads = series(300, 0.012, 0.30, rnd, 14);
-    var revenue   = series(560, 0.014, 0.26, rnd, 14);
-    var views     = series(11000, 0.02, 0.55, rnd, 14);
-
-    var last7 = function (a) { return a.slice(-7); };
-    var prev7 = function (a) { return a.slice(-14, -7); };
-    var delta = function (a) {
-      var p = sum(prev7(a));
-      if (!p) return 0;
-      return ((sum(last7(a)) - p) / p) * 100;
-    };
-
-    var mrr = Math.round(sum(last7(revenue)) * 4.34 / 100) * 100;
-
-    return {
-      generatedAt: new Date().toISOString(),
-      demo: true,
-
-      revenue: {
-        mrr: mrr,
-        last7: sum(last7(revenue)),
-        delta7: delta(revenue),
-        series: revenue,
-        arpu: +(sum(last7(revenue)) / Math.max(1, sum(last7(downloads)))).toFixed(2)
-      },
-
-      growth: {
-        downloads7: sum(last7(downloads)),
-        delta7: delta(downloads),
-        series: downloads,
-        activeUsers: 18400 + Math.round(rnd() * 2600),
-        trialConversion: +(6.5 + rnd() * 3.2).toFixed(1),
-        churn: +(3.1 + rnd() * 1.6).toFixed(1)
-      },
-
-      content: {
-        views7: sum(last7(views)),
-        delta7: delta(views),
-        series: views,
-        posts7: 11 + Math.floor(rnd() * 7),
-        followers: 42800 + Math.round(rnd() * 5000),
-        platforms: [
-          { name: 'TikTok',    views: Math.round(sum(last7(views)) * 0.58), tone: '' },
-          { name: 'Instagram', views: Math.round(sum(last7(views)) * 0.24), tone: 'gold' },
-          { name: 'YouTube',   views: Math.round(sum(last7(views)) * 0.13), tone: 'violet' },
-          { name: 'X',         views: Math.round(sum(last7(views)) * 0.05), tone: 'jade' }
-        ],
-        top: {
-          hook: 'I let an AI run my app for 7 days',
-          platform: 'TikTok',
-          views: Math.round(sum(last7(views)) * 0.31),
-          saves: 1840 + Math.round(rnd() * 900)
-        }
-      },
-
-      /* Things Jarvis says it handled on its own. In demo mode these are
-         illustrative. Wire real ones in via configure({ endpoint }). */
-      handled: [
-        { kind: 'ok',   text: 'Resolved 13 support tickets — 11 were the same iOS 18 sign-in bug.', when: 'today' },
-        { kind: 'ok',   text: 'Replied to 38 comments across TikTok and Instagram.', when: 'today' },
-        { kind: 'ok',   text: 'Scheduled tomorrow\'s post from the approved hook list.', when: '2h ago' },
-        { kind: 'warn', text: 'Paused the Meta ad set — CPA crossed $14, your ceiling is $12.', when: '5h ago' },
-        { kind: 'ok',   text: 'Refunded 2 duplicate charges and emailed both customers.', when: 'yesterday' }
-      ],
-
-      /* Things Jarvis wants a human decision on. */
-      needsYou: [
-        { kind: 'warn', text: 'App Store review 2.1 rejection — needs a screenshot swap before resubmit.', when: 'waiting 1d' },
-        { kind: 'bad',  text: 'Stripe dispute on a $79 annual plan. Evidence due Friday.', when: 'due 3d' }
-      ]
-    };
-  }
-
-  /* --- 3. Content queue (real, persisted locally) ------------------------ */
-  /* Unlike the metrics, this is genuinely yours — it saves to localStorage
-     and survives refreshes. Jarvis adds to it when you tell it to. */
-  var SEED_QUEUE = [
-    { when: 'Today 6pm',  text: 'POV: the AI ships while you sleep', tag: 'TikTok' },
-    { when: 'Tue 8am',    text: 'Teardown: what $4k MRR actually costs to run', tag: 'YouTube' },
-    { when: 'Wed 7pm',    text: '3 prompts that replaced my whole support inbox', tag: 'Instagram' }
-  ];
-
-  /* --- 4. Live adapter --------------------------------------------------- */
-  /* Point this at anything that returns the shape built by buildDemo():
-     your own /api/metrics, a Cloudflare Worker that fans out to RevenueCat +
-     App Store Connect + the TikTok API, an n8n webhook, a Google Sheet as
-     JSON. Jarvis does not care, it just needs the shape. */
   var CONFIG = {
-    endpoint: null,       // e.g. 'https://api.yoursite.com/jarvis/metrics'
+    endpoint: null,
     refreshMs: 5 * 60 * 1000
   };
 
-  var current = buildDemo();
   var listeners = [];
+  var current = null;
+  var live = null;          // last payload from a real endpoint, if any
 
-  function emit() {
-    listeners.forEach(function (fn) { fn(current); });
+  function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+
+  /* Percentage change, guarding the zero case: going 0 → something is not
+     "infinity percent", it's just new. */
+  function delta(now, before) {
+    /* null means "no prior week to compare against" — reporting +100% for
+       the first week of data would be inventing a comparison. */
+    if (!before) return now > 0 ? null : 0;
+    return ((now - before) / before) * 100;
   }
 
-  function refresh() {
-    if (!CONFIG.endpoint) {
-      current = buildDemo();
-      emit();
-      return Promise.resolve(current);
+  /* A 14-day window, oldest first, so the sparklines have a real axis. */
+  function window14() {
+    var days = [];
+    for (var i = 13; i >= 0; i--) {
+      var key = S.dayKey(i);
+      var e = S.get().entries[key];
+      days.push({
+        key: key,
+        revenue: e ? e.revenue : 0,
+        downloads: e ? e.downloads : 0,
+        views: e ? sum(Object.keys(e.views).map(function (p) { return e.views[p]; })) : 0,
+        byPlatform: e ? e.views : {}
+      });
     }
+    return days;
+  }
+
+  function build() {
+    var st = S.get();
+    var p = st.profile;
+    var days = window14();
+
+    var last7 = days.slice(7);
+    var prev7 = days.slice(0, 7);
+    var pull = function (arr, f) { return sum(arr.map(function (d) { return d[f]; })); };
+
+    var rev7 = pull(last7, 'revenue');
+    var revPrev = pull(prev7, 'revenue');
+    var dl7 = pull(last7, 'downloads');
+    var dlPrev = pull(prev7, 'downloads');
+    var views7 = pull(last7, 'views');
+    var viewsPrev = pull(prev7, 'views');
+
+    /* Per-platform totals across the last 7 days only. */
+    var tones = { TikTok: '', Instagram: 'gold', YouTube: 'violet', X: 'jade' };
+    var platforms = S.PLATFORMS.map(function (name) {
+      var v = sum(last7.map(function (d) { return d.byPlatform[name] || 0; }));
+      return { name: name, views: v, tone: tones[name] || '' };
+    });
+
+    var weekAgo = Date.now() - 7 * 86400000;
+    var recentPosts = st.posts.filter(function (x) { return x.at >= weekAgo; });
+    var top = st.posts.slice().sort(function (a, b) { return b.views - a.views; })[0] || null;
+
+    return {
+      generatedAt: new Date().toISOString(),
+      demo: false,
+      empty: rev7 === 0 && dl7 === 0 && views7 === 0 && !st.posts.length,
+
+      revenue: {
+        mrr: p.mrr,
+        last7: rev7,
+        delta7: delta(rev7, revPrev),
+        series: days.map(function (d) { return d.revenue; }),
+        arpu: dl7 ? Math.round((rev7 / dl7) * 100) / 100 : 0
+      },
+
+      growth: {
+        downloads7: dl7,
+        delta7: delta(dl7, dlPrev),
+        series: days.map(function (d) { return d.downloads; }),
+        activeUsers: p.activeUsers,
+        trialConversion: p.trialConversion,
+        churn: p.churn
+      },
+
+      content: {
+        views7: views7,
+        delta7: delta(views7, viewsPrev),
+        series: days.map(function (d) { return d.views; }),
+        posts7: recentPosts.length,
+        followers: p.followers,
+        platforms: platforms,
+        top: top
+      },
+
+      handled: st.handled.map(function (h) {
+        return { kind: h.kind, text: h.text, when: h.at };
+      }),
+      needsYou: st.needsYou.map(function (n) {
+        return { kind: n.kind, text: n.text, when: n.due || n.at };
+      })
+    };
+  }
+
+  function recompute() {
+    current = live || build();
+    listeners.forEach(function (fn) { fn(current); });
+    return current;
+  }
+
+  /* Recompute whenever anything is logged, so the HUD is never stale. */
+  S.onChange(function () { if (!live) recompute(); });
+  current = build();
+
+  function refresh() {
+    if (!CONFIG.endpoint) { live = null; return Promise.resolve(recompute()); }
     return fetch(CONFIG.endpoint, { headers: { accept: 'application/json' } })
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -166,30 +140,28 @@ JARVIS.data = (function () {
       })
       .then(function (json) {
         json.demo = false;
-        current = json;
-        emit();
-        return current;
+        live = json;
+        return recompute();
       })
       .catch(function (err) {
-        /* Never blank the HUD on a network blip — keep the last good data
-           and let the caller decide whether to announce the failure. */
         if (window.console) console.warn('[jarvis] metrics fetch failed:', err.message);
-        throw err;
+        throw err;                       // keep the last good view on screen
       });
   }
 
   return {
-    product: PRODUCT,
-    seedQueue: SEED_QUEUE,
+    get product() { return S.profile(); },
     get: function () { return current; },
-    isDemo: function () { return !!current.demo; },
+    isLive: function () { return !!live; },
+    isEmpty: function () { return !!current.empty; },
     onUpdate: function (fn) { listeners.push(fn); },
     refresh: refresh,
+    recompute: recompute,
     configure: function (opts) {
-      for (var k in opts) if (Object.prototype.hasOwnProperty.call(opts, k)) CONFIG[k] = opts[k];
+      for (var k in opts) {
+        if (Object.prototype.hasOwnProperty.call(opts, k)) CONFIG[k] = opts[k];
+      }
       if (CONFIG.endpoint) refresh().catch(function () {});
-    },
-    /* exposed for tests / console poking */
-    _buildDemo: buildDemo
+    }
   };
 })();

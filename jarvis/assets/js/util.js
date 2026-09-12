@@ -36,6 +36,7 @@ JARVIS.util = (function () {
   }
 
   function dir(n) {
+    if (n === null || n === undefined) return 'flat';
     if (n > 1) return 'up';
     if (n < -1) return 'down';
     return 'flat';
@@ -43,6 +44,7 @@ JARVIS.util = (function () {
 
   /* "up 12 percent" / "down 4 percent" / "about flat" — for speech. */
   function dirSpoken(n) {
+    if (n === null || n === undefined) return 'with no prior week to compare';
     var a = Math.abs(n);
     if (a < 1.5) return 'about flat week over week';
     return (n > 0 ? 'up ' : 'down ') + a.toFixed(0) + ' percent week over week';
@@ -84,7 +86,34 @@ JARVIS.util = (function () {
     return out;
   }
 
+  var WORDS = {
+    zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7,
+    eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, fifteen: 15, twenty: 20,
+    thirty: 30, forty: 40, fifty: 50, hundred: 100, thousand: 1000, million: 1000000
+  };
+
+  /* Pull a number out of something a person said or typed. Speech gives us
+     "$1,200", "3.4k", "twelve" and "1.2 million" all for the same idea. */
+  function parseNum(text) {
+    if (!text) return null;
+    var t = String(text).toLowerCase().replace(/,/g, '');
+
+    var m = t.match(/(-?\d+(?:\.\d+)?)\s*(k|m|thousand|million|grand)?/);
+    if (m) {
+      var n = parseFloat(m[1]);
+      var unit = m[2];
+      if (unit === 'k' || unit === 'thousand' || unit === 'grand') n *= 1000;
+      else if (unit === 'm' || unit === 'million') n *= 1000000;
+      return n;
+    }
+
+    var w = t.match(/\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|fifty|hundred|thousand|million)\b/);
+    if (w) return WORDS[w[1]];
+    return null;
+  }
+
   return {
+    parseNum: parseNum,
     commas: commas, compact: compact, money: money, spoken: spoken,
     pct: pct, dir: dir, dirSpoken: dirSpoken,
     greeting: greeting, clockTime: clockTime, ago: ago,

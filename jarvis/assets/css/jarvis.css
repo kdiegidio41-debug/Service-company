@@ -88,10 +88,11 @@ ul { margin: 0; padding: 0; list-style: none; }
   height: 100dvh; min-height: 100dvh;
   display: grid;
   grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 340px);
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   grid-template-areas:
     "bar   bar    bar"
     "left  stage  right"
+    "note  note   note"
     "dock  dock   dock";
   gap: 14px;
   padding: 14px clamp(12px, 2vw, 22px) 14px;
@@ -544,8 +545,9 @@ ul { margin: 0; padding: 0; list-style: none; }
       "bar    bar"
       "stage  right"
       "left   left"
+      "note   note"
       "dock   dock";
-    grid-template-rows: auto minmax(300px, 1fr) auto auto;
+    grid-template-rows: auto minmax(300px, 1fr) auto auto auto;
     height: auto; min-height: 100dvh;
   }
   body { overflow-y: auto; }
@@ -555,8 +557,8 @@ ul { margin: 0; padding: 0; list-style: none; }
 @media (max-width: 760px) {
   .hud {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "bar" "stage" "right" "left" "dock";
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas: "bar" "stage" "right" "left" "note" "dock";
+    grid-template-rows: auto auto auto auto auto auto;
     gap: 11px;
   }
   .col { overflow: visible; }
@@ -581,3 +583,100 @@ ul { margin: 0; padding: 0; list-style: none; }
   }
   .room::after { display: none; }
 }
+
+/* --- 14. Settings / data entry ------------------------------------------- */
+.set { margin-bottom: 24px; }
+.set__head {
+  font-family: var(--font-hud);
+  font-size: .6rem; letter-spacing: .19em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 9px;
+  padding-bottom: 7px; border-bottom: 1px solid rgba(94, 214, 255, .12);
+}
+.set__note { font-size: .78rem; line-height: 1.5; color: var(--text-dim); margin: 0 0 12px; }
+.set__note b { color: var(--arc); font-weight: 600; }
+
+.set__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 12px 16px;
+}
+.set__field { display: flex; flex-direction: column; gap: 5px; min-width: 0; justify-content: flex-start; }
+.set__field > span {
+  font-family: var(--font-hud);
+  font-size: .58rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--text-dim);
+  display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
+}
+.set__field > span i {
+  font-style: normal; text-transform: none; letter-spacing: .02em;
+  color: var(--text-faint); font-size: .62rem;
+}
+.set__field input,
+.set__field select {
+  width: 100%; min-width: 0;
+  /* Labels wrap to two lines at some widths; pinning the control to the
+     bottom keeps every input in a row on the same baseline. */
+  margin-top: auto;
+  padding: 8px 10px;
+  font-family: var(--font-hud); font-size: .84rem;
+  color: var(--text); background: rgba(4, 7, 14, .6);
+  border: 1px solid var(--panel-edge); border-radius: var(--r-sm);
+  font-variant-numeric: tabular-nums;
+}
+.set__field input:focus, .set__field select:focus {
+  outline: none; border-color: var(--arc); box-shadow: 0 0 0 2px rgba(94, 214, 255, .18);
+}
+.set__field input[type="range"] { padding: 0; border: 0; background: none; accent-color: var(--arc); }
+
+.set__json {
+  width: 100%; height: 120px; resize: vertical;
+  padding: 10px; margin-bottom: 10px;
+  font-family: var(--font-hud); font-size: .7rem; line-height: 1.5;
+  color: var(--text-dim); background: rgba(4, 7, 14, .6);
+  border: 1px solid var(--panel-edge); border-radius: var(--r-sm);
+}
+.set__json:focus { outline: none; border-color: var(--arc); }
+
+.set__row { display: flex; flex-wrap: wrap; gap: 9px; }
+.set__btn {
+  margin-top: 11px; padding: 9px 17px;
+  font-family: var(--font-hud);
+  font-size: .62rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--arc);
+  border: 1px solid var(--panel-edge-hot); border-radius: var(--r-sm);
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.set__btn:hover { background: var(--arc); color: var(--void); }
+.set__btn--bad { color: var(--rose); border-color: rgba(255, 107, 107, .4); }
+.set__btn--bad:hover { background: var(--rose); color: #fff; }
+
+/* An empty console should read as deliberate, not broken. */
+.is-empty .stat__val { color: var(--text-faint); text-shadow: none; }
+.is-empty .stat__val--gold { color: var(--text-faint); }
+.is-empty .spark { opacity: .3; }
+
+/* The mic banner: says exactly what's wrong and what fixes it. */
+.micnote {
+  grid-area: note;
+  display: none;
+  gap: 10px; align-items: flex-start;
+  padding: 10px 13px;
+  border: 1px solid rgba(255, 196, 107, .34);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r-sm);
+  background: rgba(255, 196, 107, .07);
+}
+.micnote.is-on { display: flex; }
+.micnote__body { min-width: 0; }
+.micnote__title {
+  font-family: var(--font-hud);
+  font-size: .6rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 3px;
+}
+.micnote__text { font-size: .78rem; line-height: 1.45; color: var(--text); }
+.micnote__text b { color: var(--gold-hot); font-weight: 600; }
+.micnote__x {
+  margin-left: auto; flex: none; padding: 2px 7px;
+  font-family: var(--font-hud); font-size: .7rem; color: var(--text-faint);
+}
+.micnote__x:hover { color: var(--gold); }

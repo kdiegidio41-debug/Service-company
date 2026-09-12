@@ -1,167 +1,171 @@
 # J.A.R.V.I.S. — voice operations console
 
 A wake-word voice assistant and heads-up display for running an app and a content
-operation. Say **"Hey Jarvis"**, ask how the app is doing, and it pulls up the numbers
-and reads them back to you.
+operation. Say **"Hey Jarvis"**, ask how the app is doing, and it reads your numbers back
+to you.
 
-Open `jarvis/index.html` and it runs. No build step, no dependencies, no framework,
-no API key, no server.
-
-```bash
-python3 -m http.server 8000
-# → http://localhost:8000/jarvis/
-```
-
-Or skip all of that: **`jarvis-standalone.html`** is the entire app — HTML, CSS and all
-seven scripts — inlined into one 100 KB file. Save it anywhere and double-click it. No
-server, no folder structure, nothing to install. It's a build of the same source, so
-edit the files under `assets/` and regenerate it rather than editing it directly.
+It is a **personal app**, not a website. Install it and it opens in its own window with no
+browser chrome, works offline, and keeps your data on your machine.
 
 ---
 
-## ⚠ What's real and what isn't
+## Start here
 
-This matters more than anything else in this README, so it's first.
+**Run it with a working microphone:**
 
-| Part | Status |
+| Your machine | Do this |
 | --- | --- |
-| Wake word, speech recognition, spoken replies | **Real.** Browser Web Speech API. |
-| The HUD, reactor, panels, state machine | **Real.** |
-| Content queue, ideas, reminders | **Real.** Saved to `localStorage`, survives refresh. |
-| Hook and script generation | **Real, but template-based.** Offline, no model. |
-| **Revenue, downloads, views, "handled" items** | **DEMO DATA.** Invented numbers. |
+| macOS | Double-click **`start.command`** |
+| Windows | Double-click **`start.bat`** |
+| Linux | `./start.sh` |
 
-The metrics are fabricated so the HUD has something to show out of the box. The
-status chip in the top bar reads **`demo data`** until you connect a real feed, and it
-flips to **`live`** when you do. **Don't screenshot the demo numbers and present them as
-your business.** Wire it up first — that's the next section.
+That serves the folder on `localhost` and opens it. Then use your browser's **Install**
+button (the ⊞ icon in Chrome's address bar, or ⋮ → *Cast, save and share* → *Install page
+as app*) and Jarvis becomes a real app in your dock or Start menu.
+
+### Why not just double-click `index.html`?
+
+**Because the microphone will not work.** Speech recognition requires a *secure context* —
+`https://` or `http://localhost`. A double-clicked page is `file://`, which browsers refuse
+to give a mic. Everything else works there; the wake word does not. The launcher scripts
+above exist purely to solve this.
+
+Jarvis detects which of these is biting and tells you on screen rather than failing quietly.
 
 ---
 
-## Wiring up real data
+## Your data is yours, and it starts empty
 
-Everything Jarvis knows comes from one object. Point it at your own endpoint:
+**There is no demo data. Every figure starts at zero and only moves when you log
+something.** Nothing is estimated, generated, or filled in on your behalf. If the console
+reads zero, that is the truth about your week.
 
-```js
-// in the console, or at the bottom of assets/js/data.js
-JARVIS.data.configure({
-  endpoint: 'https://api.yoursite.com/jarvis/metrics',
-  refreshMs: 5 * 60 * 1000
-});
+It all lives in `localStorage` — on your machine, in one browser. It is never sent
+anywhere. That also means: **back it up before you clear site data or switch machines.**
+Open the data panel (**D**) → *Copy backup*.
+
+### Two ways to put data in
+
+**Say it** — fastest, day to day:
+
+```
+log 250 revenue
+log 40 downloads
+log 12k views on TikTok
+set MRR to 890
+set followers to 1200
+published the AI teardown on YouTube with 8000 views
+flag renew the domain
+handled the signup bug
+resolved renew the domain
 ```
 
-Your endpoint returns JSON in the shape that `buildDemo()` produces in
-`assets/js/data.js`. The short version:
+**Type it** — press **D** for the data panel. Set your standing figures (MRR, active users,
+followers, conversion, churn), and use *Log a day* with a date picker to backfill history.
 
-```jsonc
-{
-  "revenue": { "mrr": 23900, "last7": 5516, "delta7": 26.7, "series": [/* 14 numbers */], "arpu": 3.0 },
-  "growth":  { "downloads7": 1837, "delta7": -7.6, "series": [/* 14 */],
-               "activeUsers": 20400, "trialConversion": 7.0, "churn": 4.4 },
-  "content": { "views7": 251900, "delta7": 98.7, "series": [/* 14 */],
-               "posts7": 15, "followers": 46000,
-               "platforms": [{ "name": "TikTok", "views": 146000, "tone": "" }],
-               "top": { "hook": "...", "platform": "TikTok", "views": 78000, "saves": 1900 } },
-  "handled":  [{ "kind": "ok",   "text": "Resolved 13 tickets", "when": "today" }],
-  "needsYou": [{ "kind": "warn", "text": "App Store rejection",  "when": "waiting 1d" }]
-}
-```
-
-`tone` picks a bar colour (`""`, `gold`, `violet`, `jade`). `kind` picks a feed icon
-(`ok`, `warn`, `bad`).
-
-**Where the real numbers come from.** The page is static and can't hold secrets, so put
-a small proxy between it and the APIs that need keys — a Cloudflare Worker, a Vercel
-function, an n8n or Make webhook. It fans out, merges, and returns the shape above:
-
-| Feed | Source |
-| --- | --- |
-| Revenue, MRR, churn | RevenueCat, Stripe, or App Store Connect / Play Console |
-| Downloads, active users | App Store Connect, Play Console, or your analytics |
-| Content views, followers | TikTok Display API, Instagram Graph API, YouTube Data API |
-| Handled / needs-you | Your support desk, CI, error tracker — anything with a webhook |
-
-Never put an API key in this page. The proxy holds the keys; the page holds nothing.
+Everything on the HUD is derived from those entries: seven-day totals, week-over-week
+change, the sparklines, per-platform splits. A week with no prior week to compare reads
+**new**, not "+100%".
 
 ---
 
 ## What you can say
 
-Say `Hey Jarvis` then the command, or press **space** to skip the wake word entirely.
-Everything also works typed — the command bar at the bottom takes the same phrasing, so
-the whole thing is usable with no microphone at all.
+Say `Hey Jarvis` then the command, or press **space** to skip the wake word. **Every
+command also works typed**, so Jarvis is fully usable with no microphone.
 
-**Briefing**
-- *Brief me* — revenue, growth, content, what it handled, what needs you, in one pass
-- *How's the app doing* · *What's the revenue* · *How are downloads*
-- *How did content do* · *How's TikTok doing* · *What was the top post*
+**Reading it back** — *Brief me* · *How's the app doing* · *What's the revenue* ·
+*How are downloads* · *How did content do* · *How's TikTok doing* · *What was the top post*
 
-**Autonomy**
-- *What did you handle* · *What needs me* · *Refresh the numbers*
+**Your open items** — *What needs me* · *What did you handle* · *Flag …* · *Handled …* ·
+*Resolved …*
 
-**Content ops**
-- *Queue a post about …* · *Schedule a TikTok about … tomorrow*
-- *What's in the queue* · *Mark … as posted*
-- *Give me hooks about …* · *Write a script about …*
+**Content ops** — *Queue a post about …* · *Schedule a TikTok about … tomorrow* ·
+*What's in the queue* · *Mark … as posted* · *Give me hooks about …* · *Write a script about …*
 
-**Memory**
-- *Remember …* · *Remind me to …* · *What are my ideas*
+**Memory** — *Remember …* · *Remind me to …* · *What are my ideas*
 
-**Keys** — `space` talk · `/` command line · `B` briefing · `M` mic · `esc` stop · `?` help
+**Keys** — `space` talk · `/` command line · `B` briefing · `D` your data · `M` mic ·
+`esc` stop · `?` help
+
+---
+
+## The voice
+
+Jarvis picks the best voice your system has, preferring the neural ones — Microsoft's
+"Natural" voices and Google's UK English Male are a different class from the old robotic
+formant voices. You can override the choice and tune pace and pitch in the data panel
+under **Voice**, and it remembers what you pick.
+
+Long replies are split on sentence boundaries before being spoken. That works around a
+Chrome bug where anything past roughly fifteen seconds gets silently cut off, and the small
+gap between sentences is the beat a person actually leaves — so it fixes the truncation and
+improves the delivery at once.
+
+Install more voices from your OS settings if the built-in ones sound thin: macOS *System
+Settings → Accessibility → Spoken Content → System Voice → Manage Voices*; Windows
+*Settings → Time & Language → Speech*.
 
 ---
 
 ## Browser support
 
-| | Wake word | Typed commands | Spoken replies |
-| --- | --- | --- | --- |
-| Chrome, Edge, Brave, Arc | ✅ | ✅ | ✅ |
-| Safari | ❌ | ✅ | ✅ |
-| Firefox | ❌ | ✅ | ✅ |
+| | Wake word | Typed commands | Spoken replies | Installable |
+| --- | --- | --- | --- | --- |
+| Chrome, Edge, Brave, Arc | ✅ | ✅ | ✅ | ✅ |
+| Safari | ❌ | ✅ | ✅ | ✅ (Add to Home Screen) |
+| Firefox | ❌ | ✅ | ✅ | ❌ |
 
-`SpeechRecognition` is Chromium-only. Everywhere else the HUD detects it, says so in the
-mic chip, and falls back to the command line — nothing breaks, Jarvis just can't hear you.
+`SpeechRecognition` is Chromium-only. Elsewhere the HUD says so and the command line takes
+over.
 
-Two things worth knowing:
+Two things worth knowing. **Chrome's speech recognition is a cloud service** — while the mic
+is on, audio goes to Google. Nothing else here leaves your machine. And **Chrome ends
+recognition every ~60 seconds**; `voice.js` restarts it with a backoff, which is what makes
+"always listening" stay on. The wake pattern also accepts *jarvice, jervis, javis* —
+recognition rarely nails "Jarvis", and that's the difference between working and saying the
+word nine times.
 
-- **Chrome's speech recognition is a cloud service.** Audio goes to Google while the mic
-  is on. Nothing else on this page leaves your machine, but that part does.
-- **Chrome kills recognition every ~60 seconds.** `voice.js` restarts it automatically
-  with a backoff, which is what makes "always listening" actually stay on.
+---
 
-Recognition mishears "Jarvis" constantly, so the wake pattern also accepts *jarvice,
-jervis, javis, charvis* and a few others. That's the difference between a demo that works
-and one where you say the word nine times.
+## Connecting real sources (later)
+
+Right now you log by hand. When you want it automatic, point Jarvis at an endpoint that
+returns the same shape it already builds internally:
+
+```js
+JARVIS.data.configure({ endpoint: 'https://api.yoursite.com/jarvis/metrics' });
+```
+
+The status chip flips from `local` to `live feed` when that is answering.
+
+The page is static and cannot hold secrets, so put a small proxy in front — a Cloudflare
+Worker, a Vercel function, an n8n webhook. It holds the keys, fans out to Stripe or
+RevenueCat, App Store Connect, the TikTok API, and returns one merged payload.
+**Never put an API key in this page.**
 
 ---
 
 ## Adding your own commands
 
-A skill is three things: an id, a regex, and a function.
+A skill is an id, a matcher, and a function:
 
 ```js
 JARVIS.skills.add({
   id: 'standup',
-  match: /\b(standup|stand up|what should i do today)\b/i,
-  run: function (m, line) {
-    var q = JARVIS.store.queueOpen();
+  match: /\b(standup|what should i do today)\b/i,
+  run: function () {
     return {
-      say: 'You have ' + q.length + ' posts queued and ' +
-           JARVIS.data.get().needsYou.length + ' things waiting on you.',
-      panel: 'queue',        // flashes that panel
-      toast: 'Standup'       // little confirmation
+      say: 'You have ' + JARVIS.store.queueOpen().length + ' posts queued and ' +
+           JARVIS.data.get().needsYou.length + ' items needing you.',
+      panel: 'queue'
     };
   }
-}, true);                    // true = put it first, ahead of the built-ins
+}, true);              // true = ahead of the built-ins
 ```
 
-Order matters — the first match wins. `JARVIS.skills.list` is the live array, in
-priority order. The specific ones go above the general ones, which is why
-*"queue a TikTok about X"* has to sit above the skill that matches `/tiktok/`.
-
-**Want real generation instead of templates?** The hook and script skills call
-`hooksFor()` in `assets/js/skills.js`. Swap that for a `fetch` to your own proxy in
-front of a model API and return the text. Keep the key on the proxy, not in the page.
+First match wins, so specific skills sit above general ones — that's why the skills that
+*log* revenue sit above the one that *reads* revenue back.
 
 ---
 
@@ -170,20 +174,25 @@ front of a model API and return the text. Keep the key on the proxy, not in the 
 ```
 jarvis/
 ├── index.html              The HUD
-├── jarvis-standalone.html  The whole thing in one file — save it, double-click it
+├── jarvis-standalone.html  Everything inlined in one file (no mic — see above)
+├── manifest.webmanifest    Makes it installable
+├── sw.js                   Offline cache
+├── start.command/.sh/.bat  Serve on localhost so the mic works
 └── assets/
-    ├── css/jarvis.css      Tokens, panels, reactor, boot, help, responsive
+    ├── css/jarvis.css
+    ├── img/                reactor.svg, icon-192/512/maskable.png
     └── js/
-        ├── util.js         Formatting — commas, compact, spoken numbers
-        ├── data.js         Metrics. The demo feed + the live adapter ← start here
-        ├── store.js        localStorage: queue, ideas, reminders, log
-        ├── voice.js        Wake word, recognition lifecycle, speech synthesis
+        ├── util.js         Formatting and number parsing
+        ├── store.js        Your data. localStorage. ← start here
+        ├── data.js         Derives the metrics from the store
+        ├── voice.js        Wake word, recognition lifecycle, speech
         ├── skills.js       The command registry ← and here
         ├── core.js         Reactor canvas, mic meter, panel rendering
-        └── app.js          Boot, wiring, captions
+        └── app.js          Boot, wiring, settings, captions
 ```
 
-Accessibility: keyboard-operable throughout, visible focus rings, `aria-live` on the
-caption and status regions, `prefers-reduced-motion` respected (the reactor stops
-spinning, the boot log dumps instantly, captions stop typing out), no horizontal scroll
-down to 320px.
+`jarvis-standalone.html` is a **build** of the files under `assets/` — edit the sources and
+regenerate it, don't edit it directly.
+
+Accessibility: keyboard-operable throughout, visible focus rings, `aria-live` on the caption
+and status regions, `prefers-reduced-motion` respected, no horizontal scroll to 320px.

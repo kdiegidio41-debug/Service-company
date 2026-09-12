@@ -1,11 +1,13 @@
 /* =========================================================================
    JARVIS — skills
    -------------------------------------------------------------------------
-   A skill is { id, match, run }. `match` is a RegExp tested against the
-   heard/typed line; `run` returns { say, panel, toast, action }.
+   A skill is { id, match | test, run }. First match wins, so specific
+   skills sit above general ones. The logging skills come first: "log 250
+   revenue" must not be caught by the skill that reads revenue back.
 
-   Order matters — the first match wins, so put the specific ones above the
-   general ones. Adding your own is three lines at the bottom of the list.
+   Voice register: composed and brief. State the number, state the change,
+   stop. No filler, no exclamation, no congratulating the user on their own
+   data.
    ========================================================================= */
 window.JARVIS = window.JARVIS || {};
 
@@ -13,14 +15,23 @@ JARVIS.skills = (function () {
   'use strict';
 
   var U = JARVIS.util;
+  var S = JARVIS.store;
 
   function D() { return JARVIS.data.get(); }
-  function P() { return JARVIS.data.product; }
+  function P() { return S.profile(); }
+  function cur() { return P().currency || '$'; }
 
-  /* ---- Hook / script generation ----------------------------------------
-     Template-driven, on purpose: it runs offline with no key and no cost.
-     If you want real generation, set JARVIS.brain.endpoint (see README) and
-     these fall through to your model instead. */
+  function platformFrom(line) {
+    var m = line.match(/\b(tiktok|instagram|insta|reels?|youtube|shorts?|twitter|\bx\b)\b/i);
+    if (!m) return null;
+    var w = m[1].toLowerCase();
+    if (/insta|reel/.test(w)) return 'Instagram';
+    if (/youtube|short/.test(w)) return 'YouTube';
+    if (/twitter|^x$/.test(w)) return 'X';
+    return 'TikTok';
+  }
+
+  /* ---- Hook / script templates (offline, no model) ---------------------- */
   var HOOKS = [
     'POV: {t} — and nobody told you it was this easy',
     'I tried {t} for 30 days. Here\'s the part nobody posts.',
@@ -47,41 +58,65 @@ JARVIS.skills = (function () {
     return U.pick(HOOKS, 3).map(function (h) { return h.replace(/\{t\}/g, t); });
   }
 
-  /* ---- Briefings -------------------------------------------------------- */
+  /* ---- Spoken lines ----------------------------------------------------- */
   function revenueLine() {
     var r = D().revenue;
-    return 'Revenue over the last seven days is ' + U.money(r.last7, P().currency) +
-           ', ' + U.dirSpoken(r.delta7) + '. Monthly recurring sits at ' +
-           U.money(r.mrr, P().currency) + '.';
+    if (!r.last7 && !r.mrr) {
+      return 'No revenue logged in the last seven days. Say, log two hundred revenue, to start the record.';
+    }
+    var parts = ['Revenue over the last seven days is ' + U.money(r.last7, cur()) +
+                 ', ' + U.dirSpoken(r.delta7) + '.'];
+    if (r.mrr) parts.push('Monthly recurring is ' + U.money(r.mrr, cur()) + '.');
+    return parts.join(' ');
   }
 
   function growthLine() {
     var g = D().growth;
-    return 'We picked up ' + U.spoken(g.downloads7) + ' new downloads, ' +
-           U.dirSpoken(g.delta7) + '. Trial conversion is ' + g.trialConversion +
-           ' percent, churn ' + g.churn + ' percent.';
+    if (!g.downloads7 && !g.activeUsers) {
+      return 'No downloads logged this week.';
+    }
+    var parts = [];
+    if (g.downloads7) {
+      parts.push(U.spoken(g.downloads7) + ' new downloads, ' + U.dirSpoken(g.delta7) + '.');
+    }
+    if (g.activeUsers) parts.push(U.spoken(g.activeUsers) + ' active users.');
+    if (g.trialConversion) parts.push('Trial conversion ' + g.trialConversion + ' percent.');
+    if (g.churn) parts.push('Churn ' + g.churn + ' percent.');
+    return parts.join(' ');
   }
 
   function contentLine() {
     var c = D().content;
+    if (!c.views7) {
+      return 'No views logged this week. Say, log twelve thousand views on TikTok, when you have them.';
+    }
     var top = c.platforms.slice().sort(function (a, b) { return b.views - a.views; })[0];
-    return 'Content reached ' + U.spoken(c.views7) + ' views across ' + c.posts7 +
-           ' posts, ' + U.dirSpoken(c.delta7) + '. ' + top.name +
-           ' is carrying it with ' + U.spoken(top.views) + '.';
+    var line = 'Content reached ' + U.spoken(c.views7) + ' views';
+    if (c.posts7) line += ' across ' + c.posts7 + (c.posts7 === 1 ? ' post' : ' posts');
+    line += ', ' + U.dirSpoken(c.delta7) + '.';
+    if (top && top.views) line += ' ' + top.name + ' leads with ' + U.spoken(top.views) + '.';
+    return line;
   }
 
   function handledLine() {
     var h = D().handled;
-    if (!h.length) return 'Nothing needed handling today.';
-    return 'I handled ' + h.length + ' things on my own. ' +
-           h.slice(0, 2).map(function (x) { return x.text.replace(/\.$/, ''); }).join('. ') + '.';
+    if (!h.length) return 'Nothing logged as handled yet.';
+    return h.length + (h.length === 1 ? ' item handled. ' : ' items handled. ') +
+           h.slice(0, 3).map(function (x) { return x.text.replace(/\.$/, ''); }).join('. ') + '.';
   }
 
   function needsLine() {
     var n = D().needsYou;
-    if (!n.length) return 'Nothing is waiting on you. You\'re clear.';
-    return n.length + (n.length === 1 ? ' thing needs you. ' : ' things need you. ') +
+    if (!n.length) return 'Nothing is waiting on you.';
+    return n.length + (n.length === 1 ? ' item needs you. ' : ' items need you. ') +
            n.map(function (x) { return x.text.replace(/\.$/, ''); }).join('. ') + '.';
+  }
+
+  function emptyBriefing() {
+    return U.greeting() + '. The console is live and the ledger is empty — ' +
+           'nothing has been logged yet, so every figure reads zero. ' +
+           'Start by saying, log two hundred revenue, or open settings to enter your ' +
+           'baseline numbers. Once there is data here, ask me for the briefing again.';
   }
 
   /* ---- The skill list --------------------------------------------------- */
@@ -91,45 +126,204 @@ JARVIS.skills = (function () {
     {
       id: 'stop',
       match: /\b(stop|shut up|be quiet|quiet|nevermind|never mind|cancel|go to sleep|stand down)\b/i,
+      run: function () { JARVIS.voice.shutUp(); return { say: '', toast: 'Standing by' }; }
+    },
+    {
+      id: 'settings',
+      match: /\b(settings|preferences|configure|set ?up|edit (my )?data|enter (my )?numbers|options)\b/i,
       run: function () {
-        JARVIS.voice.shutUp();
-        return { say: '', toast: 'Standing by' };
+        return { say: 'Opening settings.', action: 'settings' };
       }
     },
     {
       id: 'help',
-      match: /\b(what can you do|help|commands|what do you do|options)\b/i,
+      match: /\b(what can you do|help|commands|what do you do)\b/i,
       run: function () {
         return {
-          say: 'I can brief you on revenue, downloads and content, tell you what I handled, ' +
-               'write hooks and scripts, and run your posting queue. The full list is on screen.',
+          say: 'I track revenue, growth and content from what you log, run your posting queue, ' +
+               'and hold your notes. The full command list is on screen.',
           action: 'help'
         };
       }
     },
     {
       id: 'refresh',
-      match: /\b(refresh|reload|update the (numbers|stats|data)|pull.*(latest|fresh))\b/i,
-      run: function () {
-        return { say: 'Pulling the latest numbers now.', action: 'refresh' };
+      match: /\b(refresh|reload|recalculate|update the (numbers|stats|data))\b/i,
+      run: function () { return { say: 'Recalculating.', action: 'refresh' }; }
+    },
+
+    /* — logging: this is how data gets in ——————————————— */
+    {
+      id: 'logRevenue',
+      test: function (l) {
+        return /\b(log|add|record|book|made|earned|took)\b/i.test(l) &&
+               /\b(revenue|sales?|dollars?|bucks|income|earnings|mrr|\$)/i.test(l) &&
+               !/\bset\b/i.test(l) && U.parseNum(l) !== null;
+      },
+      run: function (m, line) {
+        var n = U.parseNum(line);
+        if (n === null) return { say: 'How much?' };
+        var total = S.addRevenue(n);
+        S.logAdd('Logged ' + U.money(n, cur()) + ' revenue', 'ok');
+        return {
+          say: 'Logged ' + U.money(n, cur()) + '. That puts today at ' +
+               U.money(total, cur()) + ', and the last seven days at ' +
+               U.money(D().revenue.last7, cur()) + '.',
+          panel: 'revenue', toast: 'Revenue logged'
+        };
+      }
+    },
+    {
+      id: 'logDownloads',
+      test: function (l) {
+        return /\b(log|add|record|got|had)\b/i.test(l) &&
+               /\b(downloads?|installs?|sign ?ups?|new users?)\b/i.test(l) &&
+               !/\bset\b/i.test(l) && U.parseNum(l) !== null;
+      },
+      run: function (m, line) {
+        var n = U.parseNum(line);
+        if (n === null) return { say: 'How many?' };
+        S.addDownloads(Math.round(n));
+        return {
+          say: 'Logged ' + U.commas(n) + ' downloads. Seven day total is ' +
+               U.commas(D().growth.downloads7) + '.',
+          panel: 'growth', toast: 'Downloads logged'
+        };
+      }
+    },
+    {
+      id: 'logViews',
+      test: function (l) {
+        return /\b(log|add|record|got|had)\b/i.test(l) &&
+               /\b(views?|impressions?|reach)\b/i.test(l) &&
+               !/\bset\b/i.test(l) && U.parseNum(l) !== null;
+      },
+      run: function (m, line) {
+        var n = U.parseNum(line);
+        if (n === null) return { say: 'How many views?' };
+        var plat = platformFrom(line) || 'TikTok';
+        S.addViews(Math.round(n), plat);
+        return {
+          say: 'Logged ' + U.spoken(n) + ' views on ' + plat + '. ' +
+               'Seven day reach is ' + U.spoken(D().content.views7) + '.',
+          panel: 'content', toast: 'Views logged'
+        };
+      }
+    },
+    {
+      id: 'setMetric',
+      test: function (l) {
+        return /\bset\b/i.test(l) &&
+               /\b(mrr|recurring|followers?|active users?|actives?|conversion|churn|name|currency)\b/i.test(l);
+      },
+      run: function (m, line) {
+        var n = U.parseNum(line.replace(/\bset\b/i, ''));
+
+        if (/\b(name)\b/i.test(line)) {
+          var nm = U.clean(line.replace(/.*\bname\s*(to|as|is)?\s*/i, ''));
+          if (!nm) return { say: 'What should I call it?' };
+          S.setProfile({ name: nm });
+          return { say: 'Noted. I\'ll refer to it as ' + nm + '.', toast: 'Name set' };
+        }
+        if (n === null) return { say: 'What value?' };
+
+        if (/\b(mrr|recurring)\b/i.test(line)) {
+          S.setProfile({ mrr: n });
+          return { say: 'Monthly recurring set to ' + U.money(n, cur()) + '.', panel: 'revenue', toast: 'MRR set' };
+        }
+        if (/\bfollowers?\b/i.test(line)) {
+          S.setProfile({ followers: Math.round(n) });
+          return { say: 'Followers set to ' + U.commas(n) + '.', panel: 'content', toast: 'Followers set' };
+        }
+        if (/\bactives?\b|\bactive users?\b/i.test(line)) {
+          S.setProfile({ activeUsers: Math.round(n) });
+          return { say: 'Active users set to ' + U.commas(n) + '.', panel: 'growth', toast: 'Active users set' };
+        }
+        if (/\bconversion\b/i.test(line)) {
+          S.setProfile({ trialConversion: n });
+          return { say: 'Trial conversion set to ' + n + ' percent.', panel: 'growth', toast: 'Conversion set' };
+        }
+        if (/\bchurn\b/i.test(line)) {
+          S.setProfile({ churn: n });
+          return { say: 'Churn set to ' + n + ' percent.', panel: 'growth', toast: 'Churn set' };
+        }
+        return { say: 'I didn\'t catch which figure to set.' };
+      }
+    },
+    {
+      id: 'logPost',
+      test: function (l) {
+        return /^(published|posted|log a post|log post|went live with)\b/i.test(l.trim());
+      },
+      run: function (m, line) {
+        var plat = platformFrom(line) || 'TikTok';
+        var views = U.parseNum(line);
+        var hook = U.clean(line
+          .replace(/^(published|posted|log a post|log post|went live with)\b/i, '')
+          .replace(/\bon (tiktok|instagram|insta|reels?|youtube|shorts?|twitter|x)\b/ig, '')
+          .replace(/\bwith\b.*$/i, '')
+          .replace(/["""]/g, ''));
+        if (!hook) return { say: 'What was the post?' };
+        S.postAdd(hook, plat, views ? Math.round(views) : 0, 0);
+        return {
+          say: 'Recorded "' + hook + '" on ' + plat + '.',
+          panel: 'content', toast: 'Post recorded'
+        };
+      }
+    },
+    {
+      id: 'handledAdd',
+      test: function (l) {
+        return /^(handled|i fixed|fixed|i shipped|shipped|i handled|done:|log that i)\b/i.test(l.trim());
+      },
+      run: function (m, line) {
+        var what = U.clean(line.replace(/^(handled|i fixed|fixed|i shipped|shipped|i handled|done:|log that i)\b/i, ''));
+        if (!what) return { say: 'Handled what?' };
+        S.handledAdd(what, 'ok');
+        return { say: 'Logged as handled.', panel: 'handled', toast: 'Logged' };
+      }
+    },
+    {
+      id: 'needsAdd',
+      test: function (l) {
+        return /^(flag|blocker|i need to|need to|todo|to do|chase|waiting on)\b/i.test(l.trim());
+      },
+      run: function (m, line) {
+        var what = U.clean(line.replace(/^(flag|blocker|i need to|need to|todo|to do|chase|waiting on)\b/i, ''));
+        if (!what) return { say: 'Flag what?' };
+        var kind = /\b(urgent|critical|overdue|dispute|rejected?)\b/i.test(what) ? 'bad' : 'warn';
+        S.needsAdd(what, kind);
+        return {
+          say: 'Flagged. ' + D().needsYou.length +
+               (D().needsYou.length === 1 ? ' item needs you.' : ' items need you.'),
+          panel: 'needs', toast: 'Flagged'
+        };
+      }
+    },
+    {
+      id: 'needsResolve',
+      test: function (l) { return /^(resolved|cleared|sorted|took care of)\b/i.test(l.trim()); },
+      run: function (m, line) {
+        var what = U.clean(line.replace(/^(resolved|cleared|sorted|took care of)\b/i, ''));
+        var hit = S.needsResolve(what);
+        if (!hit) return { say: 'I couldn\'t find that on the list.', panel: 'needs' };
+        return { say: 'Cleared. Moved to handled.', panel: 'needs', toast: 'Resolved' };
       }
     },
 
-    /* — the queue ————————————————————————————————— */
+    /* — content ops ————————————————————————————————— */
     {
       id: 'queueAdd',
-      match: /\b(?:add|schedule|queue|post|line up)\b.*?\b(?:to|in)?\s*(?:the )?(?:queue|calendar)?\b.*/i,
-      /* Guarded below — only fires when we can actually extract a subject. */
       test: function (line) {
         return /^(add|schedule|queue up|queue|line up|post)\b/i.test(line.trim()) &&
-               /\b(about|on|saying|called|titled|:)\b|["“]/.test(line);
+               /\b(about|on|saying|called|titled|:)\b|["""]/.test(line);
       },
       run: function (m, line) {
         var topic = line.replace(/^(add|schedule|queue up|queue|line up|post)\b/i, '')
                         .replace(/\b(a |an |the )?(post|video|short|reel|tiktok|clip)\b/ig, ' ')
                         .replace(/\bto (the )?(queue|calendar)\b/ig, ' ')
                         .replace(/^.*?\b(about|on|saying|called|titled)\b/i, '')
-                        .replace(/["“”]/g, '')
+                        .replace(/["""]/g, '')
                         .trim();
         topic = U.clean(topic);
         if (!topic) return { say: 'What should the post be about?' };
@@ -139,19 +333,13 @@ JARVIS.skills = (function () {
         else if (/\btonight\b/i.test(line)) { when = 'Tonight'; topic = topic.replace(/\btonight\b/ig, '').trim(); }
         else if (/\btoday\b/i.test(line)) { when = 'Today'; topic = topic.replace(/\btoday\b/ig, '').trim(); }
 
-        var tag = 'Draft';
-        var plat = line.match(/\b(tiktok|instagram|youtube|reel|short)\b/i);
-        if (plat) tag = plat[1].toLowerCase() === 'reel' ? 'Instagram'
-                     : plat[1].toLowerCase() === 'short' ? 'YouTube'
-                     : plat[1][0].toUpperCase() + plat[1].slice(1).toLowerCase();
-
-        JARVIS.store.queueAdd(U.clean(topic), when, tag);
-        JARVIS.store.logAdd('Queued: ' + U.clean(topic), 'ok');
+        var tag = platformFrom(line) || 'Draft';
+        S.queueAdd(U.clean(topic), when, tag);
+        S.logAdd('Queued: ' + U.clean(topic), 'ok');
         return {
-          say: 'Added to the queue for ' + when.toLowerCase() + '. ' +
-               'That\'s ' + JARVIS.store.queueOpen().length + ' posts lined up.',
-          panel: 'queue',
-          toast: 'Queued'
+          say: 'Queued for ' + when.toLowerCase() + '. ' +
+               S.queueOpen().length + ' posts lined up.',
+          panel: 'queue', toast: 'Queued'
         };
       }
     },
@@ -159,10 +347,10 @@ JARVIS.skills = (function () {
       id: 'queueRead',
       match: /\b(queue|what('s| is) (scheduled|next|coming|lined up|posting)|calendar|posting schedule|what am i posting)\b/i,
       run: function () {
-        var q = JARVIS.store.queueOpen();
-        if (!q.length) return { say: 'The queue is empty. Tell me what to line up.', panel: 'queue' };
+        var q = S.queueOpen();
+        if (!q.length) return { say: 'The queue is empty.', panel: 'queue' };
         return {
-          say: 'You have ' + q.length + (q.length === 1 ? ' post' : ' posts') + ' queued. Next up, ' +
+          say: q.length + (q.length === 1 ? ' post queued. Next, ' : ' posts queued. Next, ') +
                q[0].when.toLowerCase() + ': ' + q[0].text + '.',
           panel: 'queue'
         };
@@ -174,30 +362,25 @@ JARVIS.skills = (function () {
       run: function (m, line) {
         var what = line.replace(/^.*?\b(mark|i posted|done with|posted)\b/i, '')
                        .replace(/\b(as )?(done|posted)\b/ig, '').trim();
-        var hit = JARVIS.store.queueDone(what);
-        if (!hit) return { say: 'I couldn\'t find that one in the queue.', panel: 'queue' };
-        JARVIS.store.logAdd('Marked posted: ' + hit.text, 'ok');
-        return { say: 'Nice. Marked "' + hit.text + '" as posted.', panel: 'queue', toast: 'Marked posted' };
+        var hit = S.queueDone(what);
+        if (!hit) return { say: 'I couldn\'t find that in the queue.', panel: 'queue' };
+        S.logAdd('Marked posted: ' + hit.text, 'ok');
+        return { say: 'Marked "' + hit.text + '" as posted.', panel: 'queue', toast: 'Marked posted' };
       }
     },
-
-    /* — making things ————————————————————————————— */
     {
       id: 'hooks',
       match: /\b(hooks?|ideas? for|content ideas|titles?|angles?)\b/i,
       run: function (m, line) {
-        var topic = line.replace(/^.*?\b(hooks?|ideas?|titles?|angles?)\b/i, '')
-                        .replace(/^\s*(for|about|on)\s+/i, '')
-                        .trim();
-        topic = U.clean(topic);
-        if (!topic) return { say: 'What topic? Say, hooks about shipping with AI.' };
+        var topic = U.clean(line.replace(/^.*?\b(hooks?|ideas?|titles?|angles?)\b/i, '')
+                                .replace(/^\s*(for|about|on)\s+/i, ''));
+        if (!topic) return { say: 'What topic?' };
         var hooks = hooksFor(topic);
-        hooks.forEach(function (h) { JARVIS.store.ideaAdd(h); });
+        hooks.forEach(function (h) { S.ideaAdd(h); });
         return {
           say: 'Three angles on ' + topic + '. One. ' + hooks[0] + '. Two. ' + hooks[1] +
-               '. Three. ' + hooks[2] + '. I saved all three to your ideas.',
-          panel: 'ideas',
-          toast: '3 hooks saved'
+               '. Three. ' + hooks[2] + '. All three saved to your ideas.',
+          panel: 'ideas', toast: '3 hooks saved'
         };
       }
     },
@@ -209,15 +392,12 @@ JARVIS.skills = (function () {
                                 .replace(/^\s*(for|about|on)\s+/i, ''));
         if (!topic) topic = 'your next video';
         var hook = hooksFor(topic)[0];
-        JARVIS.store.ideaAdd('SCRIPT — ' + topic + ' — open with: ' + hook);
+        S.ideaAdd('SCRIPT — ' + topic + ' — open with: ' + hook);
         return {
-          say: 'Here\'s the shape. Open on the hook: ' + hook + '. ' +
-               'Three seconds of stakes, twenty five seconds of screen proof with real numbers, ' +
-               'then the counter-intuitive turn, then one call to action. Never two. ' +
-               'Full beat sheet is on screen and saved to your ideas.',
-          panel: 'ideas',
-          beats: BEATS,
-          toast: 'Script outline saved'
+          say: 'Open on the hook: ' + hook + '. Three seconds of stakes, ' +
+               'twenty five seconds of screen proof with real numbers, then the ' +
+               'counter-intuitive turn, then one call to action. The beat sheet is on screen.',
+          panel: 'ideas', beats: BEATS, toast: 'Outline saved'
         };
       }
     },
@@ -228,18 +408,18 @@ JARVIS.skills = (function () {
         var what = U.clean(line.replace(/^.*?\b(remember|make a note|note that|write (this )?down|jot|capture this)\b/i, '')
                                .replace(/^\s*(to|that|this|down|about)\s+/i, ''));
         if (!what) return { say: 'Remember what?' };
-        JARVIS.store.ideaAdd(what);
-        return { say: 'Noted. ' + what, panel: 'ideas', toast: 'Saved to ideas' };
+        S.ideaAdd(what);
+        return { say: 'Noted. ' + what, panel: 'ideas', toast: 'Saved' };
       }
     },
     {
       id: 'ideasRead',
       match: /\b(my ideas|read.*(ideas|notes)|what.*(ideas|notes)|idea list)\b/i,
       run: function () {
-        var ideas = JARVIS.store.ideas();
+        var ideas = S.ideas();
         if (!ideas.length) return { say: 'Your idea list is empty.', panel: 'ideas' };
         return {
-          say: 'You have ' + ideas.length + (ideas.length === 1 ? ' idea' : ' ideas') + '. Most recent: ' +
+          say: ideas.length + (ideas.length === 1 ? ' idea. ' : ' ideas. Most recent: ') +
                ideas.slice(0, 3).map(function (i) { return i.text; }).join('. ') + '.',
           panel: 'ideas'
         };
@@ -251,16 +431,17 @@ JARVIS.skills = (function () {
       run: function (m, line) {
         var what = U.clean(line.replace(/^.*?\bremind me\b/i, '').replace(/^\s*(to|about|that)\s+/i, ''));
         if (!what) return { say: 'Remind you to do what?' };
-        JARVIS.store.remindAdd(what);
-        return { say: 'I\'ll keep that in front of you. ' + what + '.', panel: 'ideas', toast: 'Reminder set' };
+        S.remindAdd(what);
+        return { say: 'I\'ll keep it in front of you.', panel: 'ideas', toast: 'Reminder set' };
       }
     },
 
-    /* — the money question ————————————————————————— */
+    /* — reading the numbers back ————————————————————— */
     {
       id: 'briefing',
       match: /\b(brief|briefing|rundown|status report|catch me up|debrief|full (report|picture)|how are we doing|how('s| is) everything|what('s| is) up|state of (play|things))\b/i,
       run: function () {
+        if (JARVIS.data.isEmpty()) return { say: emptyBriefing(), action: 'settings' };
         return {
           say: U.greeting() + '. ' + revenueLine() + ' ' + growthLine() + ' ' +
                contentLine() + ' ' + handledLine() + ' ' + needsLine(),
@@ -270,12 +451,10 @@ JARVIS.skills = (function () {
     },
     {
       id: 'app',
-      match: /\b(how('s| is) the app|app (doing|stats|performance)|how('s| is) (it|the product|the business) (doing|going)|numbers)\b/i,
+      match: /\b(how('s| is) the app|app (doing|stats|performance)|how('s| is) (it|the product|the business) (doing|going)|the numbers)\b/i,
       run: function () {
-        return {
-          say: 'Pulling up our app stats now. ' + revenueLine() + ' ' + growthLine(),
-          panel: 'revenue'
-        };
+        if (JARVIS.data.isEmpty()) return { say: emptyBriefing(), action: 'settings' };
+        return { say: revenueLine() + ' ' + growthLine(), panel: 'revenue' };
       }
     },
     {
@@ -283,11 +462,9 @@ JARVIS.skills = (function () {
       match: /\b(revenue|money|mrr|sales|earnings|income|how much did we (make|earn)|cash)\b/i,
       run: function () {
         var r = D().revenue;
-        return {
-          say: revenueLine() + ' That works out to ' + P().currency + r.arpu +
-               ' per download.',
-          panel: 'revenue'
-        };
+        var line = revenueLine();
+        if (r.arpu) line += ' That is ' + cur() + r.arpu + ' per download.';
+        return { say: line, panel: 'revenue' };
       }
     },
     {
@@ -295,59 +472,51 @@ JARVIS.skills = (function () {
       match: /\b(downloads|installs|users|growth|sign ?ups|new customers|churn|conversion|retention)\b/i,
       run: function () { return { say: growthLine(), panel: 'growth' }; }
     },
-
-    /* — content ————————————————————————————————— */
     {
       id: 'topPost',
       match: /\b(top|best|winning|highest) (post|video|performer|content)|what (worked|performed|popped)\b/i,
       run: function () {
         var t = D().content.top;
-        return {
-          say: 'Your best performer is "' + t.hook + '" on ' + t.platform +
-               '. ' + U.spoken(t.views) + ' views and ' + U.spoken(t.saves) +
-               ' saves. The save rate is the signal there — make a part two.',
+        if (!t) return {
+          say: 'No posts recorded yet. Say, published, then the hook, to add one.',
           panel: 'content'
         };
+        var line = 'Your best performer is "' + t.hook + '" on ' + t.platform + '.';
+        if (t.views) line += ' ' + U.spoken(t.views) + ' views.';
+        if (t.saves) line += ' ' + U.spoken(t.saves) + ' saves.';
+        return { say: line, panel: 'content' };
       }
     },
     {
       id: 'platform',
       match: /\b(tiktok|instagram|youtube|twitter|\bx\b)\b/i,
       run: function (m, line) {
-        var want = line.match(/tiktok|instagram|youtube|twitter|\bx\b/i)[0].toLowerCase();
-        if (want === 'twitter') want = 'x';
-        var hit = D().content.platforms.filter(function (p) {
-          return p.name.toLowerCase() === want;
-        })[0];
-        if (!hit) return { say: 'I\'m not tracking that platform yet.' };
+        var want = platformFrom(line);
+        var hit = D().content.platforms.filter(function (p) { return p.name === want; })[0];
+        if (!hit) return { say: 'I\'m not tracking that platform.' };
+        if (!hit.views) return { say: 'No views logged on ' + hit.name + ' this week.', panel: 'content' };
         var share = (hit.views / D().content.views7 * 100).toFixed(0);
         return {
           say: hit.name + ' did ' + U.spoken(hit.views) + ' views this week, ' +
-               share + ' percent of your total reach.',
+               share + ' percent of your reach.',
           panel: 'content'
         };
       }
     },
     {
       id: 'content',
-      match: /\b(content|views|reach|posts|impressions|social|how did (the )?content)\b/i,
+      match: /\b(content|views|reach|posts|impressions|social)\b/i,
       run: function () { return { say: contentLine(), panel: 'content' }; }
     },
-
-    /* — autonomy ————————————————————————————————— */
     {
       id: 'handled',
-      match: /\b(what did you (do|handle|fix|resolve)|handled|anything automatic|on your own|what have you done)\b/i,
-      run: function () {
-        return { say: handledLine(), panel: 'handled' };
-      }
+      match: /\b(what did you (do|handle|fix|resolve)|handled|what have you done)\b/i,
+      run: function () { return { say: handledLine(), panel: 'handled' }; }
     },
     {
       id: 'needsMe',
-      match: /\b(needs? (me|you|my|a decision)|blocked|blockers|waiting on|anything i (need|should)|my attention|approve)\b/i,
-      run: function () {
-        return { say: needsLine(), panel: 'needs' };
-      }
+      match: /\b(needs? (me|you|my|a decision)|blocked|blockers|waiting on|anything i (need|should)|my attention|open items)\b/i,
+      run: function () { return { say: needsLine(), panel: 'needs' }; }
     },
 
     /* — pleasantries ————————————————————————————— */
@@ -366,12 +535,7 @@ JARVIS.skills = (function () {
       id: 'thanks',
       match: /\b(thanks|thank you|cheers|appreciate|nice work|good job)\b/i,
       run: function () {
-        return { say: U.pick([
-          'Any time.',
-          'That\'s what I\'m here for.',
-          'Always a pleasure.',
-          'Noted. Back to work.'
-        ], 1)[0] };
+        return { say: U.pick(['Of course.', 'Any time.', 'Noted.'], 1)[0] };
       }
     },
     {
@@ -380,11 +544,14 @@ JARVIS.skills = (function () {
       run: function () {
         var d = D();
         var owner = P().owner ? ', ' + P().owner : '';
+        if (JARVIS.data.isEmpty()) {
+          return { say: U.greeting() + owner + '. Systems are up and the ledger is empty. Ask me for the briefing when you\'re ready.' };
+        }
         return {
-          say: U.greeting() + owner + '. All systems are up. ' +
-               'Revenue is ' + U.money(d.revenue.last7, P().currency) + ' over seven days and ' +
+          say: U.greeting() + owner + '. Systems are up. Revenue is ' +
+               U.money(d.revenue.last7, cur()) + ' over seven days and ' +
                d.needsYou.length + (d.needsYou.length === 1 ? ' item needs' : ' items need') +
-               ' your call. Ask me for the full briefing when you\'re ready.'
+               ' your attention.'
         };
       }
     },
@@ -393,14 +560,13 @@ JARVIS.skills = (function () {
       match: /\b(who are you|what are you|your name)\b/i,
       run: function () {
         return {
-          say: 'I\'m Jarvis. I watch the numbers, handle what I can, and tell you ' +
-               'what actually needs you. Running locally in your browser.'
+          say: 'I\'m Jarvis. I hold your numbers, your queue and your notes, ' +
+               'and I report on them. Running locally, on your machine.'
         };
       }
     }
   ];
 
-  /* --- Dispatch ---------------------------------------------------------- */
   function run(line) {
     var text = U.clean(line);
     if (!text) return null;
@@ -415,13 +581,12 @@ JARVIS.skills = (function () {
       return out;
     }
 
-    /* Nothing matched. Say so plainly rather than inventing an answer. */
     return {
       id: 'unknown',
       say: U.pick([
-        'I didn\'t catch a command in that. Ask me for the briefing, or say what can you do.',
-        'That one\'s not in my skill list yet. Try: how\'s the app doing.',
-        'I\'m not wired for that yet. Say help for what I can actually do.'
+        'That isn\'t a command I hold. Say, help, for the list.',
+        'Not in my skill set yet. Try, brief me.',
+        'I didn\'t find a command in that.'
       ], 1)[0],
       unknown: true
     };
@@ -432,9 +597,6 @@ JARVIS.skills = (function () {
     list: LIST,
     hooksFor: hooksFor,
     beats: BEATS,
-    /* Add your own at runtime: JARVIS.skills.add({id, match, run}) */
-    add: function (skill, atTop) {
-      if (atTop) LIST.unshift(skill); else LIST.push(skill);
-    }
+    add: function (skill, atTop) { if (atTop) LIST.unshift(skill); else LIST.push(skill); }
   };
 })();
