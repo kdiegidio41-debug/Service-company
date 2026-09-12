@@ -26,6 +26,7 @@ So the front carries five things and nothing else, in the order a stranger reads
 | --- | --- | --- |
 | 1 | Lit-bulb string across the top | Says "Christmas lights" before a single word is read |
 | 2 | **EVERGLOW** wordmark, 1.8in caps | Legible at ~60ft. The O is the brand's lit bulb. |
+| 2b | PROFESSIONAL HOLIDAY LIGHTING | The name alone doesn't say what you do. This line does, at .58in caps. |
 | 3 | TAKEDOWN & STORAGE INCLUDED | The one thing no competitor offers. It is the whole positioning. |
 | 4 | **(267) 853-0058**, 1.3in caps | The biggest actionable thing on the sign |
 | 5 | QR in a white panel | The walk-up ask, for people who won't dial a stranger but will text one |
@@ -163,7 +164,7 @@ Two lines were deliberately left off. Both are easy to add back.
 **The web address.** `everglowlighting.com` does not resolve yet. A printed URL
 that goes nowhere is the one claim a skeptical homeowner can disprove in three
 seconds, and a sign is permanent in a way a webpage isn't. The footer carries
-`FREE ESTIMATES · NO LADDERS · DOWN BY JAN 15` instead — all true today. Put the
+`FREE ESTIMATES · DOWN BY JAN 15` instead — both true today. Put the
 domain back for next season's print run once the site is live.
 
 **"Licensed & insured to $2M."** This is an advertising claim about your

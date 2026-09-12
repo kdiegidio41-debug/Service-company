@@ -42,7 +42,8 @@ For local service searches, the GBP map pack outranks everything, including your
 
 ### 3. Yard signs at every job
 
-- 18×24, Midnight ground, Bulb mark, **"Lights by Everglow"** + phone + short URL.
+- 18×24, Midnight ground, lit-bulb wordmark, **"PROFESSIONAL HOLIDAY LIGHTING"** + the
+  takedown promise + phone + a QR that opens a prefilled text. Built: `assets/print/yard-sign.pdf`.
 - Ask permission during the walkthrough: *"Mind if we leave a small sign by the driveway through the season? We'll pull it at takedown."* ~70% say yes.
 - Expect **~1 lead per 6–8 signs**, and those leads close at a very high rate because they've seen your actual work on their own street.
 

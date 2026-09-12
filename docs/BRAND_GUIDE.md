@@ -155,6 +155,10 @@ The palette is **a winter night, lit from within.** Dark ground, warm light. It'
 
 **Lockups:**
 - **Primary** — wordmark + "HOLIDAY LIGHTING CO." in Inter, letterspaced, centered beneath.
+- **Signage variant** — on the yard sign and anything else read at distance by strangers,
+  the descriptor becomes **"PROFESSIONAL HOLIDAY LIGHTING"** and drops "CO." A passer-by
+  needs to know the trade before they need the legal form. Tracking tightens to .2em so the
+  longer line still fits the safe area.
 - **Horizontal** — bulb mark, then wordmark, then rule, then "HOLIDAY LIGHTING CO." Use in the site header and email signature.
 - **Mark only** — the glowing bulb in a circle. Use for the favicon, social avatar, hard hat sticker, and yard-sign corner.
 
@@ -192,7 +196,7 @@ Blue hour is the ~25 minutes after sunset when the sky is deep blue but still ho
 | --- | --- |
 | **Truck / trailer** | Midnight wrap, oversized Bulb mark on the rear door, wordmark on both sides, phone + `everglowlighting.com` in Snow at 6" cap height. The trailer is a rolling billboard that parks in your best neighborhoods for 8 hours a day — treat it as your #1 ad buy. |
 | **Crew uniform** | Midnight quarter-zip or hoodie, Bulb mark embroidered left chest, wordmark across the back. Warm hat in Pine. Uniforms are a trust device — a homeowner letting strangers onto their roof needs to see them. |
-| **Yard sign** | 18×24, Midnight ground, lit-bulb wordmark, the takedown promise, the phone at 1.3in caps, and a QR to the quote form. Placed at every job with permission. Expect 1 lead per 6–8 signs per season. **Built and ready to print: `assets/print/yard-sign.pdf` — spec in [`YARD_SIGN.md`](YARD_SIGN.md).** |
+| **Yard sign** | 18×24, Midnight ground, lit-bulb wordmark, the takedown promise, the phone at 1.3in caps, and a QR that opens a prefilled text message. Placed at every job with permission. Expect 1 lead per 6–8 signs per season. **Built and ready to print: `assets/print/yard-sign.pdf` — spec in [`YARD_SIGN.md`](YARD_SIGN.md).** |
 | **Door hanger** | For the 8 houses either side of every install. Headline: *"We just lit up your neighbor's house."* |
 | **Estimate PDF** | Branded cover, blue-hour photo of a comparable home, itemized scope, the four guarantees, one-click accept link. |
 | **Thank-you card** | Handwritten, mailed within 3 days of install, with two referral cards enclosed. |
