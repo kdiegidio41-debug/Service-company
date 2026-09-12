@@ -128,23 +128,25 @@ word nine times.
 
 ---
 
-## Connecting real sources (later)
+## Connecting real sources
 
-Right now you log by hand. When you want it automatic, point Jarvis at an endpoint that
-returns the same shape it already builds internally:
+Logging by hand works forever. When it becomes the annoying part, there's a metrics proxy
+in **[`server/`](server/)** — deploy it to Cloudflare (free) or run it locally, give it your
+API keys, then press **D** → **Live feed**, paste the URL and token, and **Connect**.
 
-```js
-JARVIS.data.configure({ endpoint: 'https://api.yoursite.com/jarvis/metrics' });
-```
+| Source | What it honestly gives you |
+| --- | --- |
+| **Stripe** | Real per-day revenue and MRR. Works with a read-only restricted key. |
+| **YouTube** | Subscribers and recent video views. *Not* views per day — that needs OAuth. |
+| **Sheet** | Anything you type into a published Google Sheet, with a full daily series. The realistic path for TikTok and Instagram, whose APIs need an app review you won't get for a personal project. |
 
-The status chip flips from `local` to `live feed` when that is answering.
+The keys live on the proxy, never in the page — a static page can't hold a secret.
 
-The page is static and cannot hold secrets, so put a small proxy in front — a Cloudflare
-Worker, a Vercel function, an n8n webhook. It holds the keys, fans out to Stripe or
-RevenueCat, App Store Connect, the TikTok API, and returns one merged payload.
-**Never put an API key in this page.**
+**How it merges:** a source that answers wins; a source that doesn't is ignored rather than
+treated as zero. So connecting Stripe never blanks your view counts. Your flags, handled
+items, queue and notes are never touched by any feed — no API produces those.
 
----
+Full setup, including where to click for each key: **[`server/README.md`](server/README.md)**.
 
 ## Adding your own commands
 

@@ -46,7 +46,8 @@ JARVIS.store = (function () {
       ideas: [],
       reminders: [],
       log: [],
-      voiceName: null
+      voiceName: null,
+      feed: { endpoint: '', token: '' }
     };
   }
 
@@ -254,6 +255,11 @@ JARVIS.store = (function () {
     log: function () { return state.log; },
 
     setVoice: function (name) { state.voiceName = name; save(); },
+    setFeed: function (endpoint, token) {
+      state.feed = { endpoint: endpoint || '', token: token || '' };
+      save();
+    },
+    feed: function () { return state.feed || { endpoint: '', token: '' }; },
 
     /* --- your data, portable -------------------------------------------- */
     exportJSON: function () { return JSON.stringify(state, null, 2); },

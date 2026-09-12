@@ -1,0 +1,13 @@
+name = "jarvis-metrics"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Secrets are NOT set here — that would put them in git.
+# Set each one with:  npx wrangler secret put STRIPE_SECRET_KEY
+#
+# Non-secret settings can live here:
+[vars]
+# ALLOWED_ORIGIN = "https://yourname.github.io"
+# ACTIVE_USERS = "0"
+# TRIAL_CONVERSION = "0"
+# CHURN = "0"

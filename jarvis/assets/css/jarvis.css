@@ -680,3 +680,27 @@ ul { margin: 0; padding: 0; list-style: none; }
   font-family: var(--font-hud); font-size: .7rem; color: var(--text-faint);
 }
 .micnote__x:hover { color: var(--gold); }
+
+/* --- 15. Live feed status ------------------------------------------------ */
+.set__tag {
+  font-style: normal; font-size: .55rem; letter-spacing: .1em;
+  color: var(--text-faint); margin-left: 8px; text-transform: uppercase;
+}
+.set__tag.is-on { color: var(--jade); }
+.set__tag.is-bad { color: var(--rose); }
+
+.set__status { margin-top: 11px; font-size: .76rem; line-height: 1.6; }
+.set__status:empty { display: none; }
+.set__status ul { margin: 6px 0 0; }
+.set__status li {
+  display: flex; gap: 8px; align-items: baseline;
+  font-family: var(--font-hud); font-size: .66rem; letter-spacing: .05em;
+  padding: 2px 0;
+}
+.set__status li b {
+  min-width: 74px; color: var(--text-dim); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .12em; font-size: .6rem;
+}
+.set__status .ok { color: var(--jade); }
+.set__status .off { color: var(--text-faint); }
+.set__status .bad { color: var(--rose); word-break: break-word; }

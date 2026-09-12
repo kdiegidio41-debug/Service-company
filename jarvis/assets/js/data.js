@@ -18,6 +18,7 @@ JARVIS.data = (function () {
 
   var CONFIG = {
     endpoint: null,
+    token: null,
     refreshMs: 5 * 60 * 1000
   };
 
@@ -121,8 +122,41 @@ JARVIS.data = (function () {
     };
   }
 
+  /* Overlay the live feed onto the local picture, field by field.
+     A live value of null means "this source doesn't know" — not "zero" — so
+     the locally logged value survives. Connecting Stripe must not blank out
+     the view counts you typed in, and `handled` / `needsYou` are human
+     judgements that no API produces, so they always stay local. */
+  function overlay(localSection, liveSection) {
+    if (!liveSection) return localSection;
+    var out = {};
+    for (var k in localSection) out[k] = localSection[k];
+    for (var j in liveSection) {
+      var v = liveSection[j];
+      if (v !== null && v !== undefined) out[j] = v;
+    }
+    return out;
+  }
+
   function recompute() {
-    current = live || build();
+    var merged = build();
+
+    if (live) {
+      merged.revenue = overlay(merged.revenue, live.revenue);
+      merged.growth  = overlay(merged.growth,  live.growth);
+      merged.content = overlay(merged.content, live.content);
+      merged.sources = live.sources || null;
+      merged.fetchedAt = live.generatedAt || null;
+      merged.empty = !(merged.revenue.last7 || merged.growth.downloads7 ||
+                       merged.content.views7 || merged.revenue.mrr);
+      /* arpu is derived, so recompute it after the merge rather than
+         trusting either side's stale copy. */
+      merged.revenue.arpu = merged.growth.downloads7
+        ? Math.round((merged.revenue.last7 / merged.growth.downloads7) * 100) / 100
+        : 0;
+    }
+
+    current = merged;
     listeners.forEach(function (fn) { fn(current); });
     return current;
   }
@@ -133,13 +167,17 @@ JARVIS.data = (function () {
 
   function refresh() {
     if (!CONFIG.endpoint) { live = null; return Promise.resolve(recompute()); }
-    return fetch(CONFIG.endpoint, { headers: { accept: 'application/json' } })
+    var headers = { accept: 'application/json' };
+    if (CONFIG.token) headers.Authorization = 'Bearer ' + CONFIG.token;
+
+    return fetch(CONFIG.endpoint, { headers: headers })
       .then(function (r) {
+        if (r.status === 401) throw new Error('Unauthorized — check the token');
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
       .then(function (json) {
-        json.demo = false;
+        if (json.error) throw new Error(json.error);
         live = json;
         return recompute();
       })
@@ -153,6 +191,9 @@ JARVIS.data = (function () {
     get product() { return S.profile(); },
     get: function () { return current; },
     isLive: function () { return !!live; },
+    sources: function () { return live && live.sources || null; },
+    disconnect: function () { live = null; CONFIG.endpoint = null; CONFIG.token = null; recompute(); },
+    config: function () { return { endpoint: CONFIG.endpoint, token: CONFIG.token }; },
     isEmpty: function () { return !!current.empty; },
     onUpdate: function (fn) { listeners.push(fn); },
     refresh: refresh,

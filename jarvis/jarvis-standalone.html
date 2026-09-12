@@ -701,6 +701,30 @@ ul { margin: 0; padding: 0; list-style: none; }
 }
 .micnote__x:hover { color: var(--gold); }
 
+/* --- 15. Live feed status ------------------------------------------------ */
+.set__tag {
+  font-style: normal; font-size: .55rem; letter-spacing: .1em;
+  color: var(--text-faint); margin-left: 8px; text-transform: uppercase;
+}
+.set__tag.is-on { color: var(--jade); }
+.set__tag.is-bad { color: var(--rose); }
+
+.set__status { margin-top: 11px; font-size: .76rem; line-height: 1.6; }
+.set__status:empty { display: none; }
+.set__status ul { margin: 6px 0 0; }
+.set__status li {
+  display: flex; gap: 8px; align-items: baseline;
+  font-family: var(--font-hud); font-size: .66rem; letter-spacing: .05em;
+  padding: 2px 0;
+}
+.set__status li b {
+  min-width: 74px; color: var(--text-dim); font-weight: 600; text-transform: uppercase;
+  letter-spacing: .12em; font-size: .6rem;
+}
+.set__status .ok { color: var(--jade); }
+.set__status .off { color: var(--text-faint); }
+.set__status .bad { color: var(--rose); word-break: break-word; }
+
 </style>
 </head>
 <body>
@@ -1016,6 +1040,30 @@ ul { margin: 0; padding: 0; list-style: none; }
     </div>
 
     <div class="set">
+      <h4 class="set__head">Live feed <i class="set__tag" id="feedTag">not connected</i></h4>
+      <p class="set__note">
+        Point Jarvis at the metrics proxy in <b>server/</b> and it pulls revenue, downloads
+        and views on its own. Sources the proxy can't answer for stay on whatever you logged
+        by hand, and your flags and handled items always stay local.
+      </p>
+      <div class="set__grid">
+        <label class="set__field">
+          <span>Endpoint</span>
+          <input type="url" id="setEndpoint" placeholder="https://jarvis-metrics.you.workers.dev/metrics">
+        </label>
+        <label class="set__field">
+          <span>Token <i>the JARVIS_TOKEN you set</i></span>
+          <input type="password" id="setToken" placeholder="">
+        </label>
+      </div>
+      <div class="set__row">
+        <button class="set__btn" id="setConnect">Connect</button>
+        <button class="set__btn" id="setDisconnect">Disconnect</button>
+      </div>
+      <div class="set__status" id="feedStatus"></div>
+    </div>
+
+    <div class="set">
       <h4 class="set__head">Backup</h4>
       <p class="set__note">
         This data lives in one browser. Copy it out before you clear site data or switch machines.
@@ -1302,7 +1350,8 @@ JARVIS.store = (function () {
       ideas: [],
       reminders: [],
       log: [],
-      voiceName: null
+      voiceName: null,
+      feed: { endpoint: '', token: '' }
     };
   }
 
@@ -1510,6 +1559,11 @@ JARVIS.store = (function () {
     log: function () { return state.log; },
 
     setVoice: function (name) { state.voiceName = name; save(); },
+    setFeed: function (endpoint, token) {
+      state.feed = { endpoint: endpoint || '', token: token || '' };
+      save();
+    },
+    feed: function () { return state.feed || { endpoint: '', token: '' }; },
 
     /* --- your data, portable -------------------------------------------- */
     exportJSON: function () { return JSON.stringify(state, null, 2); },
@@ -1550,6 +1604,7 @@ JARVIS.data = (function () {
 
   var CONFIG = {
     endpoint: null,
+    token: null,
     refreshMs: 5 * 60 * 1000
   };
 
@@ -1653,8 +1708,41 @@ JARVIS.data = (function () {
     };
   }
 
+  /* Overlay the live feed onto the local picture, field by field.
+     A live value of null means "this source doesn't know" — not "zero" — so
+     the locally logged value survives. Connecting Stripe must not blank out
+     the view counts you typed in, and `handled` / `needsYou` are human
+     judgements that no API produces, so they always stay local. */
+  function overlay(localSection, liveSection) {
+    if (!liveSection) return localSection;
+    var out = {};
+    for (var k in localSection) out[k] = localSection[k];
+    for (var j in liveSection) {
+      var v = liveSection[j];
+      if (v !== null && v !== undefined) out[j] = v;
+    }
+    return out;
+  }
+
   function recompute() {
-    current = live || build();
+    var merged = build();
+
+    if (live) {
+      merged.revenue = overlay(merged.revenue, live.revenue);
+      merged.growth  = overlay(merged.growth,  live.growth);
+      merged.content = overlay(merged.content, live.content);
+      merged.sources = live.sources || null;
+      merged.fetchedAt = live.generatedAt || null;
+      merged.empty = !(merged.revenue.last7 || merged.growth.downloads7 ||
+                       merged.content.views7 || merged.revenue.mrr);
+      /* arpu is derived, so recompute it after the merge rather than
+         trusting either side's stale copy. */
+      merged.revenue.arpu = merged.growth.downloads7
+        ? Math.round((merged.revenue.last7 / merged.growth.downloads7) * 100) / 100
+        : 0;
+    }
+
+    current = merged;
     listeners.forEach(function (fn) { fn(current); });
     return current;
   }
@@ -1665,13 +1753,17 @@ JARVIS.data = (function () {
 
   function refresh() {
     if (!CONFIG.endpoint) { live = null; return Promise.resolve(recompute()); }
-    return fetch(CONFIG.endpoint, { headers: { accept: 'application/json' } })
+    var headers = { accept: 'application/json' };
+    if (CONFIG.token) headers.Authorization = 'Bearer ' + CONFIG.token;
+
+    return fetch(CONFIG.endpoint, { headers: headers })
       .then(function (r) {
+        if (r.status === 401) throw new Error('Unauthorized — check the token');
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
       .then(function (json) {
-        json.demo = false;
+        if (json.error) throw new Error(json.error);
         live = json;
         return recompute();
       })
@@ -1685,6 +1777,9 @@ JARVIS.data = (function () {
     get product() { return S.profile(); },
     get: function () { return current; },
     isLive: function () { return !!live; },
+    sources: function () { return live && live.sources || null; },
+    disconnect: function () { live = null; CONFIG.endpoint = null; CONFIG.token = null; recompute(); },
+    config: function () { return { endpoint: CONFIG.endpoint, token: CONFIG.token }; },
     isEmpty: function () { return !!current.empty; },
     onUpdate: function (fn) { listeners.push(fn); },
     refresh: refresh,
@@ -3197,9 +3292,9 @@ JARVIS.core = (function () {
 
       if (out.action === 'refresh') {
         JARVIS.data.refresh().then(function () {
-          toast('Metrics refreshed');
-        }).catch(function () {
-          toast('Metrics feed unreachable', 'bad');
+          toast(JARVIS.data.isLive() ? 'Live feed refreshed' : 'Recalculated');
+        }).catch(function (e) {
+          toast('Feed unreachable: ' + e.message, 'bad');
         });
       }
       if (out.action === 'help') openHelp();
@@ -3286,7 +3381,60 @@ JARVIS.core = (function () {
     el('setRate').value = t.rate;   el('setRateVal').textContent = t.rate.toFixed(2);
     el('setPitch').value = t.pitch; el('setPitchVal').textContent = t.pitch.toFixed(2);
 
+    var feed = JARVIS.store.feed();
+    el('setEndpoint').value = feed.endpoint || '';
+    el('setToken').value = feed.token || '';
+    renderFeedStatus();
+
     el('setJson').value = JARVIS.store.exportJSON();
+  }
+
+  /* Show which sources actually answered — "connected" on its own tells you
+     nothing when four of five adapters are unconfigured. */
+  function renderFeedStatus(err) {
+    var tag = el('feedTag');
+    var box = el('feedStatus');
+    var srcs = JARVIS.data.sources();
+
+    if (err) {
+      tag.textContent = 'error';
+      tag.className = 'set__tag is-bad';
+      box.innerHTML = '<span class="bad">' + core.esc(err) + '</span>';
+      return;
+    }
+    if (!JARVIS.data.isLive()) {
+      tag.textContent = 'not connected';
+      tag.className = 'set__tag';
+      box.innerHTML = '';
+      return;
+    }
+
+    tag.textContent = 'connected';
+    tag.className = 'set__tag is-on';
+    if (!srcs) { box.innerHTML = ''; return; }
+    box.innerHTML = '<ul>' + Object.keys(srcs).map(function (k) {
+      var v = String(srcs[k]);
+      var cls = v === 'ok' ? 'ok' : v.indexOf('error') === 0 ? 'bad' : 'off';
+      return '<li><b>' + core.esc(k) + '</b><span class="' + cls + '">' +
+             core.esc(v) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function connectFeed(announce) {
+    var endpoint = el('setEndpoint').value.trim();
+    var token = el('setToken').value.trim();
+    if (!endpoint) { renderFeedStatus('Enter the endpoint URL first.'); return; }
+
+    JARVIS.store.setFeed(endpoint, token);
+    JARVIS.data.configure({ endpoint: endpoint, token: token });
+
+    return JARVIS.data.refresh().then(function () {
+      renderFeedStatus();
+      if (announce) toast('Live feed connected');
+    }).catch(function (e) {
+      renderFeedStatus(e.message);
+      if (announce) toast('Could not reach the feed', 'bad');
+    });
   }
 
   /* Show whatever is already recorded for the chosen date. */
@@ -3371,6 +3519,12 @@ JARVIS.core = (function () {
       });
       setTimeout(tick, 10000);
     })();
+
+    /* --- reconnect a saved feed --- */
+    var savedFeed = JARVIS.store.feed();
+    if (savedFeed.endpoint) {
+      JARVIS.data.configure({ endpoint: savedFeed.endpoint, token: savedFeed.token });
+    }
 
     /* --- voice: restore the saved choice --- */
     var savedVoice = JARVIS.store.get().voiceName;
@@ -3492,6 +3646,16 @@ JARVIS.core = (function () {
     el('setTestVoice').addEventListener('click', function () {
       JARVIS.voice.say('Revenue over the last seven days is up eleven percent. ' +
                        'Two items need your attention.');
+    });
+
+    el('setConnect').addEventListener('click', function () { connectFeed(true); });
+    el('setDisconnect').addEventListener('click', function () {
+      JARVIS.store.setFeed('', '');
+      JARVIS.data.disconnect();
+      el('setEndpoint').value = '';
+      el('setToken').value = '';
+      renderFeedStatus();
+      toast('Disconnected — back to local data');
     });
 
     el('setCopy').addEventListener('click', function () {

@@ -1,0 +1,29 @@
+# Copy to .env (local.js) or .dev.vars (wrangler dev). Never commit the real one.
+#
+# Shared secret between the app and this proxy. Generate a long random string;
+# paste the same value into the app's data panel.
+JARVIS_TOKEN=
+
+# Lock the proxy to your app's origin. "*" while testing.
+ALLOWED_ORIGIN=*
+
+# --- Stripe: real daily revenue + MRR --------------------------------------
+# Dashboard → Developers → API keys. A RESTRICTED key with read access to
+# Charges and Subscriptions is enough, and is what you should use.
+STRIPE_SECRET_KEY=
+
+# --- YouTube: subscribers + recent video views -----------------------------
+# console.cloud.google.com → enable "YouTube Data API v3" → create an API key.
+# Channel id: youtube.com/account_advanced
+YOUTUBE_API_KEY=
+YOUTUBE_CHANNEL_ID=
+
+# --- Sheet: everything else, including TikTok and Instagram ----------------
+# Google Sheets → File → Share → Publish to web → CSV → copy the link.
+# Header row must be:  date,revenue,downloads,tiktok,instagram,youtube,x
+SHEET_CSV_URL=
+
+# --- Figures with no API worth calling -------------------------------------
+ACTIVE_USERS=0
+TRIAL_CONVERSION=0
+CHURN=0

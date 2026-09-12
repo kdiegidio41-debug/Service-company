@@ -1,0 +1,13 @@
+{
+  "name": "jarvis-metrics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Metrics proxy for the Jarvis console. Holds the API keys so the page never has to.",
+  "scripts": {
+    "start": "node local.js",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node test.mjs"
+  }
+}

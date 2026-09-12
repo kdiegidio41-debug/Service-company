@@ -333,6 +333,30 @@
     </div>
 
     <div class="set">
+      <h4 class="set__head">Live feed <i class="set__tag" id="feedTag">not connected</i></h4>
+      <p class="set__note">
+        Point Jarvis at the metrics proxy in <b>server/</b> and it pulls revenue, downloads
+        and views on its own. Sources the proxy can't answer for stay on whatever you logged
+        by hand, and your flags and handled items always stay local.
+      </p>
+      <div class="set__grid">
+        <label class="set__field">
+          <span>Endpoint</span>
+          <input type="url" id="setEndpoint" placeholder="https://jarvis-metrics.you.workers.dev/metrics">
+        </label>
+        <label class="set__field">
+          <span>Token <i>the JARVIS_TOKEN you set</i></span>
+          <input type="password" id="setToken" placeholder="">
+        </label>
+      </div>
+      <div class="set__row">
+        <button class="set__btn" id="setConnect">Connect</button>
+        <button class="set__btn" id="setDisconnect">Disconnect</button>
+      </div>
+      <div class="set__status" id="feedStatus"></div>
+    </div>
+
+    <div class="set">
       <h4 class="set__head">Backup</h4>
       <p class="set__note">
         This data lives in one browser. Copy it out before you clear site data or switch machines.

@@ -146,9 +146,9 @@
 
       if (out.action === 'refresh') {
         JARVIS.data.refresh().then(function () {
-          toast('Metrics refreshed');
-        }).catch(function () {
-          toast('Metrics feed unreachable', 'bad');
+          toast(JARVIS.data.isLive() ? 'Live feed refreshed' : 'Recalculated');
+        }).catch(function (e) {
+          toast('Feed unreachable: ' + e.message, 'bad');
         });
       }
       if (out.action === 'help') openHelp();
@@ -235,7 +235,60 @@
     el('setRate').value = t.rate;   el('setRateVal').textContent = t.rate.toFixed(2);
     el('setPitch').value = t.pitch; el('setPitchVal').textContent = t.pitch.toFixed(2);
 
+    var feed = JARVIS.store.feed();
+    el('setEndpoint').value = feed.endpoint || '';
+    el('setToken').value = feed.token || '';
+    renderFeedStatus();
+
     el('setJson').value = JARVIS.store.exportJSON();
+  }
+
+  /* Show which sources actually answered — "connected" on its own tells you
+     nothing when four of five adapters are unconfigured. */
+  function renderFeedStatus(err) {
+    var tag = el('feedTag');
+    var box = el('feedStatus');
+    var srcs = JARVIS.data.sources();
+
+    if (err) {
+      tag.textContent = 'error';
+      tag.className = 'set__tag is-bad';
+      box.innerHTML = '<span class="bad">' + core.esc(err) + '</span>';
+      return;
+    }
+    if (!JARVIS.data.isLive()) {
+      tag.textContent = 'not connected';
+      tag.className = 'set__tag';
+      box.innerHTML = '';
+      return;
+    }
+
+    tag.textContent = 'connected';
+    tag.className = 'set__tag is-on';
+    if (!srcs) { box.innerHTML = ''; return; }
+    box.innerHTML = '<ul>' + Object.keys(srcs).map(function (k) {
+      var v = String(srcs[k]);
+      var cls = v === 'ok' ? 'ok' : v.indexOf('error') === 0 ? 'bad' : 'off';
+      return '<li><b>' + core.esc(k) + '</b><span class="' + cls + '">' +
+             core.esc(v) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function connectFeed(announce) {
+    var endpoint = el('setEndpoint').value.trim();
+    var token = el('setToken').value.trim();
+    if (!endpoint) { renderFeedStatus('Enter the endpoint URL first.'); return; }
+
+    JARVIS.store.setFeed(endpoint, token);
+    JARVIS.data.configure({ endpoint: endpoint, token: token });
+
+    return JARVIS.data.refresh().then(function () {
+      renderFeedStatus();
+      if (announce) toast('Live feed connected');
+    }).catch(function (e) {
+      renderFeedStatus(e.message);
+      if (announce) toast('Could not reach the feed', 'bad');
+    });
   }
 
   /* Show whatever is already recorded for the chosen date. */
@@ -320,6 +373,12 @@
       });
       setTimeout(tick, 10000);
     })();
+
+    /* --- reconnect a saved feed --- */
+    var savedFeed = JARVIS.store.feed();
+    if (savedFeed.endpoint) {
+      JARVIS.data.configure({ endpoint: savedFeed.endpoint, token: savedFeed.token });
+    }
 
     /* --- voice: restore the saved choice --- */
     var savedVoice = JARVIS.store.get().voiceName;
@@ -441,6 +500,16 @@
     el('setTestVoice').addEventListener('click', function () {
       JARVIS.voice.say('Revenue over the last seven days is up eleven percent. ' +
                        'Two items need your attention.');
+    });
+
+    el('setConnect').addEventListener('click', function () { connectFeed(true); });
+    el('setDisconnect').addEventListener('click', function () {
+      JARVIS.store.setFeed('', '');
+      JARVIS.data.disconnect();
+      el('setEndpoint').value = '';
+      el('setToken').value = '';
+      renderFeedStatus();
+      toast('Disconnected — back to local data');
     });
 
     el('setCopy').addEventListener('click', function () {
