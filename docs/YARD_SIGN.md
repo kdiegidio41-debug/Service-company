@@ -24,12 +24,11 @@ So the front carries five things and nothing else, in the order a stranger reads
 
 | Reading order | Element | Why it's that size |
 | --- | --- | --- |
-| 1 | Lit-bulb string across the top | Says "Christmas lights" before a single word is read |
-| 2 | **EVERGLOW** wordmark, 1.8in caps | Legible at ~60ft. The O is the brand's lit bulb. |
-| 2b | PROFESSIONAL HOLIDAY LIGHTING | The name alone doesn't say what you do. This line does, at .58in caps. |
+| 1 | **EVERGLOW** wordmark, 1.8in caps | Legible at ~60ft. The O is the brand's lit bulb — it carries the category cue on its own. |
+| 2 | PROFESSIONAL HOLIDAY LIGHTING | The name alone doesn't say what you do. This line does, at .58in caps. |
 | 3 | TAKEDOWN & STORAGE INCLUDED | The one thing no competitor offers. It is the whole positioning. |
-| 4 | **(267) 853-0058**, 1.3in caps | The biggest actionable thing on the sign |
-| 5 | QR in a white panel | The walk-up ask, for people who won't dial a stranger but will text one |
+| 4 | **(267) 853-0058**, 1.3in caps | Readable from ~60ft — this, not the QR, is what catches someone at distance |
+| 5 | **A 10.36in QR** in a white panel | Deliberately dominant. Everything else was cut to make it this big. |
 
 Everything else — domain, "licensed & insured," the January 15 line — is the
 **walk-up read**, sized for someone standing on the sidewalk, not driving past.
@@ -38,6 +37,10 @@ The back is an optional alternate. Most printers charge the same for a different
 back as for a duplicate one, so it carries a second QR, the phone again, and the
 three guarantees. If your printer charges extra, just print the front twice —
 the front works alone.
+
+The front carries no light string, divider rule or footer strip. They were
+removed on purpose: on an 18×24 sheet the QR can only grow by taking space from
+something else, and those three were the cheapest things to lose.
 
 **Rules the layout obeys, if you edit it:**
 
@@ -151,11 +154,22 @@ Rule of thumb: **a QR scans from about 10× its own width.**
 | --- | --- |
 | 2in | ~1.5 ft |
 | 4in | ~3 ft |
-| **6.2in (this sign)** | **~5 ft** |
+| 6.2in | ~5 ft |
+| **10.36in (this sign, front)** | **~8.5 ft** |
+| 7.72in (this sign, back) | ~6.5 ft |
 
-Sized for someone who has stopped walking and is standing at the edge of the
-lawn. Nobody scans a yard sign from a moving car — that's what the phone number
-is for. Don't shrink it below 4in to make room for more copy.
+At 10.36in across a 33×33 grid, each module is **0.253in** — roughly twice the
+module size of the first version of this sign, from a combination of a shorter
+message and a much larger panel.
+
+**This is the ceiling for an 18×24.** The QR is already 58% of the sign's width
+and 43% of its height; growing it further means losing the phone number or the
+wordmark, which costs more than it buys. If you genuinely need scanning from
+15ft+, the answer is a bigger sign (24×36), not a rearranged one.
+
+And the honest limit: **no QR scans from a moving car, at any size.** Scanning
+needs someone stopped, aimed and holding still for a beat. Distance capture is
+the phone number's job; the QR's job is the person who has already walked over.
 
 ---
 
