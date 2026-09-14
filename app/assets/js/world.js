@@ -18,8 +18,8 @@ function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 function route(from, to, fromZone, toZone) {
   if (fromZone === toZone) return [{ x: to.x, y: to.y }];
   return [
-    { x: from.x, y: WORLD.hallY },
-    { x: to.x,   y: WORLD.hallY },
+    { x: from.x, y: WORLD.hallRow },
+    { x: to.x,   y: WORLD.hallRow },
     { x: to.x,   y: to.y },
   ];
 }
@@ -46,7 +46,7 @@ class Mover {
     const nx = (t.x - this.x) / d, ny = (t.y - this.y) / d;
     this.x += nx * travel; this.y += ny * travel;
     if (Math.abs(nx) > 0.15) this.facing = nx > 0 ? 1 : -1;
-    this.bob += dt * 11;
+    this.bob += dt * 5.5;
     return false;
   }
 }
@@ -54,6 +54,7 @@ class Mover {
 class Station {
   constructor(def) {
     Object.assign(this, def);
+    this.x = def.gx; this.y = def.gy;      // movement works in grid units
     this.zoneDef  = ZONES[this.zone];
     this.input    = [];      // items waiting to be worked
     this.tray     = [];      // finished items waiting for a courier
@@ -76,17 +77,17 @@ class Station {
 class Operator {
   constructor(station) {
     this.station = station;
-    this.name = OPERATOR_NAMES[station.id] || 'Operator';
+    this.name = station.who;
     this.color = ZONES[station.zone].color;
-    this.home = { x: station.x - 42, y: station.y + 12 };
-    this.mv = new Mover(this.home.x, this.home.y, 52);
+    this.home = { x: station.gx, y: station.gy + 0.95 };   // stands out front
+    this.mv = new Mover(this.home.x, this.home.y, 1.15);
     this.restTimer = Math.random() * 3;
   }
   update(dt) {
     const s = this.station;
     if (s.working) {
       // stand at the desk while working
-      if (dist(this.mv, this.home) > 3) this.mv.goTo(this.home, s.zone, s.zone);
+      if (dist(this.mv, this.home) > 0.12) this.mv.goTo(this.home, s.zone, s.zone);
       this.mv.step(dt);
       return;
     }
@@ -97,8 +98,8 @@ class Operator {
       if (this.restTimer <= 0) {
         this.restTimer = 1.5 + Math.random() * 3.5;
         this.mv.goTo({
-          x: this.home.x + (Math.random() - 0.5) * 34,
-          y: this.home.y + (Math.random() - 0.5) * 40,
+          x: this.home.x + (Math.random() - 0.5) * 1.5,
+          y: this.home.y + (Math.random() - 0.5) * 1.1,
         }, s.zone, s.zone);
       }
     }
@@ -110,7 +111,7 @@ class Courier {
     this.name = def.name;
     this.color = def.color;
     this.zone = def.zone;
-    this.mv = new Mover(startStation.x, startStation.y + 40, 112);
+    this.mv = new Mover(startStation.gx, startStation.gy + 1.2, 2.7);
     this.job = null;          // { from, to, itemType }
     this.phase = 'idle';      // idle | pickup | deliver
     this.carrying = null;
@@ -120,9 +121,10 @@ class Courier {
   currentZone() {
     // whichever zone the courier is physically standing in
     for (const z of Object.values(ZONES)) {
-      if (this.mv.x >= z.x && this.mv.x <= z.x + z.w && this.mv.y >= z.y && this.mv.y <= z.y + z.h) return z.id;
+      if (this.mv.x >= z.gx && this.mv.x <= z.gx + z.gw &&
+          this.mv.y >= z.gy && this.mv.y <= z.gy + z.gh) return z.id;
     }
-    return 'hall';
+    return 'road';
   }
 }
 
@@ -132,7 +134,7 @@ class World {
     this.byId      = Object.fromEntries(this.stations.map(s => [s.id, s]));
     this.operators = this.stations.map(s => new Operator(s));
     this.couriers  = COURIERS.map(c => {
-      const home = this.stations.find(s => s.zone === c.zone) || this.stations[0];
+      const home = STATIONS.find(s => s.zone === c.zone) || STATIONS[0];
       return new Courier(c, home);
     });
     this.items   = [];        // items in flight, drawn on the courier
@@ -144,7 +146,7 @@ class World {
     this.log     = [];
     this.stats   = { revenue: 0, listingsLive: 0, postsToday: 0, postsTotal: 0, handoffs: 0 };
     this.seed();
-    this.say('Facility online. Both wings staffed.', '#a78bfa');
+    this.say('Sun up. Every building staffed.', '#c89b3c');
   }
 
   /* Start mid-shift so the floor is already busy when you open it,
@@ -173,7 +175,7 @@ class World {
     if (this.clock >= DAY_SECONDS) {
       this.clock = 0;
       this.day += 1;
-      this.say(`Day ${this.day} begins. Yesterday: ${this.stats.postsToday}/${POSTS_TARGET} posts out.`, '#fbbf24');
+      this.say(`Day ${this.day}. Yesterday: ${this.stats.postsToday}/${POSTS_TARGET} posts out.`, '#c89b3c');
       this.stats.postsToday = 0;
       this.stations.forEach(st => { st.quotaLogged = false; });
     }
@@ -194,7 +196,7 @@ class World {
       if (s.terminal === 'post' && this.stats.postsToday >= POSTS_TARGET) {
         if (!s.quotaLogged) {
           s.quotaLogged = true;
-          this.say(`${s.name}: ${POSTS_TARGET}/${POSTS_TARGET} posted. Holding ${s.input.length} for tomorrow.`, '#fbbf24');
+          this.say(`${s.who} hit ${POSTS_TARGET}/${POSTS_TARGET} posts. Holding ${s.input.length} for tomorrow.`, '#c89b3c');
         }
         return;
       }
@@ -212,7 +214,7 @@ class World {
     if (s.terminal === 'listing') {
       this.stats.listingsLive += 1;
       this.stats.revenue += 4 + Math.random() * 9;
-      this.say(`${s.name}: listing #${this.stats.listingsLive} is live.`, '#f97316');
+      this.say(`${s.who} put listing #${this.stats.listingsLive} live.`, '#e8613c');
       return;
     }
     if (s.terminal === 'post') {
@@ -220,13 +222,13 @@ class World {
       this.stats.postsTotal += 1;
       this.stats.revenue += 0.6 + Math.random() * 3.4;
       const plat = ['TikTok', 'Instagram', 'YouTube'][this.stats.postsTotal % 3];
-      this.say(`${s.name}: posted to ${plat}. ${this.stats.postsToday}/${POSTS_TARGET} today.`, '#34d399');
+      this.say(`${s.who} posted to ${plat}. ${this.stats.postsToday}/${POSTS_TARGET} today.`, '#5aa84f');
       return;
     }
     if (s.makes) {
       if (!s.tray.length) s.waitSince = this.age;
       s.tray.push(s.makes);
-      if (s.isGenerator) this.say(`${s.name} produced a ${ITEMS[s.makes].label.toLowerCase()}.`, ZONES[s.zone].color);
+      if (s.isGenerator) this.say(`${s.who} produced a ${ITEMS[s.makes].label.toLowerCase()}.`, ZONES[s.zone].color);
     }
   }
 
@@ -250,7 +252,7 @@ class World {
       c.job = { from: s, to: this.byId[s.to], itemType: s.tray[0] };
       c.phase = 'pickup';
       s.claimed = true;
-      c.mv.goTo({ x: s.x, y: s.y + 34 }, c.currentZone(), s.zone);
+      c.mv.goTo({ x: s.x, y: s.y + 0.85 }, c.currentZone(), s.zone);
     }
   }
 
@@ -263,8 +265,8 @@ class World {
           c.restTimer = 2 + Math.random() * 4;
           const z = ZONES[c.zone];
           c.mv.goTo({
-            x: z.x + 60 + Math.random() * (z.w - 120),
-            y: z.y + 60 + Math.random() * (z.h - 120),
+            x: z.gx + 1 + Math.random() * (z.gw - 2),
+            y: z.gy + 1 + Math.random() * (z.gh - 2),
           }, c.currentZone(), c.zone);
         }
       }
@@ -279,7 +281,7 @@ class World {
         from.claimed = false;
         if (from.tray.length) from.waitSince = this.age;
         c.phase = 'deliver';
-        c.mv.goTo({ x: c.job.to.x, y: c.job.to.y + 34 }, from.zone, c.job.to.zone);
+        c.mv.goTo({ x: c.job.to.x, y: c.job.to.y + 0.85 }, from.zone, c.job.to.zone);
       } else {
         from.claimed = false;
         c.phase = 'idle'; c.job = null;

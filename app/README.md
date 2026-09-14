@@ -1,40 +1,41 @@
-# The Facility
+# Hollow Creek Farm
 
-A live operations floor for your two businesses. Instead of a dashboard of
-cards, you look in on a room: little operators standing at desks, couriers
-walking finished work from one desk to the next, two production lines running
-side by side.
+An isometric farm where AI agents run your two businesses. Each agent lives in
+its own building with its name over the roof. Farm hands walk finished work
+from one building to the next, and the lamp outside a building lights up while
+that agent is working.
 
 Open `app/index.html` in a browser. No build step, no install, no server.
 
 ```
-Etsy Wing            Ops Core          Content Wing
-Niche Scout    ─┐    Command Desk      Trend Scout    ─┐
-Design Studio   │    Analytics         Script Room     │
-Mockup Bench    │    Treasury          Edit Bay        │
-Listing Desk    │                      Caption Desk    │
-Pricing Desk    │                      Repurpose Bench │
-Review Desk     │                      Cover Art       │
-                │                                      │
-                └──────► Publishing Floor ◄────────────┘
-                   Etsy Storefront · Approval Inbox
-                   Publishing Dock · Asset Vault
+CRAFT YARD (Etsy)      FARMHOUSE HILL     STUDIO MEADOW (video)
+Otis   Niche Scout ─┐  Wade   Farmhouse   Roscoe Trend Mill    ─┐
+Gus    Design Barn  │  Delia  Stats Silo  Junie  Script House   │
+Hattie Mockup Shed  │  Fern   Grain Store Cyrus  Edit Barn      │
+Alma   Listing House│                     Nell   Caption Shed   │
+Silas  Pricing Shed │                     Beau   Repurpose Shed │
+Millie Review Coop  │                     Opal   Cover Coop     │
+                    │                                           │
+                    └────────► MARKET ROAD ◄────────────────────┘
+                  Marlow Etsy Stall · Etta Approval Gate
+                  Boone Posting Barn · Hollis Asset Barn
 ```
 
 ## How it works
 
-Every desk is one AI agent. A desk **takes** an item, works on it for a while,
-and **makes** the next item in the chain. Couriers carry the output to whichever
-desk needs it next, so you can watch work physically move through the building.
+Every building houses one AI agent. A building **takes** an item, works on it for
+a while, and **makes** the next item in the chain. Farm hands carry the output to
+whichever building needs it next, so you watch work physically cross the farm.
 
 The Etsy line runs `niche → design → mockup → listing → priced → live listing`.
 The content line runs `trend → script → video → captioned → post → published`.
 
-The Publishing Dock posts **3 times a day to each of TikTok, Instagram and
+The Posting Barn posts **3 times a day to each of TikTok, Instagram and
 YouTube** — 9 total. Once it hits 9 it stops and holds the surplus in its input
-tray for tomorrow, which is why you'll sometimes see work stacked up there.
+crate for tomorrow, which is why you'll sometimes see crates stacked up there.
 
-Click any desk, operator or courier to see what it does and what it still needs.
+Click any building or farm hand to see what it does and what it still needs.
+The strip under the top bar shows who is on which job right now.
 
 ## ⚠ This is a simulation
 
@@ -49,12 +50,12 @@ can read it in the inspector panel. Broadly:
 
 | To turn on | You need |
 | --- | --- |
-| Any writing desk | A Claude API key |
-| Design Studio, Cover Art | An image generation API |
-| Mockup Bench | Printify or Printful account |
-| Etsy Storefront, Review Desk | Etsy shop OAuth |
-| Publishing Dock | TikTok Content Posting API, Instagram Graph API, YouTube Data API |
-| Analytics, Treasury | Read access to each platform's stats |
+| Any writing agent | A Claude API key |
+| Design Barn, Cover Coop | An image generation API |
+| Mockup Shed | Printify or Printful account |
+| Etsy Stall, Review Coop | Etsy shop OAuth |
+| Posting Barn | TikTok Content Posting API, Instagram Graph API, YouTube Data API |
+| Stats Silo, Grain Store | Read access to each platform's stats |
 
 Two of these are the real gates, and they're worth knowing about before you
 count on them: the **TikTok Content Posting API** requires an approved developer
@@ -68,22 +69,25 @@ anyone who opens the page can read them. That's the next build, not this one.
 
 ```
 app/
-├── index.html              Page shell — HUD, canvas, inspector, activity log
+├── index.html              Page shell — HUD, crew strip, canvas, inspector, log
 └── assets/
     ├── css/app.css         All styling
     └── js/
-        ├── config.js       ★ The blueprint: zones, desks, items, operators
-        ├── world.js        The simulation — jobs, couriers, quotas, revenue
-        ├── render.js       Canvas drawing (everything is drawn in code,
+        ├── config.js       ★ The blueprint: paddocks, buildings, agents, items
+        ├── world.js        The simulation — jobs, carters, quotas, revenue
+        ├── render.js       Isometric drawing (everything is drawn in code,
         │                   so there are no image files to lose)
-        └── app.js          Wiring: inspector, HUD, clicks, main loop
+        └── app.js          Wiring: inspector, HUD, crew strip, main loop
 ```
 
-**`config.js` is the file to edit.** Adding a desk is one entry in `STATIONS`:
-give it a zone, an x/y, what it takes, what it makes, and which desk to hand it
-to. The floor plan, the routing and the inspector all pick it up automatically.
+**`config.js` is the file to edit.** Adding an agent is one entry in `STATIONS`:
+give it a paddock, a grid square, a building type, a name, what it takes, what
+it makes, and which building to hand it to. The layout, the dirt paths, the
+routing and the inspector all pick it up automatically.
+
+Positions are grid tiles, not pixels — `render.js` projects them to isometric.
 
 ## Controls
 
-`❚❚ / 1× / 2× / 4×` — pause or speed up the day. One facility day is 150
-seconds at 1×.
+`❚❚ / 1× / 2× / 4×` — pause or speed up the day. One farm day is 150 seconds
+at 1×.

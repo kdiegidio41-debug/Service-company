@@ -19,7 +19,7 @@ function kv(k, v) { return `<div class="kv"><span>${k}</span><span>${v}</span></
 
 function renderInspector() {
   if (!selected) {
-    $inspect.innerHTML = `<div class="empty">Click any desk, operator or courier<br>to see what it does.</div>`;
+    $inspect.innerHTML = `<div class="empty">Click any building or farm hand<br>to see what it does.</div>`;
     return;
   }
 
@@ -27,14 +27,14 @@ function renderInspector() {
     const s = world.byId[selected.id];
     const z = ZONES[s.zone];
     $inspect.innerHTML = `<div class="card">
-      <div class="zone" style="color:${z.color}">${z.name}</div>
-      <h3>${s.name}</h3>
+      <div class="zone" style="color:${z.color}">${z.name} · lives in the ${s.build}</div>
+      <h3>${s.who}</h3>
+      <div class="who">${s.name} · <code>${s.cycle}</code></div>
       <div class="role">${
         s.terminal === 'post' && world.stats.postsToday >= 9
           ? `Day's quota met — ${s.input.length} held for tomorrow`
           : s.working ? s.role + '…' : 'Idle — waiting on work'}</div>
       <p>${s.agent}</p>
-      ${kv('Operator', OPERATOR_NAMES[s.id] || '—')}
       ${kv('Jobs finished', s.jobsDone)}
       ${kv('Takes', s.takes ? ITEMS[s.takes].label : 'Starts the line')}
       ${kv('Makes', s.makes ? ITEMS[s.makes].label : (s.terminal ? 'Publishes it' : 'Internal work'))}
@@ -50,11 +50,12 @@ function renderInspector() {
     const o = world.operators.find(o => o.station.id === selected.id);
     const s = o.station, z = ZONES[s.zone];
     $inspect.innerHTML = `<div class="card">
-      <div class="zone" style="color:${z.color}">${z.name} · Operator</div>
+      <div class="zone" style="color:${z.color}">${z.name} · Farm hand</div>
       <h3>${o.name}</h3>
-      <div class="role">${s.working ? s.role + ' at ' + s.name : 'On break at ' + s.name}</div>
+      <div class="who">${s.name} · <code>${s.cycle}</code></div>
+      <div class="role">${s.working ? s.role + '…' : 'Taking a breather'}</div>
       <p>${s.agent}</p>
-      ${kv('Station', s.name)}
+      ${kv('Building', s.name)}
       ${kv('Jobs finished', s.jobsDone)}
       ${wireList(s.wire)}
     </div>`;
@@ -63,13 +64,13 @@ function renderInspector() {
 
   const c = world.couriers.find(c => c.name === selected.id);
   $inspect.innerHTML = `<div class="card">
-    <div class="zone" style="color:${c.color}">${ZONES[c.zone].name} · Courier</div>
+    <div class="zone" style="color:${c.color}">${ZONES[c.zone].name} · Carter</div>
     <h3>${c.name}</h3>
     <div class="role">${
       c.phase === 'idle'    ? 'Free — waiting for a pickup' :
       c.phase === 'pickup'  ? 'Heading to ' + c.job.from.name :
                               'Carrying to ' + c.job.to.name}</div>
-    <p>Couriers move finished work from one desk to the next. When a desk fills its output tray, the nearest free courier collects it.</p>
+    <p>Carters walk finished work from one building to the next. When a building fills its output crate, the nearest free carter comes for it.</p>
     ${kv('Carrying', c.carrying ? ITEMS[c.carrying].label : 'Nothing')}
     ${kv('Deliveries', c.delivered)}
   </div>`;
@@ -83,12 +84,24 @@ document.getElementById('legend').innerHTML = Object.entries(ITEMS)
 const $ = id => document.getElementById(id);
 let logLen = -1;
 
+let crewKey = '';
+
 function renderHud() {
-  $('s-day').textContent   = world.day;
-  $('s-rev').textContent   = '$' + world.stats.revenue.toFixed(2);
-  $('s-list').textContent  = world.stats.listingsLive;
-  $('s-posts').textContent = `${world.stats.postsToday}/9`;
-  $('s-hand').textContent  = world.stats.handoffs;
+  $('s-day').textContent  = world.day;
+  $('s-rev').textContent  = '$' + world.stats.revenue.toFixed(2);
+  $('s-list').textContent = world.stats.listingsLive;
+  $('s-vids').textContent = `${world.stats.postsToday}/9`;
+  $('s-hand').textContent = world.stats.handoffs;
+
+  // who is on what right now
+  const busy = world.stations.filter(s => s.working);
+  const key = busy.map(s => s.id).join(',');
+  if (key !== crewKey) {
+    crewKey = key;
+    $('crew').innerHTML = busy.length
+      ? busy.map(s => `<div class="chip"><i></i><b>${s.who}</b><span>on ${s.cycle}</span></div>`).join('')
+      : '<div class="idle">Everyone is between jobs.</div>';
+  }
 
   if (world.log.length !== logLen) {
     logLen = world.log.length;
