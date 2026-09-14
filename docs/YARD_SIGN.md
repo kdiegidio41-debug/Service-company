@@ -59,7 +59,7 @@ the front works alone.
 The sign's QR is **not a website link.** It encodes a prefilled text message:
 
 ```
-sms:+12678530058?body=Hi Everglow! I'd like a quote for Christmas lights at:
+sms:+12678530058?body=Christmas light quote:
 ```
 
 Scanning it opens the phone's messaging app, addressed to you, with that
@@ -89,9 +89,11 @@ Customers scan with whatever camera their phone came with, so `sms:` is the
 safer bet across handsets you'll never see. Both were tested and worked; `sms:`
 wins on breadth, not on this phone.
 
-The message body is kept short on purpose. The longer wording pushed the symbol
-to version 7; trimming it to version 6 gives **18% larger modules**, which
-survives dirt, rain and distance noticeably better.
+The message body is kept short on purpose, and this is the lever most people
+miss. Every character sets the symbol version, the version sets the module
+count, and **module size is what a phone camera actually has to resolve.** The
+friendly full sentence needed a 41x41 grid. `Christmas light quote:` needs
+33x33 — 0.148in modules instead of 0.127in at the same printed size, for free.
 
 ### Changing the message or the number
 
@@ -164,7 +166,7 @@ Two lines were deliberately left off. Both are easy to add back.
 **The web address.** `everglowlighting.com` does not resolve yet. A printed URL
 that goes nowhere is the one claim a skeptical homeowner can disprove in three
 seconds, and a sign is permanent in a way a webpage isn't. The footer carries
-`FREE ESTIMATES · DOWN BY JAN 15` instead — both true today. Put the
+`FREE ESTIMATES` instead. Put the
 domain back for next season's print run once the site is live.
 
 **"Licensed & insured to $2M."** This is an advertising claim about your

@@ -37,9 +37,11 @@ DEFAULT_OUT = "assets/print/qr-yard-sign.svg"
 # some native cameras ignore. Which one wins depends on the phone, so test
 # both on real hardware before printing 50 signs -- see docs/YARD_SIGN.md.
 SMS_NUMBER = "+12678530058"
-# Kept deliberately short: the longer wording pushed the symbol to version 7,
-# and version 6 gives 18% larger modules, which survives dirt and distance better.
-SMS_BODY = "Hi Everglow! I'd like a quote for Christmas lights at: "
+# Every character here costs scan range. The body is what sets the symbol
+# version, the version sets the module count, and module size is what a camera
+# actually has to resolve. The friendly full sentence needed a 41x41 grid; this
+# needs 33x33, which is 24% larger modules at the same printed size.
+SMS_BODY = "Christmas light quote: "
 
 
 def sms_payload(number: str, body: str, style: str) -> str:
