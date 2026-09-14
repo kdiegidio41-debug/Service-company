@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Facility — AI Operations Floor</title>
+<meta name="description" content="A live floor of AI operators running an Etsy print-on-demand line and a short-form content line.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%2308080b%27/%3E%3Ccircle cx=%2711%27 cy=%2712%27 r=%274%27 fill=%27%23f97316%27/%3E%3Ccircle cx=%2721%27 cy=%2712%27 r=%274%27 fill=%27%2322d3ee%27/%3E%3Ccircle cx=%2716%27 cy=%2722%27 r=%274%27 fill=%27%2334d399%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="brand"><span class="dot"></span> The Facility</div>
+    <span class="tag">SIMULATION</span>
+
+    <div class="stats">
+      <div class="stat"><div class="k">Day</div><div class="v" id="s-day">1</div></div>
+      <div class="stat"><div class="k">Projected</div><div class="v" id="s-rev">$0</div></div>
+      <div class="stat"><div class="k">Listings</div><div class="v" id="s-list">0</div></div>
+      <div class="stat"><div class="k">Posts today</div><div class="v" id="s-posts">0/9</div></div>
+      <div class="stat"><div class="k">Handoffs</div><div class="v" id="s-hand">0</div></div>
+    </div>
+
+    <div class="speed">
+      <button data-speed="0">❚❚</button>
+      <button data-speed="1" class="on">1×</button>
+      <button data-speed="2">2×</button>
+      <button data-speed="4">4×</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <canvas id="stage"></canvas>
+    <aside class="side">
+      <h2>Inspector</h2>
+      <div id="inspect">
+        <div class="empty">
+          Click any desk, operator or courier<br>to see what it does.
+        </div>
+      </div>
+      <h2>What's moving</h2>
+      <div class="card legend" id="legend"></div>
+    </aside>
+  </div>
+
+  <div class="log" id="log"></div>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/world.js"></script>
+<script src="assets/js/render.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
