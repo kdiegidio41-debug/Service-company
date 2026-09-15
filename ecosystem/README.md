@@ -13,8 +13,12 @@ designed as one system, described in one file, and drawn five different ways.
 
 ## Open the map
 
+**Live:** https://claude.ai/artifact/CHCKVVTi3xGeXTgocxP5qU
+
+Or locally — no server, no build step, no dependencies:
+
 ```bash
-open map/steading-map.html        # macOS — no server, no build, no dependencies
+open map/steading-map.html        # macOS
 ```
 
 Five views of the same farm, switchable in the top bar:
