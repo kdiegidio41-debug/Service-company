@@ -13,7 +13,7 @@ They are independent. Work on one does not touch the other.
 
 ## The Steading — working crew
 
-Twelve agents live in `.claude/agents/`. No API key needed.
+Fifteen agents live in `.claude/agents/`. No API key needed.
 
 *Agents are registered at session start. If one is "not found", you added it this
 session — open a fresh session and it will be there.*
@@ -36,6 +36,28 @@ already know which one you want.
 | `inspector` | **Before anything leaves** — ships, posts, commits |
 | `watchman` | What actually happened on that run, and what it cost |
 | `sheepdog` | Work has been going a while and may have wandered |
+
+**The Market crew — the only agents that face a customer:**
+
+| Agent | Call it when |
+| --- | --- |
+| `dowser` | Find local businesses with a provable web-presence defect |
+| `surveyor` | Audit a prospect and write the report you hand over |
+| `factor` | Turn a finished audit into an approach. **A human sends it, never the agent.** |
+
+The chain: `dowser` → `surveyor` → `factor` → `inspector` → you send it.
+Playbook: `ecosystem/docs/09-MARKET.md`.
+
+## The audit tool
+
+```bash
+node ecosystem/tools/audit.mjs https://theirsite.com          # 17 checks, scored
+node ecosystem/tools/audit.mjs --file saved.html --url https://…
+```
+
+Reads one page's HTML. Cannot see JS-rendered content, real page speed, or the
+Google Business Profile itself — those limits print in every report. **Never
+report a finding the page does not actually have.**
 
 ## The ledger
 
