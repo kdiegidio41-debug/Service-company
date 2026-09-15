@@ -78,8 +78,10 @@ may legally be placed.
     ├── LEAD_GENERATION.md  Ranked channel playbook, ad budgets, commercial
     │                       outreach, follow-up scripts, renewal campaign
     ├── YARD_SIGN.md        Sign design rationale, print spec, QR setup
-    └── SIGN_PLACEMENT.md   Where signs may legally go in Montgomery County,
-                            25 ranked corridor targets, permission script
+    ├── SIGN_PLACEMENT.md   Where signs may legally go in Montgomery County,
+    │                       25 ranked corridor targets, permission script
+    └── PROSPECTING.md      Building the lead list legally — why not to cold-text,
+                            direct mail, and the commercial walk-in system
 ```
 
 The website has no build step, no dependencies, no framework. Open `index.html` and it runs.
