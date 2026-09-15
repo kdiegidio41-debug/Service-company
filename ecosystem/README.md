@@ -5,9 +5,10 @@
 Eight zones, thirty-eight stations, forty-eight roles, fifty-three tasks, and the wiring between them —
 designed as one system, described in one file, and drawn five different ways.
 
-> **Status: foundation.** Every role, station and task here is *defined*. None of them are *implemented*.
-> That is deliberate: the shape of the system is the thing worth arguing about before any of it is built.
-> The order to build it in is [docs/05-BUILD-ORDER.md](docs/05-BUILD-ORDER.md).
+> **Status: staffed in part.** 12 working agents now live in `.claude/agents/` and cover 24 of the 48
+> roles. They run in Claude Code **today, with no API key** — see [docs/08-AGENTS.md](docs/08-AGENTS.md).
+> The remaining 24 roles are still charters, deliberately: building an agent before there is work for it
+> buys complexity and no capability.
 
 ---
 
@@ -115,17 +116,25 @@ steps. The map and the docs cannot drift from each other because neither is writ
 
 ---
 
-## What is deliberately not built
+## The working crew
 
-| Not here | Why |
-| --- | --- |
-| Any runtime | No agent loop, no scheduler, no message bus. Roles are charters. |
-| Any prompts | The Granary is specified and empty. |
-| Any model calls or keys | Tier assignments are recommendations attached to roles. |
-| Any persistence | The Silo Row describes four stores and implements none. |
+Twelve agents in `.claude/agents/`, covering 24 roles. No API key needed — they run in Claude Code now.
 
-The next pass gives the roles their functions. Start at [docs/05-BUILD-ORDER.md](docs/05-BUILD-ORDER.md) —
-**Stage 0 is two decisions that take fifteen minutes and cannot be skipped.**
+```
+farmer      plan and route            scarecrow   screen untrusted input
+row-boss    run a batch in parallel   inspector   check before anything ships
+field-hand  do one specced unit       chronicler  record and recall
+gleaner     recover what failed       grader      judge against a standard
+smith       build a missing tool      grafter     tune the farm itself
+watchman    what actually happened    sheepdog    is this still on task
+```
+
+Work runs on a real ledger — `node tools/farm.mjs help`. Illegal state transitions are refused, not
+warned about. Full guide: [docs/08-AGENTS.md](docs/08-AGENTS.md).
+
+**Still unstaffed, on purpose:** the Gatehouse crew (nothing is exposed yet), the Barn crew (nothing runs
+across days yet), and the Toolshed curators (barely any tools to curate). `docs/08-AGENTS.md` says when
+each becomes worth building.
 
 ---
 
