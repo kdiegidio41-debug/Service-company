@@ -1,0 +1,20 @@
+{
+  "id": "offer-refiner",
+  "name": "Offer Refiner",
+  "category": "strategy",
+  "description": "Pressure-tests what you sell: who it's for, why they'd switch, and the objection you haven't answered.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "offer",
+      "label": "Describe your current offer",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Pressure-test this offer: {{offer}}\n\nWork through:\n1. Say the offer back in one sentence a customer would use.\n2. Who it's genuinely for, and who should be turned away.\n3. The three real objections, and whether the offer currently answers each. Be blunt where it does not.\n4. What a competitor would say to beat it.\n5. The single change with the largest effect on close rate, and what it would cost to make.\n6. A risk reversal we could actually honor operationally.\n\nBe critical. A comfortable answer here is a useless one.",
+  "output": {
+    "filename": "offer-{{date}}.md"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "agent-ops",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local-first AI agent operation: build your ecosystem, run it on your own machine, and resell it.",
+  "type": "module",
+  "bin": { "agentops": "./cli.js" },
+  "scripts": {
+    "setup": "node cli.js setup",
+    "start": "node cli.js start",
+    "dash": "node cli.js dash",
+    "test": "node --test test/*.test.js",
+    "package": "node scripts/package.js"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0"
+  }
+}

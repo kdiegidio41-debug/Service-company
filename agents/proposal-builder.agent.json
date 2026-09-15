@@ -1,0 +1,20 @@
+{
+  "id": "proposal-builder",
+  "name": "Proposal Builder",
+  "category": "sales",
+  "description": "Drafts a scoped proposal with deliverables, timeline, and a price ladder from your notes on a prospect call.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "notes",
+      "label": "Your notes from the call",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Turn these call notes into a client proposal:\n\n{{notes}}\n\nStructure it: the problem in their words, what we'll do, what they get (concrete deliverables), timeline with milestones, three price tiers (good/better/best) with what separates them, what we need from them, and what happens next.\n\nLeave prices as [PRICE: tier name] unless the notes state one. Do not pad it out; a proposal that fits on two pages closes faster.",
+  "output": {
+    "filename": "proposal-{{date}}.md"
+  }
+}

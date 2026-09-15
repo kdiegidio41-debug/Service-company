@@ -1,0 +1,22 @@
+{
+  "id": "seo-brief",
+  "name": "SEO Brief",
+  "category": "marketing",
+  "description": "Builds a writer-ready brief for one keyword: what's ranking, what they cover, and the angle that beats them.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "keyword",
+      "label": "Target keyword or question",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Build an SEO content brief for: {{keyword}}.\n\nSearch and look at what currently ranks. Produce:\n- Search intent in one sentence\n- What the top results cover (list the actual pages you found)\n- The gap: what none of them answer well\n- Recommended H1 and H2 outline\n- Word count target with a reason\n- Entities and subtopics to include\n- The internal link we should point at it\n\nBase this on pages you actually retrieved. If search returns nothing useful, say so rather than guessing at the SERP.",
+  "output": {
+    "filename": "seo-brief-{{date}}.md"
+  }
+}

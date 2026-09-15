@@ -1,0 +1,22 @@
+{
+  "id": "weekly-report",
+  "name": "Weekly Report",
+  "category": "ops",
+  "description": "Reads this week's agent output and tells you what it found, what it means, and what to do Monday.",
+  "tools": [],
+  "schedule": {
+    "everyHours": 168
+  },
+  "inputs": [
+    {
+      "key": "week",
+      "label": "Paste this week's numbers and notes",
+      "required": false
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Write the weekly operating report for {{business.name}}, week ending {{date}}.\n\nSource material: {{week}}\n\nSections: What happened (facts only), What it means (interpretation, clearly separated from facts), What's stuck, and Three things to do Monday in priority order with the first action for each.\n\nIf the source material is thin, say what you'd need to make this report useful rather than padding it. Keep it under a page.",
+  "output": {
+    "filename": "weekly-{{date}}.md"
+  }
+}

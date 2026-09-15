@@ -1,0 +1,22 @@
+{
+  "id": "customer-followup",
+  "name": "Customer Follow-Up",
+  "category": "ops",
+  "description": "Builds the day's follow-up list from your job or deal notes so nothing sits untouched.",
+  "tools": [],
+  "schedule": {
+    "dailyAt": "09:00"
+  },
+  "inputs": [
+    {
+      "key": "pipeline",
+      "label": "Paste your current jobs / deals / notes",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "From this pipeline, build today's follow-up list:\n\n{{pipeline}}\n\nFor each item needing contact today: who, how long since last touch, what stage it's at, the single most useful thing to say, and the channel. Order by what is most likely to be lost if ignored.\n\nThen flag anything that has gone quiet for long enough to be considered dead, and write the one message worth sending before writing it off.",
+  "output": {
+    "filename": "followups-{{date}}.md"
+  }
+}

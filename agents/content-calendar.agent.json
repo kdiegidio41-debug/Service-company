@@ -1,0 +1,22 @@
+{
+  "id": "content-calendar",
+  "name": "Content Calendar",
+  "category": "marketing",
+  "description": "Plans a month of content tied to what you sell, so posts point at an offer instead of floating free.",
+  "tools": [],
+  "schedule": {
+    "everyHours": 168
+  },
+  "inputs": [
+    {
+      "key": "focus",
+      "label": "What you want to sell this month",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Plan one month of content for {{business.name}}, built to sell: {{focus}}.\n\nGive a table: Week, Date, Channel, Format, Hook, The offer it points at, Call to action.\nMix formats. At least one piece per week must be able to run as an ad.\n\nThen: three content pillars this month ladders up to, and the one piece most worth the effort with a reason.",
+  "output": {
+    "filename": "content-calendar-{{date}}.md"
+  }
+}

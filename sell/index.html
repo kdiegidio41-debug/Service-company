@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Ops — your own AI agent operation</title>
+<meta name="description" content="A library of ready-to-run AI agents, a scheduler, and a mission-control dashboard. Runs on your machine, on your own API key.">
+<style>
+  :root{
+    --bg:#0b0f16; --panel:#131a24; --panel2:#1a2330; --line:#252f3d;
+    --text:#e8eef6; --muted:#93a1b5; --accent:#5aa2ff; --ok:#3fb950;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:16px/1.65 ui-sans-serif,-apple-system,"Segoe UI",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  h1,h2,h3{margin:0;letter-spacing:-0.02em;line-height:1.18}
+  h1{font-size:clamp(32px,5.5vw,54px);font-weight:700}
+  h2{font-size:clamp(24px,3.6vw,34px);font-weight:650}
+  h3{font-size:18px;font-weight:600}
+  p{margin:0}
+  a{color:var(--accent)}
+  .muted{color:var(--muted)}
+  section{padding:76px 0;border-top:1px solid var(--line)}
+  .set{background:rgba(90,162,255,.13);border:1px dashed rgba(90,162,255,.5);
+    border-radius:5px;padding:0 6px;color:var(--accent);font-size:.92em;white-space:nowrap}
+
+  header{padding:64px 0 10px}
+  .eyebrow{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);border:1px solid rgba(90,162,255,.35);border-radius:20px;padding:5px 13px;margin-bottom:22px}
+  .lede{font-size:clamp(17px,2.2vw,20px);color:var(--muted);max-width:640px;margin-top:20px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+  .btn{display:inline-block;padding:13px 24px;border-radius:9px;font-weight:600;
+    text-decoration:none;font-size:15px;border:1px solid var(--line)}
+  .btn.main{background:var(--accent);color:#04101f;border-color:var(--accent)}
+  .btn.ghost{background:var(--panel);color:var(--text)}
+  .btn:hover{opacity:.9}
+  .note{margin-top:14px;font-size:13.5px;color:var(--muted)}
+
+  .terminal{margin-top:46px;background:var(--panel);border:1px solid var(--line);
+    border-radius:12px;overflow:hidden}
+  .bar{display:flex;gap:7px;padding:12px 15px;border-bottom:1px solid var(--line);background:var(--panel2)}
+  .bar i{width:11px;height:11px;border-radius:50%;background:#37455a;display:block}
+  .terminal pre{margin:0;padding:20px;overflow-x:auto;font-size:13.5px;line-height:1.75;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .c-dim{color:var(--muted)} .c-ok{color:var(--ok)} .c-acc{color:var(--accent)}
+
+  .grid{display:grid;gap:14px;margin-top:34px}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:20px}
+  .card h3{margin-bottom:7px}
+  .card p{font-size:14.5px;color:var(--muted)}
+
+  table{width:100%;border-collapse:collapse;margin-top:30px;font-size:14.5px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+  td b{font-weight:600}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;
+    background:var(--panel2);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+
+  .tiers{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));margin-top:34px}
+  .tier{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:26px;
+    display:flex;flex-direction:column;gap:14px}
+  .tier.best{border-color:var(--accent);box-shadow:0 0 0 1px rgba(90,162,255,.28)}
+  .price{font-size:30px;font-weight:700;letter-spacing:-0.02em}
+  .tier ul{margin:0;padding-left:19px;font-size:14.5px;color:var(--muted);display:grid;gap:7px}
+  .tier .btn{margin-top:auto;text-align:center}
+
+  details{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:15px 18px;margin-top:11px}
+  summary{cursor:pointer;font-weight:600;font-size:15.5px}
+  details p{margin-top:11px;color:var(--muted);font-size:14.5px}
+
+  footer{padding:46px 0 64px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <span class="eyebrow">Runs on your machine</span>
+  <h1>Your own AI agent<br>operation, running<br>by tomorrow morning.</h1>
+  <p class="lede">
+    Fourteen ready-to-run agents, a scheduler that fires them while you sleep, and a
+    mission-control dashboard. Installs locally, runs on your own API key, and every
+    file it produces stays on your disk.
+  </p>
+  <div class="cta">
+    <a class="btn main" href="#pricing">Get it — <span class="set">[SET: $197]</span></a>
+    <a class="btn ghost" href="#agents">See the 14 agents</a>
+  </div>
+  <p class="note">One-time purchase. <span class="set">[SET: 30]</span>-day refund. You supply your own Anthropic API key.</p>
+
+  <div class="terminal">
+    <div class="bar"><i></i><i></i><i></i></div>
+<pre><span class="c-dim">$</span> node cli.js start
+
+  <b>Northside Gutter Co — agent operation running</b>
+
+  scheduled Competitor Watch  <span class="c-dim">-&gt; tomorrow, 7:00 AM</span>
+  scheduled Lead Finder       <span class="c-dim">-&gt; tomorrow, 8:00 AM</span>
+  scheduled Customer Follow-Up<span class="c-dim">-&gt; tomorrow, 9:00 AM</span>
+  scheduled Weekly Report     <span class="c-dim">-&gt; Monday, 9:00 AM</span>
+
+<span class="c-dim">[8:00:04 AM]</span> running Lead Finder...
+  <span class="c-ok">done in 31.4s</span> <span class="c-dim">-&gt; data/artifacts/leads-2026-09-15.md</span>
+<span class="c-dim">[9:00:02 AM]</span> running Customer Follow-Up...
+  <span class="c-ok">done in 18.7s</span> <span class="c-dim">-&gt; data/artifacts/followups-2026-09-15.md</span>
+
+  <span class="c-acc">Mission control: http://localhost:4317</span></pre>
+  </div>
+</header>
+
+<section class="wrap">
+  <h2>What you get</h2>
+  <div class="grid g3">
+    <div class="card">
+      <h3>14 agents, as plain files</h3>
+      <p>Each agent is one JSON file — prompt, schedule, inputs, tools. Read them,
+      edit them, copy one to make your own. Nothing is hidden in a binary.</p>
+    </div>
+    <div class="card">
+      <h3>A scheduler</h3>
+      <p>Daily, hourly, or weekly. Start it and your operation runs unattended.
+      Output lands in a folder, timestamped.</p>
+    </div>
+    <div class="card">
+      <h3>Mission control</h3>
+      <p>A local dashboard: run any agent, read its output, see every run with its
+      duration and exact cost.</p>
+    </div>
+    <div class="card">
+      <h3>Your key, your data</h3>
+      <p>Calls go from your machine to Anthropic on your own API key. No middleman,
+      no per-seat markup, nothing routed through anyone else's server.</p>
+    </div>
+    <div class="card">
+      <h3>A dry-run mode</h3>
+      <p>See the exact prompt an agent would send before spending a cent.
+      Add <code>--dry-run</code> to any command.</p>
+    </div>
+    <div class="card">
+      <h3>Cost tracking built in</h3>
+      <p>Every run logs its tokens and estimated spend, totalled on the dashboard.
+      You always know what the operation costs.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="agents">
+  <h2>The agent library</h2>
+  <p class="lede">Every one carries the same rule: never invent a fact, price, or quote.
+  Missing information comes back marked <code>[NEEDS: ...]</code> instead of fabricated.</p>
+  <table>
+    <thead><tr><th>Agent</th><th>Runs</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><b>Lead Finder</b></td><td><span class="pill">daily</span></td><td>Web-searches for businesses matching your ideal customer, verified before listing</td></tr>
+      <tr><td><b>Outreach Writer</b></td><td><span class="pill">manual</span></td><td>A cold email plus two follow-ups, written to one lead's actual situation</td></tr>
+      <tr><td><b>Proposal Builder</b></td><td><span class="pill">manual</span></td><td>Call notes into a scoped proposal with a three-tier price ladder</td></tr>
+      <tr><td><b>Competitor Watch</b></td><td><span class="pill">daily</span></td><td>Tracks competitor pricing and positioning, reports only what changed</td></tr>
+      <tr><td><b>Pricing Analyst</b></td><td><span class="pill">manual</span></td><td>Researches real published rates and recommends where you should sit</td></tr>
+      <tr><td><b>SEO Brief</b></td><td><span class="pill">manual</span></td><td>A writer-ready brief built from what currently ranks</td></tr>
+      <tr><td><b>Content Calendar</b></td><td><span class="pill">weekly</span></td><td>A month of content where every piece points at an offer</td></tr>
+      <tr><td><b>Blog Drafter</b></td><td><span class="pill">manual</span></td><td>A full publish-ready draft, not an outline</td></tr>
+      <tr><td><b>Social Repurposer</b></td><td><span class="pill">manual</span></td><td>One long piece into a week of posts that each stand alone</td></tr>
+      <tr><td><b>Inbox Triage</b></td><td><span class="pill">manual</span></td><td>Sorts messages into needs-you, reply-drafted, and later</td></tr>
+      <tr><td><b>Review Responder</b></td><td><span class="pill">manual</span></td><td>Public replies that sound like a person, including the bad ones</td></tr>
+      <tr><td><b>Customer Follow-Up</b></td><td><span class="pill">daily</span></td><td>Today's follow-up list, ordered by what you'll lose if you ignore it</td></tr>
+      <tr><td><b>Weekly Report</b></td><td><span class="pill">weekly</span></td><td>What happened, what it means, and three things to do Monday</td></tr>
+      <tr><td><b>Offer Refiner</b></td><td><span class="pill">manual</span></td><td>Pressure-tests what you sell and names the objection you haven't answered</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="wrap">
+  <h2>Making your own takes one file</h2>
+  <p class="lede">No plugin system, no SDK to learn. Drop a <code>.agent.json</code> into
+  the <code>agents/</code> folder and it shows up in the CLI and the dashboard.</p>
+  <div class="terminal">
+    <div class="bar"><i></i><i></i><i></i></div>
+<pre>{
+  <span class="c-acc">"id"</span>: "quote-chaser",
+  <span class="c-acc">"name"</span>: "Quote Chaser",
+  <span class="c-acc">"schedule"</span>: { "dailyAt": "10:00" },
+  <span class="c-acc">"inputs"</span>: [{ "key": "quotes", "label": "Open quotes", "required": true }],
+  <span class="c-acc">"prompt"</span>: "From these open quotes: {{quotes}} — write today's chase
+             messages for {{business.name}}, most urgent first."
+}</pre>
+  </div>
+</section>
+
+<section class="wrap" id="pricing">
+  <h2>Pricing</h2>
+  <p class="lede">API usage is billed by Anthropic directly to your key — typically
+  <span class="set">[SET: $5–40]</span> a month depending on how much you run.
+  That is not included below, and we'd rather you know now than find out later.</p>
+  <div class="tiers">
+    <div class="tier">
+      <h3>Starter pack</h3>
+      <div class="price"><span class="set">[SET: $47]</span></div>
+      <ul>
+        <li>Five agents of your choice</li>
+        <li>The runner and the CLI</li>
+        <li>Email support, install only</li>
+      </ul>
+      <a class="btn ghost" href="#"><span class="set">[SET: checkout link]</span></a>
+    </div>
+    <div class="tier best">
+      <h3>Full operation</h3>
+      <div class="price"><span class="set">[SET: $197]</span></div>
+      <ul>
+        <li>All 14 agents</li>
+        <li>Scheduler and mission control</li>
+        <li>Install screencast</li>
+        <li>Version 1.x updates included</li>
+        <li><span class="set">[SET: 30]</span>-day refund</li>
+      </ul>
+      <a class="btn main" href="#"><span class="set">[SET: checkout link]</span></a>
+    </div>
+    <div class="tier">
+      <h3>Done for you</h3>
+      <div class="price"><span class="set">[SET: $1,500]</span>+</div>
+      <ul>
+        <li>Installed and configured for your business</li>
+        <li>Custom agents for your workflow</li>
+        <li>Handover call, recorded</li>
+        <li>Optional <span class="set">[SET: $300]</span>/mo: new agents and tuning</li>
+      </ul>
+      <a class="btn ghost" href="#"><span class="set">[SET: booking link]</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>Before you buy</h2>
+  <p class="lede">The things that stop people, stated up front.</p>
+
+  <details open>
+    <summary>Do I need to be technical?</summary>
+    <p>You need to be able to open a terminal and run three commands. If that
+    sentence worries you, buy the done-for-you tier and we'll install it —
+    don't buy the self-serve tier and hope.</p>
+  </details>
+  <details>
+    <summary>What does it cost to run?</summary>
+    <p>You pay Anthropic directly for API usage on your own key. A typical
+    agent run costs cents. An operation with four scheduled agents usually lands
+    around <span class="set">[SET: $5–40]</span>/month. The dashboard totals your
+    actual spend so there are no surprises, and <code>--dry-run</code> lets you
+    test anything for free.</p>
+  </details>
+  <details>
+    <summary>Does it run when my computer is off?</summary>
+    <p>No. Scheduled agents run while the machine is awake and the scheduler is
+    running. If you want it running 24/7, put it on a cheap always-on box —
+    or ask about <span class="set">[SET: hosted option]</span>.</p>
+  </details>
+  <details>
+    <summary>Is the output good enough to send to a customer?</summary>
+    <p>Read it first. Every agent is written to refuse to invent facts, prices,
+    and quotes — it marks gaps <code>[NEEDS: ...]</code> instead — but it is
+    language-model output and it can be wrong. Treat it as a strong first draft
+    that saves you the blank page, not as something to forward unread.</p>
+  </details>
+  <details>
+    <summary>Will this make me money?</summary>
+    <p>No honest answer here is a number. It saves time on work you're already
+    doing and gets drafts written that otherwise sit undone. What that's worth
+    depends entirely on your business. Anyone selling you AI agents with a
+    revenue figure attached is guessing.</p>
+  </details>
+  <details>
+    <summary>Can I resell it or use it for clients?</summary>
+    <p>Using it to deliver work for your clients is fine and encouraged.
+    Redistributing the software itself needs a reseller license —
+    ask at <span class="set">[SET: email]</span>.</p>
+  </details>
+</section>
+
+<footer class="wrap">
+  <p><b><span class="set">[SET: Your Company]</span></b> — <span class="set">[SET: email]</span></p>
+  <p style="margin-top:9px">
+    Output is generated by a language model and can be wrong; review it before you
+    use it. API usage is billed to you by Anthropic. Not affiliated with Anthropic.
+    <a href="LICENSE-COMMERCIAL.md">License</a>
+  </p>
+</footer>
+
+</body>
+</html>

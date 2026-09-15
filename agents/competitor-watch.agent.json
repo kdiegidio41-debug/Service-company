@@ -1,0 +1,24 @@
+{
+  "id": "competitor-watch",
+  "name": "Competitor Watch",
+  "category": "research",
+  "description": "Checks named competitors for pricing, offer, and positioning changes, and reports only what actually changed.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": {
+    "dailyAt": "07:00"
+  },
+  "inputs": [
+    {
+      "key": "competitors",
+      "label": "Competitor names or URLs, comma separated",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Check these competitors today: {{competitors}}.\n\nFor each, search for their current offer, pricing, and positioning. Report:\n- What they lead with on their site right now\n- Any price you can actually see (quote it; if pricing is hidden, say \"not published\")\n- Anything new since a typical prior state: new service, new guarantee, new market\n\nThen one section: \"What this means for {{business.name}}\" with at most three concrete moves. If nothing meaningful changed, say so in one line rather than manufacturing analysis.",
+  "output": {
+    "filename": "competitors-{{date}}.md"
+  }
+}

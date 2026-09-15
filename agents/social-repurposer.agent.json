@@ -1,0 +1,20 @@
+{
+  "id": "social-repurposer",
+  "name": "Social Repurposer",
+  "category": "content",
+  "description": "Splits one long piece into a week of platform-native posts that each stand alone.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "source",
+      "label": "Paste the article, transcript, or notes",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Repurpose this into a week of social content:\n\n{{source}}\n\nProduce: 5 short posts (LinkedIn/Facebook length, each standing alone without the source), 3 very short posts (X/Threads), 1 short-form video script with a hook in the first 3 seconds and a shot list, and 1 email to the list.\n\nEach must make sense to someone who never saw the original. Do not just chop the text into pieces; rewrite for the format. No hashtag walls.",
+  "output": {
+    "filename": "social-{{date}}.md"
+  }
+}

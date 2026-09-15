@@ -1,0 +1,20 @@
+{
+  "id": "inbox-triage",
+  "name": "Inbox Triage",
+  "category": "ops",
+  "description": "Sorts a pile of pasted messages into what needs you, what needs a reply, and what can wait, with drafts attached.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "messages",
+      "label": "Paste today's messages",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Triage these incoming messages:\n\n{{messages}}\n\nSort every message into exactly one bucket: NEEDS YOU (a decision only the owner can make), REPLY DRAFTED (routine, draft the reply in full), or LATER (no action today, say when).\n\nFor each: who it's from, one-line summary, bucket, and the drafted reply where the bucket is REPLY DRAFTED. Order the output most urgent first. Flag anything that reads like an unhappy customer at the very top.",
+  "output": {
+    "filename": "triage-{{date}}.md"
+  }
+}

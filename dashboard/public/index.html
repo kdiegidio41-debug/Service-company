@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission Control</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1 id="biz">Mission Control</h1>
+      <p id="bizwhat" class="muted"></p>
+    </div>
+  </div>
+  <div class="stats" id="stats"></div>
+</header>
+
+<main>
+  <section>
+    <div class="section-head">
+      <h2>Agents</h2>
+      <label class="toggle"><input type="checkbox" id="dry" checked> dry run <span class="muted">(no API spend)</span></label>
+    </div>
+    <div id="agents" class="grid"></div>
+  </section>
+
+  <section>
+    <h2>Activity</h2>
+    <div id="runs" class="runs"></div>
+  </section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="modal-title"></h3>
+      <button id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="app.js" type="module"></script>
+</body>
+</html>

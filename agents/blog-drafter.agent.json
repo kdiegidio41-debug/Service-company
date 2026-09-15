@@ -1,0 +1,20 @@
+{
+  "id": "blog-drafter",
+  "name": "Blog Drafter",
+  "category": "content",
+  "description": "Writes a full publish-ready draft from a brief or a title, in your voice, without the AI throat-clearing.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "topic",
+      "label": "Topic, title, or paste a brief",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}, which does: {{business.what}}.\nIts customers are: {{business.audience}}.\nWrite in this voice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, customer name, or quote. If you need a\n  real number you do not have, write [NEEDS: what you need] and keep going.\n- No filler, no hype adjectives, no \"in today's fast-paced world\" openers.\n- Output only the deliverable. No preamble, no offer to help further.",
+  "prompt": "Write a complete blog post for {{business.name}} on: {{topic}}.\n\nRequirements:\n- Open with the reader's actual problem in the first two sentences. No throat-clearing.\n- Concrete and specific throughout. Real steps, real numbers where you have them.\n- Short paragraphs. Subheads that say something, not \"Introduction\" and \"Conclusion\".\n- Close with one clear next step for the reader.\n- Meta title under 60 characters and meta description under 155 at the very end.\n\nWrite the whole post, not an outline.",
+  "output": {
+    "filename": "post-{{date}}.md"
+  }
+}
