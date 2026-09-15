@@ -142,11 +142,19 @@
   }
   function roleCard(r, withZone){
     var c = h('div','rolecard');
+    if (r.agent) c.classList.add('live');
     var head = h('div','rhead'), left = h('div');
-    left.appendChild(h('div','rname', r.name));
+    var nm = h('div','rname'); nm.appendChild(document.createTextNode(r.name));
+    if (r.agent){
+      var lp = h('span','livepill','Live');
+      lp.title = 'Runs today as the "'+r.agent+'" subagent — no API key needed';
+      nm.appendChild(lp);
+    }
+    left.appendChild(nm);
     left.appendChild(h('div','rtitle', r.title + (withZone ? ' · '+idx.zone[r.zone].name : '')));
     head.appendChild(left); head.appendChild(tierPill(r.tier));
     c.appendChild(head);
+    if (r.agent) c.appendChild(h('div','agentline', 'subagent  ' + r.agent));
     c.appendChild(h('div','rchart', r.charter));
     var d = h('dl','kv');
     d.appendChild(h('dt',null,'Reads')); d.appendChild(h('dd',null, r.reads.join(' · ')));
@@ -189,14 +197,16 @@
       'Every concept a multi-agent system needs has a physical place here. Click a building to see who works '+
       'there and what they do; click the open ground inside a boundary to read the zone it belongs to.'));
     var warn = h('div','warn');
-    warn.appendChild(h('b',null,'Status — foundation'));
+    warn.appendChild(h('b',null,'Status — staffed in part'));
     warn.appendChild(document.createTextNode(W.note));
     w.appendChild(warn);
     w.appendChild(block('Zones', chipRow(W.zones.map(function(z){
       return { label:z.name.replace(/^The /,'') + ' — ' + z.domain, id:z.id };
     }), function(it){ select({kind:'zone', id:it.id}); })));
     var counts = h('dl','kv');
+    var staffed = W.roles.filter(function(r){ return r.agent; }).length;
     [['Zones',W.zones.length],['Stations',W.stations.length],['Roles',W.roles.length],
+     ['— staffed', staffed + ' by ' + Object.keys(W.agents||{}).length + ' agents'],
      ['Tasks',W.tasks.length],['Channels',W.flows.length]].forEach(function(p){
       counts.appendChild(h('dt',null,p[0])); counts.appendChild(h('dd',null,String(p[1])));
     });
@@ -293,16 +303,19 @@
     close.addEventListener('click', closeRoster);
     inn.appendChild(close);
     inn.appendChild(h('h2',null,'The roster'));
+    var st = W.roles.filter(function(r){ return r.agent; }).length;
     inn.appendChild(h('p','rlead',
-      'Every role on the farm, grouped by the zone it answers to. Each one has a charter, a fixed set of '+
-      'things it may read and write, and one place to escalate. What each role actually does at runtime is '+
-      'the next pass — this is the org chart, not the implementation.'));
+      'Every role on the farm, grouped by the zone it answers to. Each has a charter, a fixed set of things '+
+      'it may read and write, and one place to escalate. '+st+' of '+W.roles.length+' are marked Live — those '+
+      'run today as Claude Code subagents in .claude/agents/, no API key required. The rest are charters '+
+      'waiting for a reason to exist.'));
     W.zones.forEach(function(z){
       var sec = h('section','rzone');
       var hh = h('h3'); var dot = h('span','dot');
       dot.style.cssText='width:11px;height:11px;border-radius:50%;background:'+z.color;
       hh.appendChild(dot); hh.appendChild(document.createTextNode(z.name+' — '+z.domain));
-      var cnt = h('span',null,idx.rolesByZone[z.id].length+' roles');
+      var zs = idx.rolesByZone[z.id].filter(function(r){ return r.agent; }).length;
+      var cnt = h('span',null, zs+' live / '+idx.rolesByZone[z.id].length+' roles');
       cnt.style.cssText='margin-left:auto;color:var(--ink-3);font-weight:400;letter-spacing:0';
       hh.appendChild(cnt); sec.appendChild(hh);
       var grid = h('div','rgrid');
