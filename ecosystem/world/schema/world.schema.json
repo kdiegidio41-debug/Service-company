@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.invalid/steading/world.schema.json",
+  "title": "Steading world model",
+  "description": "One file describes the whole ecosystem. The map, the roster and the reference docs are all generated from it, so this schema is the contract that keeps them from disagreeing.",
+  "type": "object",
+  "required": ["id", "name", "grid", "modelTiers", "flowKinds", "zones", "stations", "roles", "tasks", "flows", "roads", "terrain"],
+  "additionalProperties": true,
+  "properties": {
+    "id":      { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name":    { "type": "string" },
+    "tagline": { "type": "string" },
+    "version": { "type": "string" },
+    "status":  { "type": "string" },
+    "note":    { "type": "string" },
+    "theme":   { "type": "string", "description": "Set by tools/apply-theme.mjs; absent on the source file." },
+    "grid": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width":  { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "unit":   { "type": "string" }
+      }
+    },
+    "modelTiers": {
+      "type": "object",
+      "description": "Tier id -> the model recommended for roles at that tier.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label", "model", "use", "color"],
+        "properties": {
+          "label": { "type": "string" },
+          "model": { "type": "string" },
+          "use":   { "type": "string" },
+          "color": { "$ref": "#/$defs/hex" }
+        }
+      }
+    },
+    "flowKinds": {
+      "type": "object",
+      "description": "The five channel types. A flow's kind decides who may send it.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label", "desc", "color"],
+        "properties": {
+          "label": { "type": "string" },
+          "desc":  { "type": "string" },
+          "color": { "$ref": "#/$defs/hex" }
+        }
+      }
+    },
+    "zones": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "domain", "charter", "owns", "failsWhen", "color", "accent", "polygon"],
+        "properties": {
+          "id":        { "$ref": "#/$defs/id" },
+          "name":      { "type": "string" },
+          "subtitle":  { "type": "string" },
+          "domain":    { "type": "string" },
+          "charter":   { "type": "string", "minLength": 40 },
+          "owns":      { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "failsWhen": { "type": "string", "minLength": 40,
+                         "description": "The specific way this zone degrades. Required: a zone nobody can describe the failure of is not understood yet." },
+          "color":     { "$ref": "#/$defs/hex" },
+          "accent":    { "$ref": "#/$defs/hex" },
+          "icon":      { "type": "string" },
+          "branch":    { "type": "string" },
+          "polygon":   { "$ref": "#/$defs/polygon" }
+        }
+      }
+    },
+    "stations": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "zone", "name", "kind", "x", "y", "w", "h", "purpose", "inputs", "outputs"],
+        "properties": {
+          "id":      { "$ref": "#/$defs/id" },
+          "zone":    { "$ref": "#/$defs/id" },
+          "name":    { "type": "string" },
+          "kind":    { "type": "string", "description": "Resolves to a drawing primitive in map/src/geom.js KIND." },
+          "x":       { "type": "number" }, "y": { "type": "number" },
+          "w":       { "type": "number", "exclusiveMinimum": 0 },
+          "h":       { "type": "number", "exclusiveMinimum": 0 },
+          "rows":    { "type": "integer", "minimum": 1 },
+          "purpose": { "type": "string", "minLength": 30 },
+          "inputs":  { "type": "array", "items": { "type": "string" } },
+          "outputs": { "type": "array", "items": { "type": "string" } },
+          "tasks":   { "type": "array", "items": { "$ref": "#/$defs/id" } }
+        }
+      }
+    },
+    "roles": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "title", "zone", "station", "tier", "charter", "duties", "reads", "writes", "escalatesTo"],
+        "properties": {
+          "id":          { "$ref": "#/$defs/id" },
+          "name":        { "type": "string" },
+          "title":       { "type": "string", "description": "The engineering function, plainly stated." },
+          "zone":        { "$ref": "#/$defs/id" },
+          "station":     { "$ref": "#/$defs/id" },
+          "tier":        { "type": "string", "enum": ["steward", "specialist", "hand", "sorter"] },
+          "charter":     { "type": "string", "minLength": 40 },
+          "duties":      { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+          "reads":       { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "writes":      { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "escalatesTo": { "type": "string", "description": "A role id, or free text when the chain ends outside the system." }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "station", "owner", "trigger", "input", "output", "doneWhen", "watchFor"],
+        "properties": {
+          "id":       { "$ref": "#/$defs/id" },
+          "name":     { "type": "string" },
+          "station":  { "$ref": "#/$defs/id" },
+          "owner":    { "$ref": "#/$defs/id" },
+          "trigger":  { "type": "string" },
+          "input":    { "type": "string" },
+          "output":   { "type": "string" },
+          "doneWhen": { "type": "string", "description": "Must be checkable. 'Do a good job' is not a definition of done." },
+          "watchFor": { "type": "string", "description": "The specific way this task goes wrong. Required." }
+        }
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "kind", "label"],
+        "properties": {
+          "from":  { "$ref": "#/$defs/id" },
+          "to":    { "$ref": "#/$defs/id" },
+          "kind":  { "type": "string", "enum": ["task", "artifact", "memory", "signal", "control"] },
+          "label": { "type": "string" }
+        }
+      }
+    },
+    "roads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "points", "width"],
+        "properties": {
+          "id":     { "$ref": "#/$defs/id" },
+          "name":   { "type": "string" },
+          "points": { "$ref": "#/$defs/polygon" },
+          "width":  { "type": "number", "exclusiveMinimum": 0 }
+        }
+      }
+    },
+    "terrain": {
+      "type": "object",
+      "required": ["fence"],
+      "properties": {
+        "fence":   { "$ref": "#/$defs/polygon" },
+        "gates":   { "type": "array", "items": {
+          "type": "object", "required": ["x", "y"],
+          "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "name": { "type": "string" } } } },
+        "pond":    { "type": "object", "required": ["x", "y", "rx", "ry"],
+          "properties": { "x": { "type": "number" }, "y": { "type": "number" },
+                          "rx": { "type": "number" }, "ry": { "type": "number" }, "name": { "type": "string" } } },
+        "stream":  { "$ref": "#/$defs/polygon" },
+        "hills":   { "type": "array", "items": {
+          "type": "object", "required": ["points"],
+          "properties": { "points": { "$ref": "#/$defs/polygon" }, "name": { "type": "string" } } } },
+        "orchard": { "type": "object", "required": ["x", "y", "rows", "cols", "spacing"] },
+        "trees":   { "type": "array", "items": {
+          "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } } }
+      }
+    },
+    "legend": { "type": "array", "items": {
+      "type": "object", "required": ["swatch", "text"],
+      "properties": { "swatch": { "type": "string" }, "text": { "type": "string" } } } }
+  },
+  "$defs": {
+    "id":  { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "hex": { "type": "string", "pattern": "^#[0-9A-Fa-f]{3,8}$" },
+    "polygon": {
+      "type": "array", "minItems": 2,
+      "items": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
+    }
+  }
+}

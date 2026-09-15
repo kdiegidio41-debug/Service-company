@@ -1,0 +1,120 @@
+{
+  "id": "vessel",
+  "name": "The Vessel",
+  "tagline": "An AI agent ecosystem, mapped as a long-haul ship.",
+  "note": "A name overlay only. Geometry, wiring, charters, duties, tasks and failure modes are untouched — see docs/06-THEMES.md.",
+  "zones": {
+    "farmhouse":  { "name": "The Bridge",          "subtitle": "Command Deck" },
+    "fields":     { "name": "The Processing Bays", "subtitle": "The Bays" },
+    "barn":       { "name": "The Habitat Ring",    "subtitle": "Long Bay" },
+    "silo":       { "name": "The Data Core",       "subtitle": "Core Stack" },
+    "toolshed":   { "name": "The Fabrication Bay", "subtitle": "Fab Deck" },
+    "greenhouse": { "name": "The Proving Deck",    "subtitle": "Trials" },
+    "watchtower": { "name": "The Sensor Array",    "subtitle": "The Mast" },
+    "gatehouse":  { "name": "The Airlock",         "subtitle": "Outer Hull" }
+  },
+  "stations": {
+    "gh-glasshouse": { "name": "The Incubation Chamber" },
+    "gh-beds":       { "name": "The Shadow Bays" },
+    "gh-bench":      { "name": "The Test Bench" },
+    "gh-frames":     { "name": "The Acclimation Lock" },
+
+    "wt-tower":      { "name": "The Long-Range Array" },
+    "wt-mill":       { "name": "The Drift Monitor" },
+    "wt-bell":       { "name": "The Alarm Console" },
+    "wt-tally":      { "name": "The Power Ledger" },
+
+    "si-working":    { "name": "Core I — Working" },
+    "si-episodic":   { "name": "Core II — Episodic" },
+    "si-semantic":   { "name": "Core III — Semantic" },
+    "si-granary":    { "name": "The Pattern Vault" },
+    "si-cellar":     { "name": "The Deep Archive" },
+
+    "fh-house":      { "name": "The Captain's Chair" },
+    "fh-board":      { "name": "The Work Board" },
+    "fh-well":       { "name": "The Reactor Tap" },
+    "fh-porch":      { "name": "The Dispatch Console" },
+    "fh-ledger":     { "name": "The Log Room" },
+
+    "bn-barn":       { "name": "The Long Bay" },
+    "bn-paddock":    { "name": "The Standby Ring" },
+    "bn-coop":       { "name": "The Cadence Deck" },
+    "bn-kennel":     { "name": "The Watch Station" },
+    "bn-vet":        { "name": "The Diagnostics Bay" },
+
+    "fd-north":      { "name": "Bay One — Generation" },
+    "fd-east":       { "name": "Bay Two — Extraction" },
+    "fd-south":      { "name": "Bay Three — Reduction" },
+    "fd-fallow":     { "name": "Bay Four — Recovery" },
+    "fd-head":       { "name": "The Feed Regulator" },
+    "fd-compost":    { "name": "The Salvage Bin" },
+    "fd-crow":       { "name": "The Intake Filter" },
+
+    "ts-shed":       { "name": "The Parts Registry" },
+    "ts-smithy":     { "name": "The Forge" },
+    "ts-yard":       { "name": "The Heavy Bay" },
+    "ts-hut":        { "name": "The Issue Desk" },
+
+    "gt-gate":       { "name": "The Outer Hatch" },
+    "gt-fence":      { "name": "The Hull Line" },
+    "gt-stall":      { "name": "The Transfer Bay" },
+    "gt-scale":      { "name": "The Decontamination Scan" }
+  },
+  "roles": {
+    "r-farmer":        { "name": "The Captain" },
+    "r-foreman":       { "name": "The Executive Officer" },
+    "r-ledger":        { "name": "The Board Officer" },
+    "r-dispatcher":    { "name": "The Dispatch Officer" },
+    "r-almanac":       { "name": "The Navigator" },
+    "r-scribe":        { "name": "The Log Officer" },
+    "r-wellkeeper":    { "name": "The Reactor Officer" },
+
+    "r-rowboss":       { "name": "The Bay Chief" },
+    "r-plowhand":      { "name": "The Feed Hand" },
+    "r-sower":         { "name": "The Generator" },
+    "r-reaper":        { "name": "The Extractor" },
+    "r-thresher":      { "name": "The Reducer" },
+    "r-gleaner":       { "name": "The Salvager" },
+    "r-scarecrow":     { "name": "The Intake Sentry" },
+    "r-composter":     { "name": "The Salvage Analyst" },
+
+    "r-herdsman":      { "name": "The Bay Warden" },
+    "r-sheepdog":      { "name": "The Watchdog" },
+    "r-milker":        { "name": "The Cadence Officer" },
+    "r-vet":           { "name": "The Diagnostician" },
+    "r-stablehand":    { "name": "The Deck Hand" },
+
+    "r-granarykeeper": { "name": "The Pattern Keeper" },
+    "r-chronicler":    { "name": "The Recorder" },
+    "r-winnower":      { "name": "The Distiller" },
+    "r-hydrant":       { "name": "The Retriever" },
+    "r-cellarer":      { "name": "The Archivist" },
+    "r-statekeeper":   { "name": "The State Officer" },
+
+    "r-smith":         { "name": "The Fabricator" },
+    "r-sharpener":     { "name": "The Curator" },
+    "r-quartermaster": { "name": "The Quartermaster" },
+    "r-wright":        { "name": "The Integrator" },
+    "r-driver":        { "name": "The Heavy Operator" },
+
+    "r-grafter":       { "name": "The Shaper" },
+    "r-nurseryman":    { "name": "The Proving Officer" },
+    "r-grader":        { "name": "The Assessor" },
+    "r-soiltester":    { "name": "The Sample Keeper" },
+    "r-pruner":        { "name": "The Trimmer" },
+    "r-pollinator":    { "name": "The Liaison" },
+
+    "r-watchman":      { "name": "The Sensor Officer" },
+    "r-weathervane":   { "name": "The Drift Analyst" },
+    "r-tally":         { "name": "The Power Accountant" },
+    "r-bellringer":    { "name": "The Alarm Officer" },
+    "r-surveyor":      { "name": "The Reporting Officer" },
+
+    "r-gatekeeper":    { "name": "The Hatch Officer" },
+    "r-fencewright":   { "name": "The Hull Engineer" },
+    "r-tolltaker":     { "name": "The Traffic Officer" },
+    "r-inspector":     { "name": "The Decon Officer" },
+    "r-marketkeeper":  { "name": "The Transfer Officer" },
+    "r-herald":        { "name": "The Comms Officer" }
+  }
+}

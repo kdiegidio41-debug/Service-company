@@ -1,0 +1,28 @@
+<div class="app">
+  <header class="bar">
+    <div class="brand">
+      <h1>The Steading</h1>
+      <span class="sub" id="styleNote"></span>
+    </div>
+    <div class="tabs" id="tabs" role="group" aria-label="Map style"></div>
+    <div class="toolbtns" id="toggles"></div>
+    <button class="tgl" id="rosterBtn" type="button">Roster</button>
+  </header>
+
+  <div class="main">
+    <div class="stage" id="stage">
+      <div class="tip" id="tip"></div>
+      <div class="hud">
+        <button id="zout" type="button" aria-label="Zoom out">&minus;</button>
+        <span class="zoomval" id="zoomval">100%</span>
+        <button id="zin" type="button" aria-label="Zoom in">+</button>
+        <button id="zfit" type="button" aria-label="Reset view">⌂</button>
+      </div>
+      <div class="legend">
+        <h4>Channels</h4>
+        <div id="legendRows"></div>
+      </div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</div>

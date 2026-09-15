@@ -1,0 +1,1999 @@
+<title>The Steading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ============================================================
+   THE STEADING — map shell
+   Chrome is neutral and instrument-like; each style mode
+   re-skins it so switching styles reads as a real mode change.
+   ============================================================ */
+
+:root{
+  /* neutral chrome (light) — a grey biased green, toward the farm accent */
+  --bg:        #EFEFEA;
+  --surface:   #FBFBF8;
+  --surface-2: #F2F2ED;
+  --ink:       #1C201D;
+  --ink-2:     #565E59;
+  --ink-3:     #8A928C;
+  --rule:      #DCDFD8;
+  --accent:    #2E6F5E;
+  --accent-ink:#FFFFFF;
+  --focus:     #2E6F5E;
+  --shadow:    0 1px 2px rgba(20,28,24,.06), 0 8px 24px rgba(20,28,24,.07);
+
+  --font-ui:   "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif:"EB Garamond", Iowan Old Style, Georgia, serif;
+
+  --stage-bg:  #E7E7E1;
+  --panel-font: var(--font-ui);
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:        #141715;
+    --surface:   #1C201D;
+    --surface-2: #232825;
+    --ink:       #EDEFEB;
+    --ink-2:     #A7AFA9;
+    --ink-3:     #6F776F;
+    --rule:      #2E3430;
+    --accent:    #6FCBAF;
+    --accent-ink:#0E1512;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --stage-bg:  #101311;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:        #141715;
+  --surface:   #1C201D;
+  --surface-2: #232825;
+  --ink:       #EDEFEB;
+  --ink-2:     #A7AFA9;
+  --ink-3:     #6F776F;
+  --rule:      #2E3430;
+  --accent:    #6FCBAF;
+  --accent-ink:#0E1512;
+  --shadow:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  --stage-bg:  #101311;
+}
+
+/* ---- style modes re-skin the chrome (declared last: they win) ---- */
+:root[data-style="blueprint"]{
+  --bg:#071322; --surface:#0B1E33; --surface-2:#0E2740; --ink:#D6ECFF; --ink-2:#89B6D8;
+  --ink-3:#5A88A8; --rule:#1B3A58; --accent:#5AD2FF; --accent-ink:#04121F;
+  --stage-bg:#0A1A2F; --panel-font: var(--font-mono);
+  --shadow: 0 0 0 1px rgba(90,210,255,.08), 0 10px 30px rgba(0,0,0,.5);
+}
+:root[data-style="isometric"]{
+  --bg:#E6EADE; --surface:#F7F8F2; --surface-2:#EDF0E5; --ink:#232A1E; --ink-2:#5A6550;
+  --ink-3:#8B9480; --rule:#D2D8C6; --accent:#6B8E3F; --accent-ink:#FFFFFF;
+  --stage-bg:#D9E3D2; --panel-font: var(--font-ui);
+}
+:root[data-style="almanac"]{
+  --bg:#DCCFAE; --surface:#EFE4C8; --surface-2:#E5D8B8; --ink:#3B2C1E; --ink-2:#6E5B42;
+  --ink-3:#977F5E; --rule:#C9B892; --accent:#8E3B2F; --accent-ink:#F6EEDA;
+  --stage-bg:#E8DCC0; --panel-font: var(--font-serif);
+  --shadow: 0 1px 2px rgba(74,55,40,.12), 0 10px 26px rgba(74,55,40,.14);
+}
+:root[data-style="neon"]{
+  --bg:#03070D; --surface:#080F1A; --surface-2:#0C1725; --ink:#D6FFF4; --ink-2:#6FB9A8;
+  --ink-3:#3E7A6E; --rule:#14303F; --accent:#3DF5D0; --accent-ink:#021410;
+  --stage-bg:#050B14; --panel-font: var(--font-mono);
+  --shadow: 0 0 0 1px rgba(61,245,208,.10), 0 0 40px rgba(61,245,208,.06);
+}
+:root[data-style="editorial"]{
+  --bg:#F3F3F0; --surface:#FCFCFA; --surface-2:#F5F5F2; --ink:#1A1D1C; --ink-2:#5C6663;
+  --ink-3:#8D9693; --rule:#DDE2E0; --accent:#2E6F5E; --accent-ink:#FFFFFF;
+  --stage-bg:#FCFCFA; --panel-font: var(--font-ui);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-ui); font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  transition: background .35s ease, color .35s ease;
+}
+:focus-visible{ outline:2px solid var(--focus,var(--accent)); outline-offset:2px; border-radius:3px; }
+
+/* ================= layout ================= */
+.app{
+  height:100%; display:grid;
+  grid-template-rows:auto 1fr;
+  grid-template-columns:1fr;
+}
+
+/* ---- header ---- */
+.bar{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:10px 16px; padding-top:calc(10px + env(safe-area-inset-top,0px));
+  background:var(--surface); border-bottom:1px solid var(--rule);
+  position:relative; z-index:6;
+}
+.brand{ display:flex; align-items:baseline; gap:10px; margin-right:auto; min-width:0; }
+.brand h1{
+  margin:0; font-size:16px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  white-space:nowrap;
+}
+.brand .sub{ font-size:11.5px; color:var(--ink-3); font-family:var(--font-mono); white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; }
+
+.tabs{ display:flex; gap:4px; flex-wrap:wrap; }
+.tab{
+  display:flex; align-items:center; gap:7px; cursor:pointer;
+  padding:5px 10px 5px 6px; border:1px solid var(--rule); border-radius:2px;
+  background:var(--surface-2); color:var(--ink-2);
+  font:500 11.5px/1 var(--font-ui); letter-spacing:.06em; text-transform:uppercase;
+  transition:background .18s, color .18s, border-color .18s;
+}
+.tab:hover{ color:var(--ink); border-color:var(--ink-3); }
+.tab[aria-pressed="true"]{ background:var(--ink); color:var(--surface); border-color:var(--ink); }
+.tab .chip{ width:16px; height:16px; border-radius:2px; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.18); }
+
+.toolbtns{ display:flex; gap:4px; }
+.tgl{
+  cursor:pointer; padding:5px 9px; border:1px solid var(--rule); border-radius:2px;
+  background:transparent; color:var(--ink-3);
+  font:500 11px/1 var(--font-mono); letter-spacing:.06em; text-transform:uppercase;
+}
+.tgl[aria-pressed="true"]{ color:var(--accent); border-color:var(--accent); }
+.tgl:hover{ color:var(--ink); }
+
+/* ---- main ---- */
+.main{ display:grid; grid-template-columns:1fr 340px; min-height:0; }
+
+.stage{
+  position:relative; min-width:0; background:var(--stage-bg); overflow:hidden;
+  transition:background .35s ease;
+}
+.stage svg{ display:block; width:100%; height:100%; touch-action:none; cursor:grab; }
+.stage svg.dragging{ cursor:grabbing; }
+
+.hud{
+  position:absolute; left:12px; bottom:12px; display:flex; gap:6px; align-items:center;
+  padding:6px 8px; background:color-mix(in srgb, var(--surface) 88%, transparent);
+  border:1px solid var(--rule); border-radius:2px; backdrop-filter:blur(6px);
+}
+.hud button{
+  cursor:pointer; width:26px; height:26px; border:1px solid var(--rule); border-radius:2px;
+  background:var(--surface-2); color:var(--ink-2); font:500 13px/1 var(--font-mono);
+}
+.hud button:hover{ color:var(--ink); }
+.hud .zoomval{ font:500 11px/1 var(--font-mono); color:var(--ink-3); min-width:42px; text-align:center;
+  font-variant-numeric:tabular-nums; }
+
+.legend{
+  position:absolute; right:12px; bottom:12px; padding:9px 11px;
+  background:color-mix(in srgb, var(--surface) 88%, transparent);
+  border:1px solid var(--rule); border-radius:2px; backdrop-filter:blur(6px);
+  display:grid; gap:4px; max-width:210px;
+}
+.legend h4{ margin:0 0 2px; font:600 10px/1 var(--font-ui); letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); }
+.legend .row{ display:flex; align-items:center; gap:7px; font:400 11px/1.3 var(--font-mono); color:var(--ink-2); }
+.legend .dash{ width:16px; height:0; border-top:2px solid; flex:none; }
+
+/* ---- tooltip ---- */
+.tip{
+  position:absolute; pointer-events:none; z-index:5; opacity:0; transform:translate(-50%,-140%);
+  padding:5px 9px; background:var(--ink); color:var(--surface); border-radius:2px;
+  font:500 11.5px/1.3 var(--font-ui); white-space:nowrap; transition:opacity .12s;
+}
+.tip.on{ opacity:1; }
+.tip .k{ font-family:var(--font-mono); opacity:.66; font-size:10.5px; }
+
+/* ---- panel ---- */
+.panel{
+  border-left:1px solid var(--rule); background:var(--surface);
+  overflow-y:auto; overscroll-behavior:contain; min-height:0;
+  font-family:var(--panel-font);
+}
+.panel-in{ padding:18px 18px calc(28px + env(safe-area-inset-bottom,0px)); display:grid; gap:18px; }
+
+.eyebrow{
+  font:600 10px/1 var(--font-ui); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+  display:flex; align-items:center; gap:7px;
+}
+.eyebrow .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+
+.ptitle{ margin:6px 0 0; font:700 21px/1.18 var(--font-ui); letter-spacing:-.01em; text-wrap:balance; }
+:root[data-style="almanac"] .ptitle{ font-family:var(--font-serif); font-weight:600; font-size:24px; }
+.psub{ margin:2px 0 0; font:400 12px/1.4 var(--font-mono); color:var(--ink-3); }
+.pbody{ margin:0; font-size:13.5px; line-height:1.62; color:var(--ink-2); max-width:60ch; }
+
+.block{ display:grid; gap:7px; }
+.block h3{
+  margin:0; font:600 10px/1 var(--font-ui); letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-3); padding-bottom:6px; border-bottom:1px solid var(--rule);
+}
+.lst{ margin:0; padding:0; list-style:none; display:grid; gap:5px; }
+.lst li{ font-size:13px; line-height:1.5; color:var(--ink-2); padding-left:14px; position:relative; }
+.lst li::before{ content:""; position:absolute; left:0; top:.58em; width:5px; height:1px; background:var(--ink-3); }
+
+.warn{
+  padding:10px 12px; border-left:2px solid var(--accent); background:var(--surface-2);
+  font-size:12.5px; line-height:1.55; color:var(--ink-2);
+}
+.warn b{ color:var(--ink); font-weight:600; display:block; margin-bottom:3px;
+  font:600 10px/1 var(--font-ui); letter-spacing:.14em; text-transform:uppercase; }
+
+.chips{ display:flex; flex-wrap:wrap; gap:5px; }
+.chipbtn{
+  cursor:pointer; border:1px solid var(--rule); background:var(--surface-2); color:var(--ink-2);
+  border-radius:2px; padding:5px 9px; font:500 11.5px/1.2 var(--font-ui); text-align:left;
+}
+.chipbtn:hover{ border-color:var(--accent); color:var(--ink); }
+
+.rolecard{
+  border:1px solid var(--rule); border-radius:2px; background:var(--surface-2);
+  padding:11px 12px; display:grid; gap:6px;
+}
+.rolecard .rhead{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+.rolecard .rname{ font:600 14px/1.2 var(--font-ui); color:var(--ink); }
+.rolecard .rtitle{ font:400 11px/1.3 var(--font-mono); color:var(--ink-3); }
+.rolecard .rchart{ font-size:12.5px; line-height:1.55; color:var(--ink-2); }
+.tier{
+  font:600 9.5px/1 var(--font-ui); letter-spacing:.12em; text-transform:uppercase;
+  padding:3px 6px; border-radius:2px; flex:none; color:#fff;
+}
+
+.taskrow{ display:grid; gap:3px; padding:9px 0; border-bottom:1px solid var(--rule); }
+.taskrow:last-child{ border-bottom:0; }
+.taskrow .tn{ font:600 13px/1.3 var(--font-ui); color:var(--ink); }
+.taskrow .tm{ font:400 11.5px/1.45 var(--font-mono); color:var(--ink-3); }
+.taskrow .tm b{ color:var(--ink-2); font-weight:500; }
+
+.kv{ display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:12.5px; }
+.kv dt{ font:500 10px/1.5 var(--font-ui); letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+.kv dd{ margin:0; color:var(--ink-2); }
+
+/* ---- roster overlay ---- */
+.roster{
+  position:fixed; inset:0; z-index:20; background:var(--bg);
+  overflow-y:auto; padding:0 16px calc(40px + env(safe-area-inset-bottom,0px));
+}
+.roster-in{ max-width:1180px; margin:0 auto; padding-block:28px; }
+.roster h2{ margin:0 0 4px; font:700 26px/1.1 var(--font-ui); letter-spacing:-.015em; }
+.roster .rlead{ margin:0 0 26px; color:var(--ink-2); font-size:14px; max-width:62ch; }
+.rzone{ margin-bottom:30px; }
+.rzone > h3{
+  margin:0 0 10px; padding-bottom:7px; border-bottom:1px solid var(--rule);
+  display:flex; align-items:center; gap:9px;
+  font:600 12px/1 var(--font-ui); letter-spacing:.14em; text-transform:uppercase;
+}
+.rgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:10px; }
+.closeR{
+  position:sticky; top:env(safe-area-inset-top,0px); float:right; z-index:2;
+  cursor:pointer; border:1px solid var(--rule); background:var(--surface); color:var(--ink);
+  padding:7px 13px; border-radius:2px; font:500 11.5px/1 var(--font-ui);
+  letter-spacing:.08em; text-transform:uppercase;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 900px){
+  .main{ grid-template-columns:1fr; grid-template-rows:minmax(300px,1fr) auto; }
+  .panel{ border-left:0; border-top:1px solid var(--rule); max-height:46vh; }
+  .brand .sub{ display:none; }
+  .legend{ display:none; }
+}
+@media (max-width: 560px){
+  .bar{ gap:9px; padding:9px 12px; padding-top:calc(9px + env(safe-area-inset-top,0px)); }
+  .brand h1{ font-size:14px; }
+  .tab span.lab{ display:none; }
+  .tab{ padding:5px 6px; }
+}
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important;
+     transition-duration:.001ms !important; }
+}
+
+/* ---- pick targets ---- */
+.pickable{ cursor:pointer; }
+.pickable > *{ transition:filter .15s ease; }
+.pickable:hover > *{ filter:brightness(1.12) saturate(1.15); }
+:root[data-style="neon"] .pickable:hover > *{ filter:brightness(1.5); }
+:root[data-style="blueprint"] .pickable:hover > *{ filter:brightness(1.45); }
+.pickable:focus{ outline:none; }
+.pickable.sel > *{ filter:brightness(1.18) saturate(1.2); }
+.selring{ pointer-events:none; }
+
+</style>
+
+<div class="app">
+  <header class="bar">
+    <div class="brand">
+      <h1>The Steading</h1>
+      <span class="sub" id="styleNote"></span>
+    </div>
+    <div class="tabs" id="tabs" role="group" aria-label="Map style"></div>
+    <div class="toolbtns" id="toggles"></div>
+    <button class="tgl" id="rosterBtn" type="button">Roster</button>
+  </header>
+
+  <div class="main">
+    <div class="stage" id="stage">
+      <div class="tip" id="tip"></div>
+      <div class="hud">
+        <button id="zout" type="button" aria-label="Zoom out">&minus;</button>
+        <span class="zoomval" id="zoomval">100%</span>
+        <button id="zin" type="button" aria-label="Zoom in">+</button>
+        <button id="zfit" type="button" aria-label="Reset view">⌂</button>
+      </div>
+      <div class="legend">
+        <h4>Channels</h4>
+        <div id="legendRows"></div>
+      </div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</div>
+
+
+<script>window.WORLD = {"$schema":"./schema/world.schema.json","id":"steading","name":"The Steading","tagline":"An AI agent ecosystem, mapped as a working farm.","version":"0.1.0","status":"base-foundation","note":"Roles and stations are defined. Their runtime functions are deliberately NOT implemented yet — that is the next pass.","grid":{"width":100,"height":70,"unit":"chain"},"modelTiers":{"steward":{"label":"Steward","model":"claude-opus-5","use":"Owns outcomes. Plans, decomposes, arbitrates, decides when to stop.","color":"#C9A227"},"specialist":{"label":"Specialist","model":"claude-opus-5","use":"Deep single-domain judgment. Quality bar matters more than cost.","color":"#6C8E4F"},"hand":{"label":"Hand","model":"claude-sonnet-5","use":"Bulk execution under a clear spec. The workhorses.","color":"#5B7FA6"},"sorter":{"label":"Sorter","model":"claude-haiku-4-5","use":"Classify, route, extract, score. High volume, low ceremony.","color":"#9A6A4F"}},"flowKinds":{"task":{"label":"Task","desc":"A unit of work moving toward whoever will do it.","color":"#D98A3A"},"artifact":{"label":"Artifact","desc":"Produced output moving toward storage or delivery.","color":"#6C8E4F"},"memory":{"label":"Memory","desc":"Facts, episodes, and procedures moving in or out of store.","color":"#8A6FB0"},"signal":{"label":"Signal","desc":"Telemetry, health, and cost moving toward the watch.","color":"#4E93A8"},"control":{"label":"Control","desc":"Authority: permits, kills, budgets, escalations.","color":"#C2413C"}},"zones":[{"id":"farmhouse","name":"The Farmhouse","subtitle":"Command Yard","domain":"Orchestration","charter":"Receives intent from the outside world, turns it into a plan, and decides who does what. Nothing self-assigns on this farm; work is handed out here.","owns":["Goal intake","Task decomposition","Assignment and routing","Priority and backpressure","The single work ledger"],"failsWhen":"It holds context for every worker at once and runs out of room to think. Past four concurrent crews, delegate to a Row Boss instead of tracking rows yourself.","color":"#C2823C","accent":"#F0C27B","icon":"house","branch":"claude/steading-farmhouse","polygon":[[30,26],[44,24],[54,27],[54,40],[48,44],[34,44],[30,38]]},{"id":"fields","name":"The Fields","subtitle":"The Rows","domain":"Execution","charter":"Where the actual labour happens, in parallel rows. A field runs one kind of work at scale: prepare, generate, extract, reduce. Rows do not talk to each other.","owns":["Bulk generation","Extraction and parsing","Reduction and synthesis","Retry of dropped work","Per-batch sub-orchestration"],"failsWhen":"Rows are given work that depends on other rows. Independence is the whole reason the field is fast; a dependency between rows turns a field into a queue.","color":"#6C8E4F","accent":"#A8C87A","icon":"field","branch":"claude/steading-fields","polygon":[[5,31],[28,30],[28,50],[26,64],[8,64],[4,52]]},{"id":"barn","name":"The Barn","subtitle":"Barnyard","domain":"Long-running & stateful agents","charter":"Home to everything that stays alive between requests: durable sessions, scheduled jobs, and the supervisors that keep them honest. Fields forget; the barn remembers.","owns":["Durable agent sessions","Scheduled and recurring work","Liveness and health checks","Timeout, runaway and kill-switch supervision","Workspace and container lifecycle"],"failsWhen":"A long-running agent is left unsupervised. Anything that can run for an hour can loop for an hour — the Sheepdog is not optional.","color":"#A0522D","accent":"#D98A5A","icon":"barn","branch":"claude/steading-barn","polygon":[[58,29],[74,28],[84,32],[84,45],[76,48],[62,48],[58,41]]},{"id":"silo","name":"The Silo Row","subtitle":"Granary","domain":"Memory & knowledge","charter":"Four kinds of remembering, kept in four separate stores on purpose. Mixing them is the most common reason an agent ecosystem slowly goes senile.","owns":["Working memory (this task)","Episodic memory (what happened)","Semantic memory (what is true)","Procedural memory (how we do it)","Archive, retention and deletion"],"failsWhen":"Everything is thrown into one vector store. Vectors are good at 'something like this' and bad at 'what happened, in what order' — keep the trace separate from the facts.","color":"#8A6FB0","accent":"#BCA5DA","icon":"silo","branch":"claude/steading-silo","polygon":[[72,6],[92,5],[96,12],[96,24],[88,27],[76,26],[72,18]]},{"id":"toolshed","name":"The Toolshed","subtitle":"Works Yard","domain":"Tools & integrations","charter":"Every capability an agent has, it got from here. Tools are built, sharpened, catalogued and handed out — and taken away again when they go dull.","owns":["Tool and MCP server construction","External API adapters","Tool schemas and descriptions","The tool registry and who may hold what","Deprecation and removal"],"failsWhen":"Tools accumulate and nothing is ever retired. A crowded toolbelt costs context on every single call and makes the right tool harder to pick.","color":"#5B7FA6","accent":"#8FB6D6","icon":"shed","branch":"claude/steading-toolshed","polygon":[[62,53],[80,51],[94,54],[94,64],[86,67],[66,66],[62,60]]},{"id":"greenhouse","name":"The Greenhouse","subtitle":"Nursery","domain":"R&D and evaluation","charter":"Nothing reaches a field untested. New prompts, new agents and new tools are grown here under glass, graded against real data, and only then transplanted.","owns":["Prompt design and tuning","New agent incubation in sandbox","Eval sets and golden data","Grading, rubrics and LLM judges","Pruning what no longer earns its place"],"failsWhen":"The eval set is written from the same head that wrote the prompt. Golden data has to come from real traffic or it only measures your own assumptions.","color":"#3F8F6F","accent":"#7FD1AE","icon":"greenhouse","branch":"claude/steading-greenhouse","polygon":[[5,6],[24,5],[28,11],[28,23],[20,26],[9,25],[5,17]]},{"id":"watchtower","name":"The Watchtower","subtitle":"The Ridge","domain":"Observability","charter":"Sits on the high ground and can see every zone at once. If it did not happen in a trace here, it did not happen — and nobody will be able to explain it later.","owns":["End-to-end traces and causality","Cost and token accounting","Load and anomaly forecasting","Alerting and paging a human","Quality reporting and SLOs"],"failsWhen":"Logging records that an agent ran but not why it decided what it decided. A timestamp is not a trace; capture the reasoning and the inputs it saw.","color":"#4E93A8","accent":"#8ED0E0","icon":"tower","branch":"claude/steading-watchtower","polygon":[[38,5],[56,4],[62,9],[62,19],[54,22],[42,21],[38,13]]},{"id":"gatehouse","name":"The Gatehouse","subtitle":"South Gate","domain":"Security & the outside world","charter":"The only lawful way in or out. Every request from outside is identified here, every artifact leaving is inspected here, and the fence line is everyone's business.","owns":["Identity and scopes","Sandboxing and blast radius","Rate limiting and fair share","Outbound inspection for secrets and PII","The external interface humans actually touch"],"failsWhen":"The fence is treated as the gate's problem alone. Egress from a field row is a hole in the fence no matter how well the gate is staffed.","color":"#C2413C","accent":"#E8837E","icon":"gate","branch":"claude/steading-gatehouse","polygon":[[36,51],[52,50],[60,54],[60,66],[52,68],[40,68],[36,60]]}],"stations":[{"id":"gh-glasshouse","zone":"greenhouse","name":"The Glasshouse","kind":"greenhouse","x":13,"y":12,"w":9,"h":6,"purpose":"Where a new agent is grown from a prompt into something that survives contact with real input.","inputs":["A job nobody currently does","Failed traces showing a gap","Golden examples of the wanted output"],"outputs":["A drafted role charter","A tuned system prompt","A sandbox transcript showing it works"],"tasks":["t-draft-role","t-tune-prompt"]},{"id":"gh-beds","zone":"greenhouse","name":"The Nursery Beds","kind":"beds","x":22,"y":10,"w":8,"h":5,"purpose":"Candidate agents run against real traffic in shadow mode — they produce output, nobody acts on it.","inputs":["A candidate agent","A mirrored slice of live work"],"outputs":["Shadow transcripts","A first honest failure rate"],"tasks":["t-shadow-run"]},{"id":"gh-bench","zone":"greenhouse","name":"The Grading Bench","kind":"shed","x":9,"y":20,"w":8,"h":5,"purpose":"Scoring. Rubrics, judges and the eval sets that decide whether anything actually improved.","inputs":["Candidate output","The golden set","A written rubric"],"outputs":["A score with a breakdown","A pass or fail against the bar","New eval cases harvested from failures"],"tasks":["t-score-run","t-curate-evalset"]},{"id":"gh-frames","zone":"greenhouse","name":"The Cold Frames","kind":"frames","x":22,"y":20,"w":8,"h":5,"purpose":"Hardening off. A passing agent takes a small percentage of real work before it takes all of it.","inputs":["An agent that passed the bench","A traffic percentage"],"outputs":["A staged rollout","A rollback if the live numbers disagree with the bench"],"tasks":["t-stage-rollout"]},{"id":"wt-tower","zone":"watchtower","name":"The Tower","kind":"tower","x":50,"y":10,"w":7,"h":9,"purpose":"Every run, end to end, with the reasoning attached. The only place the whole farm is visible at once.","inputs":["Spans from every zone","Inputs each agent actually saw","Decisions and their stated reasons"],"outputs":["A replayable trace per run","The causal chain behind any single output"],"tasks":["t-trace-run","t-replay-failure"]},{"id":"wt-mill","zone":"watchtower","name":"The Windmill","kind":"windmill","x":41,"y":15,"w":6,"h":8,"purpose":"Reads which way the load is blowing. Forecasts demand and flags anomalies before they become incidents.","inputs":["Historical throughput","Queue depth","Live error rates"],"outputs":["A load forecast","Anomaly flags","Advice to the Dispatcher on how hard to run"],"tasks":["t-forecast-load"]},{"id":"wt-bell","zone":"watchtower","name":"The Bell Post","kind":"bell","x":57,"y":7,"w":5,"h":5,"purpose":"Wakes a human. Deliberately hard to ring, because a bell that rings often stops being heard.","inputs":["A breached threshold","A stuck or looping agent","A budget overrun"],"outputs":["A page with the trace link attached","An incident record"],"tasks":["t-raise-alarm"]},{"id":"wt-tally","zone":"watchtower","name":"The Tally Office","kind":"shed","x":58,"y":16,"w":8,"h":5,"purpose":"Counts what everything cost. Tokens, calls, wall time, and cost per completed task — not per request.","inputs":["Token usage per span","Per-zone budgets"],"outputs":["Cost per task and per zone","Budget burn-down","The stop order when a budget is spent"],"tasks":["t-account-spend"]},{"id":"si-working","zone":"silo","name":"Silo I — Working","kind":"silo","x":77,"y":11,"w":5,"h":11,"purpose":"This task, right now. Scratch state for a run in flight; emptied when the run ends.","inputs":["Intermediate results","Partial plans","Tool outputs still in play"],"outputs":["Current state to whoever is working","A handoff packet when work changes hands"],"tasks":["t-checkpoint-state"]},{"id":"si-episodic","zone":"silo","name":"Silo II — Episodic","kind":"silo","x":84,"y":10,"w":5,"h":11,"purpose":"What happened, in what order, with timestamps. The thing vector search is worst at and you need most when debugging.","inputs":["Ordered event records","Tool calls with their arguments and results"],"outputs":["Run histories","The raw material the Winnower distills into facts"],"tasks":["t-record-episode"]},{"id":"si-semantic","zone":"silo","name":"Silo III — Semantic","kind":"silo","x":91,"y":11,"w":5,"h":11,"purpose":"What is true, independent of when we learned it. Facts, preferences, domain rules, distilled conclusions.","inputs":["Facts promoted from episodes","Human-asserted ground truth"],"outputs":["Retrieved context for any agent that asks","Contradictions flagged for a human"],"tasks":["t-promote-fact","t-retrieve-context"]},{"id":"si-granary","zone":"silo","name":"The Granary","kind":"granary","x":80,"y":20,"w":9,"h":6,"purpose":"Procedural memory — how we do things. Versioned prompts, role charters, rubrics and agent blueprints.","inputs":["Promoted prompts from the Greenhouse","Rubrics that held up","Role definitions"],"outputs":["The seed any new agent is grown from","A diffable history of every prompt change"],"tasks":["t-version-prompt"]},{"id":"si-cellar","zone":"silo","name":"The Root Cellar","kind":"cellar","x":91,"y":22,"w":7,"h":5,"purpose":"Cold storage. Retention windows, legal holds, and the only place on the farm authorised to delete.","inputs":["Aged-out episodes","Deletion requests"],"outputs":["Archived records","Proof of deletion"],"tasks":["t-age-out"]},{"id":"fh-house","zone":"farmhouse","name":"The Farmhouse","kind":"farmhouse","x":37,"y":31,"w":11,"h":8,"purpose":"The Farmer's seat. Intent arrives, becomes a plan, and the plan becomes named chores with owners.","inputs":["A goal from the Gatehouse","Current farm capacity","What the Almanac says was tried before"],"outputs":["A written plan","A decomposition into independent chores","A decision to stop"],"tasks":["t-intake-goal","t-decompose","t-decide-done"]},{"id":"fh-board","zone":"farmhouse","name":"The Chore Board","kind":"board","x":45,"y":34,"w":7,"h":5,"purpose":"Every open chore on one board, with an owner and a state. If it is not on the board it is not happening.","inputs":["Chores from the Farmhouse","State changes from every zone"],"outputs":["The authoritative work ledger","What is blocked and on whom"],"tasks":["t-post-chore","t-claim-chore"]},{"id":"fh-well","zone":"farmhouse","name":"The Well","kind":"well","x":51,"y":29,"w":5,"h":5,"purpose":"The shared resource everybody draws from: model capacity, rate limit headroom, budget. Finite, and visibly so.","inputs":["Provider rate limits","The month's budget"],"outputs":["Draw permits per zone","A dry-well signal that throttles the whole farm"],"tasks":["t-ration-draw"]},{"id":"fh-porch","zone":"farmhouse","name":"The Dispatch Porch","kind":"porch","x":34,"y":40,"w":8,"h":5,"purpose":"Where chores are matched to crews. Priority, batching, backpressure, and the call on which tier does the work.","inputs":["The board","Crew capacity","The Windmill's forecast"],"outputs":["Assignments","A held queue when the farm is full"],"tasks":["t-route-chore","t-apply-backpressure"]},{"id":"fh-ledger","zone":"farmhouse","name":"The Ledger Office","kind":"shed","x":47,"y":41,"w":8,"h":5,"purpose":"Writes down what was decided and why, so tomorrow's Farmer does not redo today's thinking.","inputs":["Decisions from the Farmhouse","Outcomes from every zone"],"outputs":["A decision record per plan","Episodes handed to the Silo"],"tasks":["t-write-decision"]},{"id":"bn-barn","zone":"barn","name":"The Great Barn","kind":"barn","x":66,"y":35,"w":13,"h":9,"purpose":"Durable agent sessions that live across many turns and many days. Each has a stall, a name and a keeper.","inputs":["A long-horizon assignment","Session state from Silo I"],"outputs":["Progress across days","A session that can be resumed, inspected or ended"],"tasks":["t-open-session","t-resume-session"]},{"id":"bn-paddock","zone":"barn","name":"The Paddock","kind":"paddock","x":77,"y":34,"w":9,"h":7,"purpose":"Open ground for agents that are running but not currently working — warm, idle, cheap to wake.","inputs":["Idle sessions","Wake triggers"],"outputs":["Fast resume without a cold start","Sessions retired when nobody comes for them"],"tasks":["t-park-session"]},{"id":"bn-coop","zone":"barn","name":"The Henhouse","kind":"coop","x":61,"y":44,"w":7,"h":5,"purpose":"Scheduled work that lays on a cadence — nightly digests, hourly polls, weekly reports.","inputs":["A cron expression","A standing instruction"],"outputs":["A run per firing","A skipped-run record when the farm is throttled"],"tasks":["t-schedule-job","t-fire-scheduled"]},{"id":"bn-kennel","zone":"barn","name":"The Kennel","kind":"kennel","x":72,"y":45,"w":7,"h":5,"purpose":"Home of the Sheepdog. Watches every long-running agent for the three ways they go wrong: stuck, looping, or wandering off-task.","inputs":["Heartbeats","Step counts","The original assignment to compare against"],"outputs":["A nudge back on task","A timeout","A kill, with the reason recorded"],"tasks":["t-herd-stray","t-kill-runaway"]},{"id":"bn-vet","zone":"barn","name":"The Vet Stall","kind":"shed","x":81,"y":42,"w":8,"h":5,"purpose":"Health, not behaviour. Is this agent responding, is its context poisoned, has its quality drifted since last week?","inputs":["Liveness probes","Rolling quality scores","Context size over time"],"outputs":["A clean bill of health","A restart","A referral back to the Greenhouse"],"tasks":["t-health-check","t-detect-drift"]},{"id":"fd-north","zone":"fields","name":"North Field — Sowing","kind":"field","x":14,"y":36,"w":20,"h":8,"rows":6,"purpose":"First-pass generation at volume. Drafts, candidates, options — quantity here, quality downstream.","inputs":["A chore with a clear spec","Context retrieved from Silo III"],"outputs":["Draft artifacts, many of them","A per-row confidence note"],"tasks":["t-generate-draft"]},{"id":"fd-east","zone":"fields","name":"East Field — Reaping","kind":"field","x":14,"y":45,"w":20,"h":8,"rows":6,"purpose":"Extraction and parsing. Turning unstructured input into the schema the rest of the farm can handle.","inputs":["Raw documents, pages, transcripts","A target schema"],"outputs":["Validated structured records","A rejects pile for the Gleaner"],"tasks":["t-extract-structured"]},{"id":"fd-south","zone":"fields","name":"South Field — Threshing","kind":"field","x":14,"y":54,"w":20,"h":8,"rows":6,"purpose":"Reduction. Many inputs become one output: synthesis, merge, summary, ranking.","inputs":["The output of many rows","A merge rule"],"outputs":["One coherent artifact","A record of what was dropped and why"],"tasks":["t-reduce-merge"]},{"id":"fd-fallow","zone":"fields","name":"Fallow Field — Gleaning","kind":"field","x":14,"y":61,"w":20,"h":6,"rows":4,"purpose":"Second pass over everything the other fields dropped, failed or timed out on. Nothing leaves the farm unaccounted for.","inputs":["The rejects pile","Timed-out rows","Partial results"],"outputs":["Recovered work","A permanent-failure record when recovery is not possible"],"tasks":["t-glean-failures"]},{"id":"fd-head","zone":"fields","name":"The Irrigation Head","kind":"pump","x":6,"y":48,"w":5,"h":6,"purpose":"Feeds context into the rows at a controlled rate. Decides how much each row gets to see — the single biggest cost lever on the farm.","inputs":["Retrieved context","Per-row context budget"],"outputs":["A trimmed, ordered context packet per row","A cache-stable prefix"],"tasks":["t-meter-context"]},{"id":"fd-compost","zone":"fields","name":"The Compost Heap","kind":"compost","x":24,"y":61,"w":7,"h":5,"purpose":"Failures rot down into something useful. Every permanent failure becomes an eval case before it is forgotten.","inputs":["Permanent failures","Traces of what went wrong"],"outputs":["New cases for the Grading Bench","Patterns worth a prompt change"],"tasks":["t-compost-failure"]},{"id":"fd-crow","zone":"fields","name":"The Scarecrow Post","kind":"scarecrow","x":25,"y":34,"w":4,"h":6,"purpose":"Stands at the field edge and keeps bad input out. Prompt injection, junk, and anything trying to redirect a row's task.","inputs":["Everything arriving at a field row"],"outputs":["Clean input","A quarantined item and a note to the Watchtower"],"tasks":["t-screen-input"]},{"id":"ts-shed","zone":"toolshed","name":"The Toolshed","kind":"shed","x":69,"y":57,"w":10,"h":6,"purpose":"The tool catalogue. What exists, what it does, what it costs, and which roles are allowed to pick it up.","inputs":["New tools from the Smithy","Usage data from the Watchtower"],"outputs":["The registry","A per-role toolbelt","A deprecation notice"],"tasks":["t-register-tool","t-issue-toolbelt"]},{"id":"ts-smithy","zone":"toolshed","name":"The Smithy","kind":"smithy","x":80,"y":56,"w":9,"h":6,"purpose":"Tools are forged here. Function tools, MCP servers, and the adapters that make a stubborn external API behave.","inputs":["A capability gap named by a zone","An external API's documentation"],"outputs":["A working tool with a tested schema","An MCP server","Its failure modes, written down"],"tasks":["t-forge-tool","t-write-tool-schema"]},{"id":"ts-yard","zone":"toolshed","name":"The Tractor Yard","kind":"tractor","x":88,"y":61,"w":8,"h":6,"purpose":"Heavy machinery: code execution, batch runs, the sandbox where a tool can do real damage cheaply.","inputs":["A job too big or too risky for a normal row"],"outputs":["Batch results","A sandboxed execution record"],"tasks":["t-run-batch"]},{"id":"ts-hut","zone":"toolshed","name":"The Quartermaster's Hut","kind":"hut","x":66,"y":64,"w":7,"h":5,"purpose":"Signs tools in and out. A role holds only the tools its current chore needs, and gives them back afterwards.","inputs":["A chore and its assigned role"],"outputs":["A scoped, time-boxed toolbelt","An audit line for every issue and return"],"tasks":["t-scope-tools"]},{"id":"gt-gate","zone":"gatehouse","name":"The Gatehouse","kind":"gate","x":48,"y":62,"w":10,"h":7,"purpose":"The only lawful entrance. Identifies who is asking, what they may ask for, and hands the request to the Farmhouse.","inputs":["External requests","Credentials and scopes"],"outputs":["An authenticated, scoped goal","A refusal with a reason"],"tasks":["t-authenticate","t-scope-request"]},{"id":"gt-fence","zone":"gatehouse","name":"The Fence Line","kind":"fence","x":39,"y":55,"w":8,"h":5,"purpose":"Blast radius. Network egress, filesystem reach and credential scope for every zone — the fence is checked from the inside.","inputs":["Per-zone isolation policy"],"outputs":["Enforced sandbox boundaries","A breach alarm"],"tasks":["t-enforce-sandbox"]},{"id":"gt-stall","zone":"gatehouse","name":"The Market Stall","kind":"stall","x":57,"y":58,"w":8,"h":6,"purpose":"What the outside world actually sees and touches. Delivery of finished artifacts, in the form the asker wanted.","inputs":["Finished artifacts","The original request's delivery preference"],"outputs":["The delivered result","A receipt linked to its trace"],"tasks":["t-deliver-artifact"]},{"id":"gt-scale","zone":"gatehouse","name":"The Weigh Station","kind":"scale","x":40,"y":65,"w":8,"h":5,"purpose":"Nothing leaves unweighed. Outbound inspection for secrets, PII, policy violations and claims the farm cannot support.","inputs":["Every artifact bound for the outside"],"outputs":["A cleared artifact","A redaction","A block, with the reason recorded"],"tasks":["t-inspect-outbound"]}],"roles":[{"id":"r-farmer","name":"The Farmer","title":"Prime Orchestrator","zone":"farmhouse","station":"fh-house","tier":"steward","charter":"Owns the outcome of everything the farm is asked to do. The only role permitted to decide that a job is finished.","duties":["Take in a goal and restate it in the farm's own terms","Choose the shape of the work before choosing who does it","Break a goal into chores that do not depend on each other","Arbitrate when two zones disagree","Call the job done, or call it impossible"],"reads":["The goal from the Gatehouse","Silo III for what is already known","The Granary for how this was done last time"],"writes":["The plan","The decomposition","The decision record"],"escalatesTo":"A human, via the Bell Post"},{"id":"r-foreman","name":"The Foreman","title":"Task Router","zone":"farmhouse","station":"fh-porch","tier":"steward","charter":"Matches chores to crews. Knows what each zone is good at and what it currently has capacity for.","duties":["Choose the zone and the tier for each chore","Batch related chores so context is reused","Hold work back when the farm is full","Re-route when a crew fails twice"],"reads":["The Chore Board","Crew capacity","The Windmill's forecast"],"writes":["Assignments","The held queue"],"escalatesTo":"r-farmer"},{"id":"r-ledger","name":"The Ledger Keeper","title":"Work-State Authority","zone":"farmhouse","station":"fh-board","tier":"hand","charter":"Holds the one true list of what is open, who owns it, and what it is waiting on. Everyone else reads this; nobody else writes it.","duties":["Post every chore with an owner and a state","Record state transitions and refuse illegal ones","Surface what is blocked and on whom","Never let a chore vanish silently"],"reads":["State changes from every zone"],"writes":["The work ledger"],"escalatesTo":"r-foreman"},{"id":"r-dispatcher","name":"The Dispatcher","title":"Queue & Backpressure Manager","zone":"farmhouse","station":"fh-porch","tier":"sorter","charter":"Decides the order things happen in and says no when the farm is at capacity.","duties":["Order the queue by priority and age","Apply backpressure rather than accepting work that will time out","Fan out independent chores in parallel","Collapse duplicate chores"],"reads":["The queue","The Well's draw permits"],"writes":["Dispatch order","Rejection notices with a retry-after"],"escalatesTo":"r-foreman"},{"id":"r-almanac","name":"The Almanac Reader","title":"Long-Horizon Planner","zone":"farmhouse","station":"fh-house","tier":"specialist","charter":"Thinks in seasons rather than chores. Owns the dependency graph and the order operations must happen in.","duties":["Build the dependency graph for a multi-stage job","Identify the critical path","Flag work that cannot start yet and say what it waits on","Remember what failed last season and why"],"reads":["Silo II for prior runs","The Granary for standing procedure"],"writes":["The staged plan","The dependency graph"],"escalatesTo":"r-farmer"},{"id":"r-scribe","name":"The Scribe","title":"Decision Recorder","zone":"farmhouse","station":"fh-ledger","tier":"hand","charter":"Writes down why, not just what. The reason tomorrow's Farmer does not re-litigate today's call.","duties":["Record every material decision with its alternatives","Attach the trace that justified it","Hand finished episodes to Silo II"],"reads":["Farmhouse deliberations","Outcomes"],"writes":["Decision records","Episodes"],"escalatesTo":"r-ledger"},{"id":"r-wellkeeper","name":"The Well Keeper","title":"Capacity Rationer","zone":"farmhouse","station":"fh-well","tier":"sorter","charter":"Guards the shared draw. Rate limit headroom and budget are finite and everyone can see the level.","duties":["Issue draw permits per zone","Enforce per-zone ceilings","Signal a dry well and throttle the whole farm rather than let one zone drain it","Reserve headroom for the Gatehouse so the farm stays reachable"],"reads":["Provider limits","Live spend from the Tally Office"],"writes":["Draw permits","The dry-well signal"],"escalatesTo":"r-farmer"},{"id":"r-rowboss","name":"The Row Boss","title":"Field Sub-Orchestrator","zone":"fields","station":"fd-north","tier":"steward","charter":"Runs one field so the Farmhouse does not have to hold every row in its head. Reports one result, not fifty.","duties":["Split a batch into rows","Run rows in parallel and collect results","Retry a failed row once, then hand it to the Gleaner","Summarise the field's output into a single artifact"],"reads":["The batch assignment","Row results"],"writes":["One field-level result","A per-row status table"],"escalatesTo":"r-foreman"},{"id":"r-plowhand","name":"The Plowhand","title":"Input Preparer","zone":"fields","station":"fd-head","tier":"hand","charter":"Prepares the ground. Normalises, chunks and orders input so every row starts from the same clean state.","duties":["Normalise formats and encodings","Chunk on meaningful boundaries, never mid-record","Order context so the stable part comes first and caches","Drop what the row will not use"],"reads":["Raw input","The row's context budget"],"writes":["Prepared context packets"],"escalatesTo":"r-rowboss"},{"id":"r-sower","name":"The Sower","title":"Generator","zone":"fields","station":"fd-north","tier":"hand","charter":"First-pass generation at volume. Produces candidates; does not judge them.","duties":["Generate to the spec it was given","Produce alternatives where the spec allows","State its own confidence","Never silently narrow the spec"],"reads":["A prepared context packet","The spec"],"writes":["Draft artifacts"],"escalatesTo":"r-rowboss"},{"id":"r-reaper","name":"The Reaper","title":"Extractor","zone":"fields","station":"fd-east","tier":"hand","charter":"Pulls structure out of unstructured input and guarantees it matches the schema.","duties":["Extract to a declared schema","Validate before emitting, never after","Emit a reject with a reason rather than a guess","Preserve provenance for every field it fills"],"reads":["Documents, transcripts, pages","The target schema"],"writes":["Validated records","The rejects pile"],"escalatesTo":"r-rowboss"},{"id":"r-thresher","name":"The Thresher","title":"Reducer","zone":"fields","station":"fd-south","tier":"specialist","charter":"Many into one. Merges, ranks, synthesises — and says what it discarded.","duties":["Merge row outputs under a stated rule","Resolve contradictions explicitly rather than averaging them","Record what was dropped and why","Keep the result traceable to its sources"],"reads":["All row outputs","The merge rule"],"writes":["One synthesised artifact","A discard log"],"escalatesTo":"r-rowboss"},{"id":"r-gleaner","name":"The Gleaner","title":"Failure Recoverer","zone":"fields","station":"fd-fallow","tier":"hand","charter":"Walks the field after harvest and picks up everything dropped. The reason nothing leaves the farm unaccounted for.","duties":["Re-attempt rejects with a different approach, not the same one again","Split work that was too large the first time","Declare permanent failure rather than loop","Send every permanent failure to the Compost Heap"],"reads":["Rejects","Timeouts","Partial results"],"writes":["Recovered work","Permanent-failure records"],"escalatesTo":"r-rowboss"},{"id":"r-scarecrow","name":"The Scarecrow","title":"Input Guard","zone":"fields","station":"fd-crow","tier":"sorter","charter":"Stands at the field edge. Treats all external content as data, never as instruction.","duties":["Detect instructions embedded in content and neutralise them","Quarantine anything attempting to redirect a row's task","Strip content that tries to widen the row's tool scope","Report every catch to the Watchtower"],"reads":["Everything arriving at a row"],"writes":["Cleaned input","Quarantine records"],"escalatesTo":"r-fencewright"},{"id":"r-composter","name":"The Composter","title":"Failure Metabolist","zone":"fields","station":"fd-compost","tier":"specialist","charter":"Turns failure into eval cases. A failure that does not become a test will happen again.","duties":["Root-cause each permanent failure","Write it up as a reproducible eval case","Group failures into patterns worth a prompt change","Hand patterns to the Grafter"],"reads":["Permanent failures","Their traces"],"writes":["Eval cases","Failure pattern reports"],"escalatesTo":"r-grader"},{"id":"r-herdsman","name":"The Herdsman","title":"Session Manager","zone":"barn","station":"bn-barn","tier":"hand","charter":"Keeps durable agents alive, named and resumable across days.","duties":["Open and name a session with its assignment attached","Checkpoint state so a session survives a restart","Resume cleanly without replaying the whole history","Retire a session and free its stall"],"reads":["Assignments","Silo I state"],"writes":["Session records","Checkpoints"],"escalatesTo":"r-sheepdog"},{"id":"r-sheepdog","name":"The Sheepdog","title":"Supervisor","zone":"barn","station":"bn-kennel","tier":"sorter","charter":"Watches for the three ways a long-running agent goes wrong: stuck, looping, or quietly working on the wrong thing.","duties":["Compare current activity against the original assignment","Nudge a wandering agent back before killing it","Enforce step and wall-clock ceilings","Kill, and record why — never kill silently"],"reads":["Heartbeats","Step counts","The assignment"],"writes":["Nudges","Timeouts","Kill records"],"escalatesTo":"r-bellringer"},{"id":"r-milker","name":"The Milkmaid","title":"Scheduled Runner","zone":"barn","station":"bn-coop","tier":"hand","charter":"Runs the work that happens on a cadence rather than on request.","duties":["Fire scheduled jobs on time and exactly once","Skip rather than stack when the previous run is still going","Record a skipped run as loudly as a failed one","Carry forward state between firings"],"reads":["Schedules","Prior run state"],"writes":["Run records","Skip records"],"escalatesTo":"r-herdsman"},{"id":"r-vet","name":"The Vet","title":"Health & Drift Checker","zone":"barn","station":"bn-vet","tier":"specialist","charter":"Health, not behaviour. Catches the slow problems: context bloat, quality drift, a poisoned working set.","duties":["Probe liveness on a schedule","Track rolling quality against the Grading Bench baseline","Watch context size trend upward and flag it","Refer a drifting agent back to the Greenhouse rather than patching it in place"],"reads":["Probes","Rolling scores","Context metrics"],"writes":["Health records","Drift referrals"],"escalatesTo":"r-nurseryman"},{"id":"r-stablehand","name":"The Stablehand","title":"Workspace Steward","zone":"barn","station":"bn-paddock","tier":"sorter","charter":"Owns the physical stalls: containers, workspaces, temp files. Cleans up after everyone.","duties":["Provision a workspace per session","Keep idle sessions warm but cheap","Reclaim stalls nobody has come for","Guarantee no workspace outlives its session"],"reads":["Session lifecycle events"],"writes":["Workspace records","Reclamation logs"],"escalatesTo":"r-herdsman"},{"id":"r-granarykeeper","name":"The Granary Keeper","title":"Procedural Memory Keeper","zone":"silo","station":"si-granary","tier":"hand","charter":"Holds how we do things: versioned prompts, role charters, rubrics and blueprints. Every agent is grown from a seed kept here.","duties":["Version every prompt and charter with a diffable history","Refuse an unversioned change","Serve the current seed to the Nurseryman","Roll back on request without ceremony"],"reads":["Promoted prompts","Rubrics that held"],"writes":["The seed vault","Version history"],"escalatesTo":"r-winnower"},{"id":"r-chronicler","name":"The Chronicler","title":"Episodic Memory Keeper","zone":"silo","station":"si-episodic","tier":"sorter","charter":"Records what happened, in order, with the arguments and the results. The thing you need most at 2am and vectors are worst at.","duties":["Append ordered, timestamped events","Keep tool calls with their actual arguments and returns","Never overwrite — episodes are append-only","Make any run replayable from the record alone"],"reads":["Events from every zone"],"writes":["The episode log"],"escalatesTo":"r-winnower"},{"id":"r-winnower","name":"The Winnower","title":"Memory Consolidator","zone":"silo","station":"si-semantic","tier":"specialist","charter":"Separates the grain from the chaff. Distils episodes into durable facts and throws the rest away.","duties":["Promote a fact to Silo III only when it is useful without its original context","Detect and surface contradictions rather than overwriting","Prune facts nothing has read in a season","Never promote something a single run asserted once"],"reads":["Silo II episodes","Existing facts"],"writes":["Promoted facts","Contradiction reports"],"escalatesTo":"r-farmer"},{"id":"r-hydrant","name":"The Water Carrier","title":"Retrieval Agent","zone":"silo","station":"si-semantic","tier":"sorter","charter":"Fetches exactly the context an agent asked for, and no more. The difference between a cheap farm and an expensive one.","duties":["Retrieve against the question actually asked","Rank and cut to the requested budget","Return provenance with every passage","Say 'nothing relevant' instead of returning weak matches"],"reads":["Silo III","The Granary"],"writes":["Context packets with provenance"],"escalatesTo":"r-winnower"},{"id":"r-cellarer","name":"The Cellarer","title":"Archivist","zone":"silo","station":"si-cellar","tier":"sorter","charter":"Retention and deletion. The only role on the farm authorised to destroy a record.","duties":["Age records out on the declared schedule","Honour legal holds over retention windows","Execute deletion requests and prove it","Keep the archive readable, not just stored"],"reads":["Retention policy","Deletion requests"],"writes":["Archives","Deletion proofs"],"escalatesTo":"r-gatekeeper"},{"id":"r-statekeeper","name":"The Statekeeper","title":"Working Memory Steward","zone":"silo","station":"si-working","tier":"sorter","charter":"Holds the scratch state of runs in flight, and empties it when they end.","duties":["Checkpoint in-flight state so a crash is survivable","Build a handoff packet when work changes hands","Expire scratch state at run end — no exceptions","Keep one run's scratch invisible to another"],"reads":["In-flight intermediate results"],"writes":["Checkpoints","Handoff packets"],"escalatesTo":"r-herdsman"},{"id":"r-smith","name":"The Smith","title":"Tool Builder","zone":"toolshed","station":"ts-smithy","tier":"specialist","charter":"Forges the tools. A tool is not done until its failure modes are written down.","duties":["Build function tools and MCP servers to a named gap","Make errors informative enough for an agent to recover from","Test against the real external service, not a mock","Document every way the tool can fail"],"reads":["Capability gaps","External API docs"],"writes":["Tools","MCP servers","Failure-mode notes"],"escalatesTo":"r-quartermaster"},{"id":"r-sharpener","name":"The Sharpener","title":"Tool Curator","zone":"toolshed","station":"ts-shed","tier":"specialist","charter":"Tool descriptions are prompts. Keeps them short, unambiguous and honest about cost.","duties":["Write descriptions an agent can choose correctly from","Collapse near-duplicate tools","Watch for tools that are never picked and find out why","Retire dull tools — a crowded toolbelt costs every call"],"reads":["Tool usage data","Mis-selection traces"],"writes":["Sharpened schemas","Deprecation notices"],"escalatesTo":"r-quartermaster"},{"id":"r-quartermaster","name":"The Quartermaster","title":"Tool Registry & Permissions","zone":"toolshed","station":"ts-hut","tier":"hand","charter":"Issues a toolbelt scoped to the chore at hand, and takes it back afterwards.","duties":["Issue the minimum toolbelt a chore needs","Time-box every issue","Log every issue and return","Refuse a request for tools outside the chore's scope"],"reads":["Chores","The registry","Role scopes"],"writes":["Toolbelts","The tool audit log"],"escalatesTo":"r-gatekeeper"},{"id":"r-wright","name":"The Wright","title":"Integration Engineer","zone":"toolshed","station":"ts-smithy","tier":"hand","charter":"Makes stubborn external systems behave. Adapters, retries, pagination, auth refresh.","duties":["Wrap external APIs behind a stable internal shape","Handle pagination and partial failure inside the adapter","Own credential refresh so no agent ever sees a raw secret","Absorb upstream breaking changes without the farm noticing"],"reads":["External API behaviour","Failure reports"],"writes":["Adapters","Integration health notes"],"escalatesTo":"r-smith"},{"id":"r-driver","name":"The Tractor Driver","title":"Batch & Sandbox Operator","zone":"toolshed","station":"ts-yard","tier":"hand","charter":"Runs the heavy and the dangerous: batch jobs and code execution, always inside a sandbox.","duties":["Route large volume to batch rather than live calls","Execute untrusted code only in the yard, never in a zone","Cap runtime and output size","Return results keyed to their request, never by position"],"reads":["Batch jobs","Code to execute"],"writes":["Batch results","Sandbox execution records"],"escalatesTo":"r-fencewright"},{"id":"r-grafter","name":"The Grafter","title":"Prompt Engineer","zone":"greenhouse","station":"gh-glasshouse","tier":"specialist","charter":"Designs and tunes the prompts every role is grown from. Changes one thing at a time and measures it.","duties":["Write a charter before writing a prompt","Change one variable per iteration","Measure against the bench, not against intuition","Delete instructions that no longer earn their tokens"],"reads":["Failure patterns","Bench scores","The current seed"],"writes":["Candidate prompts","Tuning notes"],"escalatesTo":"r-nurseryman"},{"id":"r-nurseryman","name":"The Nurseryman","title":"Agent Incubator","zone":"greenhouse","station":"gh-beds","tier":"steward","charter":"Grows a candidate from prompt to production-ready. Owns the gate between the greenhouse and the fields.","duties":["Run candidates in shadow against real traffic","Hold the release bar and refuse to lower it under pressure","Stage a rollout by percentage, never all at once","Roll back when live numbers disagree with the bench"],"reads":["Candidates","Shadow transcripts","Bench scores"],"writes":["Release decisions","Rollout plans"],"escalatesTo":"r-farmer"},{"id":"r-grader","name":"The Grader","title":"Evaluator","zone":"greenhouse","station":"gh-bench","tier":"specialist","charter":"Scores work against a written rubric. Independent of whoever produced it, on purpose.","duties":["Grade against a rubric written before the output existed","Report a breakdown, not just a number","Flag when the rubric itself is the problem","Never grade its own zone's output alone"],"reads":["Candidate output","The golden set","The rubric"],"writes":["Scores with breakdowns","Rubric defect reports"],"escalatesTo":"r-nurseryman"},{"id":"r-soiltester","name":"The Soil Tester","title":"Dataset Curator","zone":"greenhouse","station":"gh-bench","tier":"hand","charter":"Owns the golden set. Keeps it drawn from real traffic rather than from imagination.","duties":["Harvest cases from real runs and real failures","Keep a held-out split nobody tunes against","Refresh cases as the work changes","Refuse synthetic-only eval sets"],"reads":["Real traffic","Compost Heap cases"],"writes":["The golden set","Train/held-out splits"],"escalatesTo":"r-grader"},{"id":"r-pruner","name":"The Pruner","title":"Simplifier","zone":"greenhouse","station":"gh-frames","tier":"specialist","charter":"Removes what no longer earns its place. Dead agents, redundant steps, instructions nobody follows.","duties":["Find roles that have not run in a season","Collapse two roles that do one job","Delete prompt text that measurement shows is inert","Argue for fewer agents, not more"],"reads":["Usage data","Bench scores before and after removal"],"writes":["Pruning proposals","Removal records"],"escalatesTo":"r-nurseryman"},{"id":"r-pollinator","name":"The Pollinator","title":"Cross-Zone Propagator","zone":"greenhouse","station":"gh-frames","tier":"hand","charter":"Carries what works from one zone to another. Stops every crew from solving the same problem privately.","duties":["Spot a technique that lifted one zone's scores","Test whether it transfers before recommending it","Write it into the Granary as standing procedure","Retire practices that stopped working"],"reads":["Per-zone score movements","Tuning notes"],"writes":["Propagation proposals","Granary procedure updates"],"escalatesTo":"r-granarykeeper"},{"id":"r-watchman","name":"The Watchman","title":"Tracer","zone":"watchtower","station":"wt-tower","tier":"sorter","charter":"Captures every run end to end, with the reasoning attached. If it is not traced, it did not happen.","duties":["Emit a span per agent action with inputs, outputs and the stated reason","Preserve causality across zone handoffs","Make any run replayable from the trace alone","Sample nothing that failed — failures are always kept in full"],"reads":["Events from every zone"],"writes":["Traces","Span trees"],"escalatesTo":"r-surveyor"},{"id":"r-weathervane","name":"The Weathervane","title":"Forecaster","zone":"watchtower","station":"wt-mill","tier":"sorter","charter":"Reads the trend and warns before it becomes an incident.","duties":["Forecast load from throughput and queue depth","Detect anomalies against the zone's own baseline","Warn the Dispatcher early enough to matter","Distinguish a spike from a trend"],"reads":["Throughput history","Queue depth","Error rates"],"writes":["Forecasts","Anomaly flags"],"escalatesTo":"r-bellringer"},{"id":"r-tally","name":"The Tally Clerk","title":"Cost Accountant","zone":"watchtower","station":"wt-tally","tier":"sorter","charter":"Counts what everything cost, per completed task rather than per request.","duties":["Attribute tokens and wall time to a zone and a chore","Report cost per completed task, which is the only honest number","Track cache hit rate and flag silent invalidation","Issue the stop order when a budget is spent"],"reads":["Usage per span","Budgets"],"writes":["Cost reports","Burn-down","Stop orders"],"escalatesTo":"r-bellringer"},{"id":"r-bellringer","name":"The Bell Ringer","title":"Alerting","zone":"watchtower","station":"wt-bell","tier":"sorter","charter":"Wakes a human, rarely. Owns the judgement of what is worth someone's night.","duties":["Page only on breached thresholds that a human can act on","Attach the trace link to every page","Suppress duplicates and storms","Keep the bar high — a bell that rings often stops being heard"],"reads":["Thresholds","Anomaly flags","Kill records"],"writes":["Pages","Incident records"],"escalatesTo":"A human"},{"id":"r-surveyor","name":"The Surveyor","title":"Quality Reporter","zone":"watchtower","station":"wt-tower","tier":"specialist","charter":"Turns telemetry into a picture a human can act on. Owns the weekly read on whether the farm is getting better.","duties":["Maintain SLOs per zone","Report trend, not just current state","Tie quality movements to what changed","Say plainly when a change made things worse"],"reads":["Traces","Scores","Cost reports"],"writes":["Dashboards","The weekly report"],"escalatesTo":"r-farmer"},{"id":"r-gatekeeper","name":"The Gatekeeper","title":"Identity & Authorisation","zone":"gatehouse","station":"gt-gate","tier":"hand","charter":"Decides who is asking and what they are allowed to ask for. Everything inbound passes here.","duties":["Authenticate every external request","Attach scopes that travel with the goal through the whole farm","Refuse with a reason rather than failing silently","Never let a scope widen once inside"],"reads":["Credentials","Policy"],"writes":["Authenticated, scoped goals","Refusals"],"escalatesTo":"A human"},{"id":"r-fencewright","name":"The Fencewright","title":"Isolation Engineer","zone":"gatehouse","station":"gt-fence","tier":"specialist","charter":"Owns blast radius. Network egress, filesystem reach and credential scope, enforced per zone.","duties":["Define what each zone may reach","Enforce egress allowlists at the boundary, not in prompts","Keep credentials out of agent-visible context entirely","Alarm on any attempt to cross a fence"],"reads":["Isolation policy","Egress attempts"],"writes":["Sandbox configuration","Breach alarms"],"escalatesTo":"r-gatekeeper"},{"id":"r-tolltaker","name":"The Toll Taker","title":"Rate Limiter","zone":"gatehouse","station":"gt-gate","tier":"sorter","charter":"Fair share at the entrance. Stops one caller consuming the farm.","duties":["Throttle per caller, not just in aggregate","Return a retry-after rather than a bare failure","Reserve headroom so the farm stays reachable under load","Escalate sustained abuse rather than absorbing it"],"reads":["Per-caller request rates"],"writes":["Throttle decisions","Abuse reports"],"escalatesTo":"r-gatekeeper"},{"id":"r-inspector","name":"The Inspector","title":"Outbound Guard","zone":"gatehouse","station":"gt-scale","tier":"specialist","charter":"Nothing leaves unweighed. The last check before the farm's work becomes someone else's problem.","duties":["Scan every outbound artifact for secrets and personal data","Block claims the farm cannot support with a trace","Redact rather than block where redaction is enough","Record every block with its reason"],"reads":["Outbound artifacts","Policy"],"writes":["Cleared artifacts","Redactions","Block records"],"escalatesTo":"r-gatekeeper"},{"id":"r-marketkeeper","name":"The Marketkeeper","title":"Delivery Interface","zone":"gatehouse","station":"gt-stall","tier":"hand","charter":"Hands the finished work to whoever asked for it, in the shape they wanted it.","duties":["Deliver in the requested format and channel","Attach a receipt linked to the run's trace","Confirm delivery rather than assuming it","Hold artifacts the Inspector has not cleared"],"reads":["Cleared artifacts","Delivery preferences"],"writes":["Deliveries","Receipts"],"escalatesTo":"r-gatekeeper"},{"id":"r-herald","name":"The Herald","title":"Human Notifier","zone":"gatehouse","station":"gt-stall","tier":"sorter","charter":"Tells the humans what the farm did, without making them come and look.","duties":["Summarise a run in the fewest words that stay true","Notify on completion of long work","Never notify for routine progress","Lead with what the reader would act on"],"reads":["Run outcomes","The Surveyor's report"],"writes":["Notifications","Summaries"],"escalatesTo":"r-marketkeeper"}],"tasks":[{"id":"t-intake-goal","name":"Take in a goal","station":"fh-house","owner":"r-farmer","trigger":"A scoped goal arrives from the Gatehouse","input":"Intent, scopes, delivery preference","output":"The goal restated in farm terms, with success stated explicitly","doneWhen":"Success is written down in a form the Grader could check","watchFor":"Restating the goal more narrowly than it was asked"},{"id":"t-decompose","name":"Break a goal into chores","station":"fh-house","owner":"r-farmer","trigger":"A restated goal exists","input":"The goal, the dependency graph, known capacity","output":"Independent chores, each with an owner and a definition of done","doneWhen":"No chore depends on another chore in the same batch","watchFor":"Hidden dependencies that turn a parallel field into a queue"},{"id":"t-decide-done","name":"Call the job finished","station":"fh-house","owner":"r-farmer","trigger":"All chores report complete","input":"Assembled artifacts, the stated success condition","output":"A completion decision, or a decision to keep going","doneWhen":"The artifact satisfies the written success condition","watchFor":"Declaring done because the chores ended, not because the goal was met"},{"id":"t-post-chore","name":"Post a chore to the board","station":"fh-board","owner":"r-ledger","trigger":"A chore is created","input":"Chore definition, owner, priority","output":"A ledger entry in state OPEN","doneWhen":"The entry exists and is visible to every zone","watchFor":"Work being done that was never posted"},{"id":"t-claim-chore","name":"Claim and transition a chore","station":"fh-board","owner":"r-ledger","trigger":"A crew takes a chore","input":"Chore id, claiming role, target state","output":"A recorded state transition","doneWhen":"The transition is legal and recorded with a timestamp","watchFor":"Two crews holding the same chore"},{"id":"t-route-chore","name":"Route a chore to a crew","station":"fh-porch","owner":"r-foreman","trigger":"A chore is OPEN and capacity exists","input":"Chore, zone capabilities, crew capacity, forecast","output":"An assignment naming a zone, a role and a tier","doneWhen":"The assignment is on the board and the crew has acknowledged","watchFor":"Routing to a steward tier what a sorter could do"},{"id":"t-apply-backpressure","name":"Hold work when the farm is full","station":"fh-porch","owner":"r-dispatcher","trigger":"Queue depth or the Well crosses a threshold","input":"Queue depth, draw permits, forecast","output":"A held queue and a retry-after to callers","doneWhen":"No accepted work is queued behind a deadline it will miss","watchFor":"Accepting work that will time out rather than refusing it"},{"id":"t-ration-draw","name":"Ration the shared draw","station":"fh-well","owner":"r-wellkeeper","trigger":"A zone requests capacity","input":"Provider limits, budget, current burn","output":"A draw permit or a refusal","doneWhen":"Every zone's ceiling is enforced and headroom is reserved for the Gatehouse","watchFor":"One zone draining the well and starving the rest"},{"id":"t-write-decision","name":"Record a decision and its reason","station":"fh-ledger","owner":"r-scribe","trigger":"A material decision is made","input":"The decision, the alternatives, the trace that justified it","output":"A decision record","doneWhen":"Someone who was not present could reconstruct the reasoning","watchFor":"Recording what was decided without why"},{"id":"t-screen-input","name":"Screen input at the field edge","station":"fd-crow","owner":"r-scarecrow","trigger":"Any external content arrives at a row","input":"Raw content","output":"Cleaned content, or a quarantine record","doneWhen":"Embedded instructions are neutralised and treated as data","watchFor":"Content that tries to widen the row's tool scope or redirect its task"},{"id":"t-meter-context","name":"Meter context into a row","station":"fd-head","owner":"r-plowhand","trigger":"A row is about to start","input":"Retrieved context, the row's budget","output":"A trimmed, ordered context packet","doneWhen":"The stable prefix is first and the volatile part is last","watchFor":"A timestamp near the front quietly destroying the cache hit rate"},{"id":"t-generate-draft","name":"Generate candidates","station":"fd-north","owner":"r-sower","trigger":"A prepared packet and a spec","input":"Context packet, spec","output":"Draft artifacts with a stated confidence","doneWhen":"Output matches the spec's shape and the row states its confidence","watchFor":"Silently narrowing the spec to something easier"},{"id":"t-extract-structured","name":"Extract to a schema","station":"fd-east","owner":"r-reaper","trigger":"Unstructured input and a target schema","input":"Documents, schema","output":"Validated records, plus a rejects pile","doneWhen":"Every emitted record validates and carries provenance","watchFor":"Guessing a field rather than rejecting the record"},{"id":"t-reduce-merge","name":"Reduce many results into one","station":"fd-south","owner":"r-thresher","trigger":"A field's rows have all reported","input":"Row outputs, a merge rule","output":"One artifact plus a discard log","doneWhen":"Contradictions are resolved explicitly and the result traces to its sources","watchFor":"Averaging two contradictory facts into a third that is false"},{"id":"t-glean-failures","name":"Recover what the field dropped","station":"fd-fallow","owner":"r-gleaner","trigger":"A field reports rejects or timeouts","input":"Rejects, partials, timeouts","output":"Recovered work or a permanent-failure record","doneWhen":"Every dropped item is either recovered or declared failed in writing","watchFor":"Retrying the identical approach and calling it a second attempt"},{"id":"t-compost-failure","name":"Turn a failure into an eval case","station":"fd-compost","owner":"r-composter","trigger":"A permanent failure is declared","input":"The failure, its trace","output":"A reproducible eval case and a pattern note","doneWhen":"The case runs on the Grading Bench and reproduces the failure","watchFor":"Filing the failure without making it reproducible"},{"id":"t-open-session","name":"Open a durable session","station":"bn-barn","owner":"r-herdsman","trigger":"A long-horizon assignment is routed to the barn","input":"Assignment, initial state","output":"A named, checkpointed session","doneWhen":"The session survives a restart without losing its assignment","watchFor":"A session whose assignment is not attached to it"},{"id":"t-resume-session","name":"Resume a session","station":"bn-barn","owner":"r-herdsman","trigger":"A parked or crashed session is woken","input":"The last checkpoint","output":"A running session at the checkpointed state","doneWhen":"Work continues without replaying the entire history","watchFor":"Replaying the whole transcript and paying for it twice"},{"id":"t-park-session","name":"Park an idle session","station":"bn-paddock","owner":"r-stablehand","trigger":"A session goes idle","input":"Session state","output":"A warm, cheap, resumable session","doneWhen":"Resume is fast and the idle cost is near zero","watchFor":"Idle sessions holding workspaces nobody will come back for"},{"id":"t-schedule-job","name":"Register recurring work","station":"bn-coop","owner":"r-milker","trigger":"A standing instruction with a cadence","input":"Schedule, instruction","output":"A registered job","doneWhen":"The schedule is stored in UTC and the next firing is known","watchFor":"Local-time schedules that drift twice a year"},{"id":"t-fire-scheduled","name":"Fire a scheduled run","station":"bn-coop","owner":"r-milker","trigger":"The schedule comes due","input":"The instruction, prior run state","output":"A run record, or a skip record","doneWhen":"It fired exactly once, or the skip is recorded as loudly as a failure","watchFor":"Stacking a new run on top of one still going"},{"id":"t-herd-stray","name":"Nudge a wandering agent","station":"bn-kennel","owner":"r-sheepdog","trigger":"Activity diverges from the assignment","input":"Current activity, the original assignment","output":"A nudge back on task","doneWhen":"The agent is working the assignment again, or is killed","watchFor":"An agent making steady progress on the wrong thing"},{"id":"t-kill-runaway","name":"Kill a runaway","station":"bn-kennel","owner":"r-sheepdog","trigger":"A step or wall-clock ceiling is breached","input":"Step count, elapsed time","output":"A kill, with the reason recorded","doneWhen":"The agent is stopped and the kill reason is on the record","watchFor":"Killing silently and leaving nothing to diagnose"},{"id":"t-health-check","name":"Probe health","station":"bn-vet","owner":"r-vet","trigger":"On a schedule","input":"Liveness probes, context size, rolling score","output":"A health record","doneWhen":"Every durable agent has a health record newer than its interval","watchFor":"A responsive agent whose output quality has quietly fallen"},{"id":"t-detect-drift","name":"Detect quality drift","station":"bn-vet","owner":"r-vet","trigger":"Rolling score falls against the bench baseline","input":"Rolling scores, the baseline","output":"A drift referral to the Greenhouse","doneWhen":"The drift is reproduced on the bench","watchFor":"Patching a drifting agent in place instead of regrowing it"},{"id":"t-checkpoint-state","name":"Checkpoint in-flight state","station":"si-working","owner":"r-statekeeper","trigger":"A run reaches a stage boundary","input":"Intermediate results","output":"A checkpoint and, on handoff, a packet","doneWhen":"A crash at this point loses no completed stage","watchFor":"Scratch state from one run visible to another"},{"id":"t-record-episode","name":"Record what happened","station":"si-episodic","owner":"r-chronicler","trigger":"Any agent action completes","input":"Event, arguments, result, timestamp","output":"An append-only episode entry","doneWhen":"The run is replayable from the log alone","watchFor":"Summarising an episode at write time and losing the detail"},{"id":"t-promote-fact","name":"Promote an episode to a fact","station":"si-semantic","owner":"r-winnower","trigger":"Consolidation runs","input":"Episodes, existing facts","output":"A promoted fact, or a contradiction report","doneWhen":"The fact is useful without its original context and does not contradict an existing one","watchFor":"Promoting something a single run asserted once"},{"id":"t-retrieve-context","name":"Retrieve context","station":"si-semantic","owner":"r-hydrant","trigger":"An agent asks for context","input":"The question, a budget","output":"A ranked packet with provenance","doneWhen":"It fits the budget and every passage cites its source","watchFor":"Returning weak matches instead of saying nothing is relevant"},{"id":"t-version-prompt","name":"Version a prompt or charter","station":"si-granary","owner":"r-granarykeeper","trigger":"A prompt or charter changes","input":"The new text, the reason","output":"A versioned, diffable entry","doneWhen":"The change is diffable against the previous version and reversible","watchFor":"An unversioned edit made directly in production"},{"id":"t-age-out","name":"Age records out","station":"si-cellar","owner":"r-cellarer","trigger":"Retention window expires","input":"Retention policy, legal holds","output":"An archived or deleted record, with proof","doneWhen":"Deletion is proven and holds are honoured over the schedule","watchFor":"Deleting something under legal hold"},{"id":"t-forge-tool","name":"Forge a tool","station":"ts-smithy","owner":"r-smith","trigger":"A zone names a capability gap","input":"The gap, the external service","output":"A working tool with tested failure modes","doneWhen":"It has been tested against the real service and its errors are recoverable","watchFor":"A tool tested only against a mock"},{"id":"t-write-tool-schema","name":"Write the tool's description","station":"ts-smithy","owner":"r-sharpener","trigger":"A tool is built or mis-selected","input":"The tool, mis-selection traces","output":"A description an agent can choose correctly from","doneWhen":"An agent picks it correctly without picking it wrongly elsewhere","watchFor":"Two tools whose descriptions overlap"},{"id":"t-register-tool","name":"Register a tool","station":"ts-shed","owner":"r-sharpener","trigger":"A tool is ready","input":"Tool, schema, cost profile","output":"A registry entry","doneWhen":"Cost and permitted roles are recorded alongside it","watchFor":"Registry entries for tools nothing has called in a season"},{"id":"t-issue-toolbelt","name":"Issue a toolbelt","station":"ts-shed","owner":"r-quartermaster","trigger":"A chore is assigned","input":"The chore, the role's scope","output":"The minimum toolbelt the chore needs","doneWhen":"No tool is issued that the chore does not need","watchFor":"Issuing the full catalogue because it is easier"},{"id":"t-scope-tools","name":"Time-box and return tools","station":"ts-hut","owner":"r-quartermaster","trigger":"A toolbelt is issued or a chore ends","input":"The issue record","output":"A returned toolbelt and an audit line","doneWhen":"Every issue has a matching return","watchFor":"Tools still held after the chore closed"},{"id":"t-run-batch","name":"Run heavy or untrusted work","station":"ts-yard","owner":"r-driver","trigger":"Volume or risk exceeds what a row should carry","input":"The job or the code","output":"Batch results, or a sandboxed execution record","doneWhen":"Results are keyed to their request and the sandbox held","watchFor":"Matching batch results by position instead of by key"},{"id":"t-draft-role","name":"Draft a role charter","station":"gh-glasshouse","owner":"r-grafter","trigger":"A job exists that nobody currently owns","input":"The gap, failed traces","output":"A charter: purpose, duties, reads, writes, escalation","doneWhen":"The charter says what the role must not do as clearly as what it must","watchFor":"A charter that overlaps an existing role"},{"id":"t-tune-prompt","name":"Tune a prompt","station":"gh-glasshouse","owner":"r-grafter","trigger":"Bench scores or failure patterns say the current seed is short","input":"Current seed, failure patterns","output":"A candidate prompt and a tuning note","doneWhen":"One variable changed and the bench measured the result","watchFor":"Changing three things and learning nothing"},{"id":"t-curate-evalset","name":"Curate the golden set","station":"gh-bench","owner":"r-soiltester","trigger":"New failure patterns, or the work changed","input":"Real traffic, compost cases","output":"An updated set with a held-out split","doneWhen":"Cases come from real runs and the held-out split is untouched by tuning","watchFor":"An eval set written by whoever wrote the prompt"},{"id":"t-score-run","name":"Grade against the rubric","station":"gh-bench","owner":"r-grader","trigger":"A candidate produces output","input":"Output, golden set, rubric","output":"A score with a per-criterion breakdown","doneWhen":"The breakdown explains the number","watchFor":"A rubric that rewards length or confidence rather than correctness"},{"id":"t-shadow-run","name":"Run a candidate in shadow","station":"gh-beds","owner":"r-nurseryman","trigger":"A candidate passes the bench","input":"Candidate, a mirrored slice of live work","output":"Shadow transcripts and an honest live failure rate","doneWhen":"It has seen real traffic and nobody acted on its output","watchFor":"Shadow traffic that is not representative of the real mix"},{"id":"t-stage-rollout","name":"Stage a rollout","station":"gh-frames","owner":"r-nurseryman","trigger":"Shadow numbers meet the bar","input":"Candidate, a traffic percentage","output":"A staged rollout with a rollback trigger defined in advance","doneWhen":"The rollback trigger is written down before traffic moves","watchFor":"Going to full traffic because the small slice looked fine"},{"id":"t-trace-run","name":"Trace a run end to end","station":"wt-tower","owner":"r-watchman","trigger":"Any run starts","input":"Spans from every zone","output":"A replayable trace with reasoning attached","doneWhen":"Causality survives every zone handoff","watchFor":"Spans that record the call but not the reason"},{"id":"t-replay-failure","name":"Replay a failure","station":"wt-tower","owner":"r-watchman","trigger":"A failure needs explaining","input":"The trace","output":"The causal chain behind the output","doneWhen":"The failure is explained from the trace without re-running it","watchFor":"Sampling that discarded the failing run"},{"id":"t-forecast-load","name":"Forecast load","station":"wt-mill","owner":"r-weathervane","trigger":"Continuously","input":"Throughput, queue depth, error rates","output":"A forecast and anomaly flags","doneWhen":"The Dispatcher gets warning early enough to act","watchFor":"Treating a spike as a trend, or the reverse"},{"id":"t-account-spend","name":"Account for spend","station":"wt-tally","owner":"r-tally","trigger":"Continuously","input":"Usage per span, budgets","output":"Cost per completed task, per zone, with burn-down","doneWhen":"Cost is attributed to a chore, not just to a day","watchFor":"A cheap request that needed four retries being counted as cheap"},{"id":"t-raise-alarm","name":"Ring the bell","station":"wt-bell","owner":"r-bellringer","trigger":"A threshold a human can act on is breached","input":"The breach, the trace","output":"A page with the trace attached","doneWhen":"A human has something actionable and duplicates are suppressed","watchFor":"Ringing often enough that the bell stops being heard"},{"id":"t-authenticate","name":"Authenticate a caller","station":"gt-gate","owner":"r-gatekeeper","trigger":"An external request arrives","input":"Credentials","output":"An identified caller, or a refusal with a reason","doneWhen":"Identity is established before any farm resource is touched","watchFor":"Work beginning before identity resolves"},{"id":"t-scope-request","name":"Attach scopes to a goal","station":"gt-gate","owner":"r-gatekeeper","trigger":"A caller is authenticated","input":"Caller, policy, the request","output":"A scoped goal","doneWhen":"Scopes travel with the goal and cannot widen inside the farm","watchFor":"A zone granting itself more reach than the goal carried"},{"id":"t-enforce-sandbox","name":"Enforce the fence","station":"gt-fence","owner":"r-fencewright","trigger":"Any zone starts work","input":"Isolation policy","output":"Enforced egress, filesystem and credential boundaries","doneWhen":"The boundary is enforced at the platform, not requested in a prompt","watchFor":"Relying on an instruction where a firewall rule belongs"},{"id":"t-inspect-outbound","name":"Weigh an outbound artifact","station":"gt-scale","owner":"r-inspector","trigger":"An artifact is bound for the outside","input":"The artifact, policy","output":"A cleared artifact, a redaction, or a block with a reason","doneWhen":"Nothing leaves that was not inspected","watchFor":"Secrets pasted into an artifact as evidence"},{"id":"t-deliver-artifact","name":"Deliver the result","station":"gt-stall","owner":"r-marketkeeper","trigger":"An artifact clears the Weigh Station","input":"Cleared artifact, delivery preference","output":"A delivery and a receipt linked to the trace","doneWhen":"Delivery is confirmed, not assumed","watchFor":"Reporting success on an unconfirmed send"}],"flows":[{"from":"gt-gate","to":"fh-house","kind":"task","label":"scoped goal"},{"from":"fh-house","to":"fh-board","kind":"task","label":"chores posted"},{"from":"fh-board","to":"fh-porch","kind":"task","label":"open chores"},{"from":"fh-porch","to":"fd-crow","kind":"task","label":"field assignment"},{"from":"fh-porch","to":"bn-barn","kind":"task","label":"long-horizon work"},{"from":"fh-porch","to":"ts-yard","kind":"task","label":"batch job"},{"from":"fh-well","to":"fh-porch","kind":"control","label":"draw permits"},{"from":"fh-ledger","to":"si-episodic","kind":"memory","label":"episodes"},{"from":"fd-crow","to":"fd-head","kind":"task","label":"screened input"},{"from":"fd-head","to":"fd-north","kind":"task","label":"metered context"},{"from":"fd-head","to":"fd-east","kind":"task","label":"metered context"},{"from":"fd-north","to":"fd-south","kind":"artifact","label":"drafts"},{"from":"fd-east","to":"fd-south","kind":"artifact","label":"records"},{"from":"fd-north","to":"fd-fallow","kind":"task","label":"rejects"},{"from":"fd-east","to":"fd-fallow","kind":"task","label":"rejects"},{"from":"fd-fallow","to":"fd-compost","kind":"artifact","label":"permanent failures"},{"from":"fd-compost","to":"gh-bench","kind":"artifact","label":"new eval cases"},{"from":"fd-south","to":"gt-scale","kind":"artifact","label":"finished work"},{"from":"si-semantic","to":"fd-head","kind":"memory","label":"retrieved context"},{"from":"si-episodic","to":"si-semantic","kind":"memory","label":"promoted facts"},{"from":"si-episodic","to":"si-cellar","kind":"memory","label":"aged out"},{"from":"si-granary","to":"gh-glasshouse","kind":"memory","label":"current seed"},{"from":"gh-glasshouse","to":"si-granary","kind":"memory","label":"versioned prompt"},{"from":"bn-barn","to":"si-working","kind":"memory","label":"checkpoints"},{"from":"si-working","to":"bn-barn","kind":"memory","label":"resume state"},{"from":"ts-smithy","to":"ts-shed","kind":"artifact","label":"new tool"},{"from":"ts-shed","to":"ts-hut","kind":"control","label":"registry"},{"from":"ts-hut","to":"fd-north","kind":"control","label":"scoped toolbelt"},{"from":"ts-hut","to":"bn-barn","kind":"control","label":"scoped toolbelt"},{"from":"gh-bench","to":"gh-beds","kind":"signal","label":"bench score"},{"from":"gh-beds","to":"gh-frames","kind":"task","label":"shadow passed"},{"from":"gh-frames","to":"fd-north","kind":"control","label":"staged rollout"},{"from":"bn-vet","to":"gh-beds","kind":"signal","label":"drift referral"},{"from":"fd-north","to":"wt-tower","kind":"signal","label":"spans"},{"from":"bn-barn","to":"wt-tower","kind":"signal","label":"spans"},{"from":"gt-gate","to":"wt-tower","kind":"signal","label":"spans"},{"from":"fd-crow","to":"wt-tower","kind":"signal","label":"quarantines"},{"from":"wt-tower","to":"wt-tally","kind":"signal","label":"usage"},{"from":"wt-tally","to":"fh-well","kind":"control","label":"burn-down"},{"from":"wt-mill","to":"fh-porch","kind":"signal","label":"load forecast"},{"from":"wt-tower","to":"wt-bell","kind":"signal","label":"breach"},{"from":"bn-kennel","to":"wt-bell","kind":"control","label":"kill record"},{"from":"bn-kennel","to":"bn-barn","kind":"control","label":"nudge or kill"},{"from":"bn-coop","to":"bn-barn","kind":"task","label":"scheduled firing"},{"from":"gt-fence","to":"fd-crow","kind":"control","label":"isolation policy"},{"from":"gt-scale","to":"gt-stall","kind":"artifact","label":"cleared artifact"},{"from":"gt-stall","to":"wt-tower","kind":"signal","label":"receipt"}],"roads":[{"id":"rd-main","points":[[48,70],[48,63],[47,54],[46,44],[45,37]],"width":2.2,"name":"Market Road"},{"id":"rd-house","points":[[45,36],[41,33],[38,32]],"width":1.5},{"id":"rd-barn","points":[[49,35],[57,34],[64,35]],"width":1.8},{"id":"rd-ridge","points":[[46,32],[48,24],[50,18]],"width":1.4},{"id":"rd-silo","points":[[70,31],[76,26],[79,24]],"width":1.4},{"id":"rd-fields","points":[[43,37],[34,40],[26,43],[21,45]],"width":1.6},{"id":"rd-nursery","points":[[42,30],[34,24],[26,18],[19,14]],"width":1.3},{"id":"rd-works","points":[[52,62],[60,59],[66,58]],"width":1.6},{"id":"rd-crossyard","points":[[70,53],[71,49],[72,47]],"width":1.2},{"id":"rd-lower","points":[[26,58],[34,60],[42,62]],"width":1.2}],"terrain":{"fence":[[3,3],[97,3],[97,67],[3,67]],"gates":[{"x":48,"y":67,"name":"South Gate"},{"x":50,"y":3,"name":"Ridge Gate"}],"pond":{"x":31,"y":52,"rx":5.5,"ry":3.6,"name":"The Reservoir"},"stream":[[1,16],[4,27],[2,41],[5,53],[11,63],[20,68]],"hills":[{"points":[[34,4],[44,2],[56,3],[66,7],[62,14],[48,16],[36,12]],"name":"The Ridge"}],"orchard":{"x":30,"y":33,"rows":4,"cols":2,"spacing":3.6,"name":"The Orchard"},"trees":[[8,29,1.5],[11,28,1.1],[33,47,1.4],[35,52,1.2],[29,58,1.3],[54,47,1.5],[57,50,1.1],[86,30,1.4],[89,34,1.2],[92,38,1.3],[64,24,1.2],[68,22,1.5],[24,27,1.3],[20,29,1.1],[60,68,1.2],[35,26,1.1],[55,25,1.3],[76,50,1.2],[83,49,1.4],[95,45,1.3],[96,55,1.2],[6,8,1.4],[2,60,1.3],[97,15,1.2],[12,66,1.1],[43,48,1.2],[50,55,1.1],[66,15,1.3]]},"legend":[{"swatch":"task","text":"Work moving toward whoever will do it"},{"swatch":"artifact","text":"Produced output moving toward storage or delivery"},{"swatch":"memory","text":"Facts, episodes and procedures moving in or out of store"},{"swatch":"signal","text":"Telemetry, health and cost moving toward the watch"},{"swatch":"control","text":"Authority: permits, kills, budgets, escalations"}]};</script>
+<script>
+/* ============================================================
+   Shared geometry. Every renderer consumes this; none of it
+   knows anything about colour or style.
+   ============================================================ */
+(function (G) {
+
+  /* ---- Structure vocabulary -------------------------------
+     Each station kind resolves to a primitive plus a roof and
+     a height, so a renderer implements 7 primitives, not 30
+     buildings.                                              */
+  var KIND = {
+    farmhouse:  { prim:'box',  z:7.5, roof:'gable',   chimney:true, label:'dwelling' },
+    barn:       { prim:'box',  z:9,   roof:'gambrel', doors:true,   label:'barn' },
+    greenhouse: { prim:'box',  z:5,   roof:'arch',    glass:true,   label:'glass' },
+    granary:    { prim:'box',  z:6.5, roof:'gable',   label:'store' },
+    smithy:     { prim:'box',  z:5.5, roof:'gable',   chimney:true, label:'works' },
+    shed:       { prim:'box',  z:4,   roof:'shed',    label:'shed' },
+    porch:      { prim:'box',  z:4,   roof:'shed',    label:'shed' },
+    hut:        { prim:'box',  z:3.8, roof:'gable',   label:'hut' },
+    coop:       { prim:'box',  z:3.4, roof:'shed',    label:'coop' },
+    kennel:     { prim:'box',  z:3,   roof:'gable',   label:'kennel' },
+    stall:      { prim:'box',  z:4,   roof:'awning',  label:'stall' },
+    gate:       { prim:'box',  z:6.5, roof:'gable',   arch:true,    label:'gate' },
+    cellar:     { prim:'mound',z:3,   label:'cellar' },
+    compost:    { prim:'mound',z:2.4, label:'heap' },
+    silo:       { prim:'cyl',  z:15,  roof:'dome',    label:'silo' },
+    tower:      { prim:'box',  z:17,  roof:'watch',   label:'tower' },
+    windmill:   { prim:'mast', z:13,  top:'sails',    label:'mill' },
+    bell:       { prim:'mast', z:6.5, top:'bell',     label:'bell' },
+    board:      { prim:'mast', z:3.6, top:'board',    label:'board' },
+    scarecrow:  { prim:'mast', z:5.2, top:'crow',     label:'post' },
+    pump:       { prim:'mast', z:4.2, top:'valve',    label:'head' },
+    well:       { prim:'disc', z:2.2, top:'well',     label:'well' },
+    field:      { prim:'field',z:.5,  label:'field' },
+    beds:       { prim:'pen',  z:1.1, rows:true,      label:'beds' },
+    frames:     { prim:'pen',  z:1.3, glass:true,     label:'frames' },
+    paddock:    { prim:'pen',  z:1.6, label:'pen' },
+    fence:      { prim:'pen',  z:1.3, label:'fence' },
+    scale:      { prim:'pen',  z:1.6, top:'scale',    label:'scale' },
+    tractor:    { prim:'pen',  z:1.6, top:'machine',  label:'yard' }
+  };
+  G.KIND = KIND;
+  G.spec = function (k) { return KIND[k] || KIND.shed; };
+
+  /* ---- small helpers -------------------------------------- */
+  G.el = function (tag, attrs, parent) {
+    var n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    if (attrs) for (var k in attrs) if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  };
+  G.pts = function (arr) { return arr.map(function (p) { return p[0].toFixed(2) + ',' + p[1].toFixed(2); }).join(' '); };
+  G.path = function (arr, close) {
+    return 'M' + arr.map(function (p, i) { return (i ? 'L' : '') + p[0].toFixed(2) + ' ' + p[1].toFixed(2); }).join('') + (close ? 'Z' : '');
+  };
+  /* Catmull-Rom → cubic bezier, for roads and streams that should not look surveyed */
+  G.smooth = function (p, t) {
+    if (p.length < 3) return G.path(p);
+    t = t == null ? 0.5 : t;
+    var d = 'M' + p[0][0].toFixed(2) + ' ' + p[0][1].toFixed(2);
+    for (var i = 0; i < p.length - 1; i++) {
+      var p0 = p[i - 1] || p[i], p1 = p[i], p2 = p[i + 1], p3 = p[i + 2] || p2;
+      d += 'C' + (p1[0] + (p2[0] - p0[0]) / 6 * t).toFixed(2) + ' ' + (p1[1] + (p2[1] - p0[1]) / 6 * t).toFixed(2)
+        + ',' + (p2[0] - (p3[0] - p1[0]) / 6 * t).toFixed(2) + ' ' + (p2[1] - (p3[1] - p1[1]) / 6 * t).toFixed(2)
+        + ',' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2);
+    }
+    return d;
+  };
+  G.centroid = function (poly) {
+    var x = 0, y = 0; poly.forEach(function (p) { x += p[0]; y += p[1]; });
+    return [x / poly.length, y / poly.length];
+  };
+  /* inset a polygon toward its centroid — used for zone fills and hatch borders */
+  G.inset = function (poly, d) {
+    var c = G.centroid(poly);
+    return poly.map(function (p) {
+      var dx = p[0] - c[0], dy = p[1] - c[1], L = Math.hypot(dx, dy) || 1;
+      return [p[0] - dx / L * d, p[1] - dy / L * d];
+    });
+  };
+  /* deterministic jitter so "hand-drawn" styles look hand-drawn the same way every load */
+  G.rnd = function (seed) { var s = Math.sin(seed * 12.9898) * 43758.5453; return s - Math.floor(s); };
+
+  G.rect = function (x, y, w, h) {
+    return [[x - w / 2, y - h / 2], [x + w / 2, y - h / 2], [x + w / 2, y + h / 2], [x - w / 2, y + h / 2]];
+  };
+
+  /* ============================================================
+     PLAN VIEW — a footprint plus the marks that identify a
+     structure seen from above. Four of the five styles use this.
+     Returns world-unit geometry; the renderer supplies paint.
+     ============================================================ */
+  G.plan = function (st) {
+    var s = G.spec(st.kind), x = st.x, y = st.y, w = st.w, h = st.h;
+    var out = { foot: null, marks: [], kind: st.kind, prim: s.prim };
+    var horiz = w >= h;
+
+    if (s.prim === 'cyl' || s.prim === 'disc') {
+      var r = Math.min(w, h) / 2;
+      out.foot = { t: 'circle', x: x, y: y, r: r };
+      out.marks.push({ t: 'circle', x: x, y: y, r: r * 0.62, fill: false });
+      if (s.prim === 'cyl') out.marks.push({ t: 'circle', x: x, y: y, r: r * 0.24, fill: true });
+      else out.marks.push({ t: 'line', a: [x - r * 0.8, y], b: [x + r * 0.8, y] });
+      return out;
+    }
+    if (s.prim === 'mound') {
+      out.foot = { t: 'ellipse', x: x, y: y, rx: w / 2, ry: h / 2 };
+      out.marks.push({ t: 'ellipse', x: x, y: y, rx: w / 3.2, ry: h / 3.2, fill: false });
+      return out;
+    }
+    if (s.prim === 'mast') {
+      var r2 = Math.min(w, h) / 2;
+      out.foot = { t: 'circle', x: x, y: y, r: r2 * 0.5 };
+      if (s.top === 'sails') {
+        for (var a = 0; a < 4; a++) {
+          var ang = a * Math.PI / 2 + 0.38;
+          out.marks.push({ t: 'line', a: [x, y], b: [x + Math.cos(ang) * r2 * 1.9, y + Math.sin(ang) * r2 * 1.9] });
+        }
+      } else if (s.top === 'board') {
+        out.marks.push({ t: 'rect', x: x, y: y, w: w * 0.95, h: h * 0.5, fill: false });
+        out.marks.push({ t: 'line', a: [x - w * 0.4, y], b: [x + w * 0.4, y] });
+      } else if (s.top === 'crow') {
+        out.marks.push({ t: 'line', a: [x - w * 0.6, y], b: [x + w * 0.6, y] });
+        out.marks.push({ t: 'line', a: [x, y - h * 0.4], b: [x, y + h * 0.5] });
+      } else {
+        out.marks.push({ t: 'circle', x: x, y: y, r: r2 * 1.15, fill: false });
+      }
+      return out;
+    }
+    if (s.prim === 'field') {
+      out.foot = { t: 'rect', x: x, y: y, w: w, h: h };
+      var rows = st.rows || 5;
+      for (var i = 1; i < rows; i++) {
+        var yy = y - h / 2 + (h / rows) * i;
+        out.marks.push({ t: 'line', a: [x - w / 2 + .5, yy], b: [x + w / 2 - .5, yy], soft: true });
+      }
+      return out;
+    }
+    if (s.prim === 'pen') {
+      out.foot = { t: 'rect', x: x, y: y, w: w, h: h, open: true };
+      if (s.rows) for (var j = 1; j < 4; j++) {
+        var xx = x - w / 2 + (w / 4) * j;
+        out.marks.push({ t: 'line', a: [xx, y - h / 2 + .3], b: [xx, y + h / 2 - .3], soft: true });
+      }
+      if (s.glass) { out.marks.push({ t: 'line', a: [x - w / 2, y], b: [x + w / 2, y], soft: true }); }
+      if (s.top === 'scale') { out.marks.push({ t: 'line', a: [x - w * .3, y - h * .2], b: [x + w * .3, y - h * .2] }); out.marks.push({ t: 'line', a: [x, y - h * .2], b: [x, y + h * .3] }); }
+      if (s.top === 'machine') { out.marks.push({ t: 'circle', x: x - w * .22, y: y + h * .1, r: Math.min(w, h) * .18, fill: false }); out.marks.push({ t: 'circle', x: x + w * .22, y: y + h * .1, r: Math.min(w, h) * .26, fill: false }); }
+      return out;
+    }
+
+    /* box: footprint + ridge line, which is what actually reads as a building from above */
+    out.foot = { t: 'rect', x: x, y: y, w: w, h: h };
+    if (s.roof === 'shed' || s.roof === 'awning') {
+      out.marks.push(horiz
+        ? { t: 'line', a: [x - w / 2, y - h / 6], b: [x + w / 2, y - h / 6] }
+        : { t: 'line', a: [x - w / 6, y - h / 2], b: [x - w / 6, y + h / 2] });
+    } else if (s.roof === 'arch') {
+      for (var g = 1; g < 4; g++) {
+        var gx = x - w / 2 + (w / 4) * g;
+        out.marks.push({ t: 'line', a: [gx, y - h / 2], b: [gx, y + h / 2], soft: true });
+      }
+    } else if (s.roof === 'watch') {
+      out.marks.push({ t: 'rect', x: x, y: y, w: w * 0.54, h: h * 0.54, fill: false });
+      out.marks.push({ t: 'circle', x: x, y: y, r: Math.min(w, h) * 0.13, fill: true });
+    } else {
+      /* gable / gambrel: ridge down the long axis, with hips at each end */
+      if (horiz) {
+        out.marks.push({ t: 'line', a: [x - w / 2 + h / 2, y], b: [x + w / 2 - h / 2, y] });
+        out.marks.push({ t: 'line', a: [x - w / 2, y - h / 2], b: [x - w / 2 + h / 2, y] });
+        out.marks.push({ t: 'line', a: [x - w / 2, y + h / 2], b: [x - w / 2 + h / 2, y] });
+        out.marks.push({ t: 'line', a: [x + w / 2, y - h / 2], b: [x + w / 2 - h / 2, y] });
+        out.marks.push({ t: 'line', a: [x + w / 2, y + h / 2], b: [x + w / 2 - h / 2, y] });
+      } else {
+        out.marks.push({ t: 'line', a: [x, y - h / 2 + w / 2], b: [x, y + h / 2 - w / 2] });
+        out.marks.push({ t: 'line', a: [x - w / 2, y - h / 2], b: [x, y - h / 2 + w / 2] });
+        out.marks.push({ t: 'line', a: [x + w / 2, y - h / 2], b: [x, y - h / 2 + w / 2] });
+      }
+      if (s.roof === 'gambrel') {
+        var k = horiz ? h * 0.22 : w * 0.22;
+        out.marks.push(horiz
+          ? { t: 'line', a: [x - w / 2 + h / 3, y - k], b: [x + w / 2 - h / 3, y - k], soft: true }
+          : { t: 'line', a: [x - k, y - h / 2 + w / 3], b: [x - k, y + h / 2 - w / 3], soft: true });
+        out.marks.push(horiz
+          ? { t: 'line', a: [x - w / 2 + h / 3, y + k], b: [x + w / 2 - h / 3, y + k], soft: true }
+          : { t: 'line', a: [x + k, y - h / 2 + w / 3], b: [x + k, y + h / 2 - w / 3], soft: true });
+      }
+    }
+    if (s.chimney) out.marks.push({ t: 'rect', x: x + w * 0.28, y: y - h * 0.26, w: Math.min(w, h) * 0.17, h: Math.min(w, h) * 0.17, fill: true });
+    if (s.doors)   out.marks.push({ t: 'rect', x: x, y: y + h / 2 - h * 0.09, w: w * 0.26, h: h * 0.18, fill: false });
+    if (s.arch)    out.marks.push({ t: 'rect', x: x, y: y, w: w * 0.22, h: h, fill: false });
+    return out;
+  };
+
+  /* ============================================================
+     ISOMETRIC — 2:1 dimetric projection. z rises on screen.
+     ============================================================ */
+  var ISO_X = 0.866, ISO_Y = 0.5, ISO_Z = 0.82;
+  G.iso = function (x, y, z) {
+    return [(x - y) * ISO_X, (x + y) * ISO_Y - (z || 0) * ISO_Z];
+  };
+  G.isoPoly = function (poly, z) {
+    return poly.map(function (p) { return G.iso(p[0], p[1], z || 0); });
+  };
+  /* depth sort: things further "back" (smaller x+y) draw first */
+  G.depth = function (x, y) { return x + y; };
+
+  /* Extruded box → the three visible faces, already projected. */
+  G.isoBox = function (x, y, w, h, z0, z1) {
+    var a = [x - w / 2, y - h / 2], b = [x + w / 2, y - h / 2],
+        c = [x + w / 2, y + h / 2], d = [x - w / 2, y + h / 2];
+    return {
+      top:   [G.iso(a[0], a[1], z1), G.iso(b[0], b[1], z1), G.iso(c[0], c[1], z1), G.iso(d[0], d[1], z1)],
+      right: [G.iso(b[0], b[1], z1), G.iso(c[0], c[1], z1), G.iso(c[0], c[1], z0), G.iso(b[0], b[1], z0)],
+      left:  [G.iso(c[0], c[1], z1), G.iso(d[0], d[1], z1), G.iso(d[0], d[1], z0), G.iso(c[0], c[1], z0)],
+      base:  [G.iso(a[0], a[1], z0), G.iso(b[0], b[1], z0), G.iso(c[0], c[1], z0), G.iso(d[0], d[1], z0)]
+    };
+  };
+
+  /* Roof geometry in iso, by type. Returns an array of {poly, shade} back-to-front. */
+  G.isoRoof = function (x, y, w, h, z, type) {
+    var horiz = w >= h, pitch = Math.min(w, h) * 0.55, out = [];
+    var x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2, y1 = y + h / 2;
+
+    if (type === 'shed' || type === 'awning') {
+      var zt = z + pitch * 0.7;
+      out.push({ poly: [G.iso(x0, y0, zt), G.iso(x1, y0, zt), G.iso(x1, y1, z), G.iso(x0, y1, z)], shade: 'top' });
+      out.push({ poly: [G.iso(x0, y0, z), G.iso(x1, y0, z), G.iso(x1, y0, zt), G.iso(x0, y0, zt)], shade: 'gable' });
+      return out;
+    }
+    if (type === 'dome') {
+      var zr = z + pitch * 0.9, r = Math.min(w, h) / 2, seg = 14, ring = [], cap = [];
+      for (var i = 0; i <= seg; i++) {
+        var t = i / seg * Math.PI * 2;
+        ring.push(G.iso(x + Math.cos(t) * r, y + Math.sin(t) * r, z));
+        cap.push(G.iso(x + Math.cos(t) * r * 0.55, y + Math.sin(t) * r * 0.55, zr));
+      }
+      out.push({ poly: ring.slice(0, seg / 2 + 1).concat(cap.slice(0, seg / 2 + 1).reverse()), shade: 'top' });
+      out.push({ poly: ring.slice(seg / 2).concat(cap.slice(seg / 2).reverse()), shade: 'gable' });
+      out.push({ poly: cap, shade: 'top' });
+      return out;
+    }
+    if (type === 'watch') {
+      var zc = z + pitch * 1.1, ov = Math.min(w, h) * 0.22;
+      var e = G.isoBox(x, y, w + ov, h + ov, z, z + 0.7);
+      out.push({ poly: e.top, shade: 'top' }); out.push({ poly: e.right, shade: 'right' }); out.push({ poly: e.left, shade: 'left' });
+      out.push({ poly: [G.iso(x0, y0, z + 0.7), G.iso(x1, y0, z + 0.7), G.iso(x, y, zc)], shade: 'gable' });
+      out.push({ poly: [G.iso(x1, y0, z + 0.7), G.iso(x1, y1, z + 0.7), G.iso(x, y, zc)], shade: 'top' });
+      out.push({ poly: [G.iso(x1, y1, z + 0.7), G.iso(x0, y1, z + 0.7), G.iso(x, y, zc)], shade: 'right' });
+      return out;
+    }
+    if (type === 'arch') {
+      var za = z + pitch * 0.8, seg2 = 8, front = [], back = [];
+      for (var j = 0; j <= seg2; j++) {
+        var u = j / seg2, ang = Math.PI * u;
+        var off = (horiz ? h : w) / 2 * Math.cos(ang), lift = (za - z) * Math.sin(ang);
+        if (horiz) { front.push(G.iso(x0, y - off, z + lift)); back.push(G.iso(x1, y - off, z + lift)); }
+        else       { front.push(G.iso(x - off, y0, z + lift)); back.push(G.iso(x - off, y1, z + lift)); }
+      }
+      out.push({ poly: front.concat(back.slice().reverse()), shade: 'glass' });
+      out.push({ poly: front, shade: 'gable' });
+      return out;
+    }
+    /* gable / gambrel */
+    var zr2 = z + pitch, mid;
+    if (horiz) {
+      out.push({ poly: [G.iso(x0, y0, z), G.iso(x1, y0, z), G.iso(x1, y, zr2), G.iso(x0, y, zr2)], shade: 'top' });
+      out.push({ poly: [G.iso(x0, y1, z), G.iso(x1, y1, z), G.iso(x1, y, zr2), G.iso(x0, y, zr2)], shade: 'right' });
+      out.push({ poly: [G.iso(x1, y0, z), G.iso(x1, y, zr2), G.iso(x1, y1, z)], shade: 'gable' });
+      if (type === 'gambrel') {
+        mid = z + pitch * 0.52;
+        out.push({ poly: [G.iso(x0, y0, z), G.iso(x1, y0, z), G.iso(x1, y - h * 0.18, mid), G.iso(x0, y - h * 0.18, mid)], shade: 'gable' });
+        out.push({ poly: [G.iso(x0, y1, z), G.iso(x1, y1, z), G.iso(x1, y + h * 0.18, mid), G.iso(x0, y + h * 0.18, mid)], shade: 'left' });
+      }
+    } else {
+      out.push({ poly: [G.iso(x0, y0, z), G.iso(x0, y1, z), G.iso(x, y1, zr2), G.iso(x, y0, zr2)], shade: 'top' });
+      out.push({ poly: [G.iso(x1, y0, z), G.iso(x1, y1, z), G.iso(x, y1, zr2), G.iso(x, y0, zr2)], shade: 'right' });
+      out.push({ poly: [G.iso(x0, y1, z), G.iso(x, y1, zr2), G.iso(x1, y1, z)], shade: 'gable' });
+    }
+    return out;
+  };
+
+  /* Cylinder (silo) in iso: body as a rounded column plus an elliptical cap. */
+  G.isoCyl = function (x, y, r, z0, z1) {
+    var seg = 18, top = [], bot = [];
+    for (var i = 0; i <= seg; i++) {
+      var t = i / seg * Math.PI * 2;
+      top.push(G.iso(x + Math.cos(t) * r, y + Math.sin(t) * r, z1));
+      bot.push(G.iso(x + Math.cos(t) * r, y + Math.sin(t) * r, z0));
+    }
+    /* the lit half of the body is the front-facing arc */
+    var half = Math.round(seg / 2);
+    return {
+      top: top,
+      body: top.slice(0, half + 1).concat(bot.slice(0, half + 1).reverse()),
+      bodyBack: top.slice(half).concat(bot.slice(half).reverse())
+    };
+  };
+
+})(window.GEOM = window.GEOM || {});
+
+/* ============================================================
+   Greedy label placement. A map that drops a few small labels
+   reads better than one that prints all of them on top of each
+   other; high-priority labels are always kept.
+   ============================================================ */
+(function (G) {
+  G.placeLabels = function (specs) {
+    var boxes = [], out = [];
+    specs.slice().sort(function (a, b) { return (b.pri || 1) - (a.pri || 1); }).forEach(function (s) {
+      var w = s.text.length * s.size * 0.53, h = s.size * 1.1;
+      var ax = s.anchor === 'middle' ? s.x - w / 2 : s.x;
+      var offs = [0, s.size * 1.6, -s.size * 1.6, s.size * 3.1, -s.size * 3.1, s.size * 4.6, -s.size * 4.6];
+      for (var i = 0; i < offs.length; i++) {
+        var y = s.y + offs[i], box = [ax, y - h, ax + w, y + h * 0.3], hit = false;
+        for (var b = 0; b < boxes.length; b++) {
+          var o = boxes[b];
+          if (!(box[2] < o[0] || box[0] > o[2] || box[3] < o[1] || box[1] > o[3])) { hit = true; break; }
+        }
+        if (!hit) { boxes.push(box); s = Object.assign({}, s, { y: y }); out.push(s); return; }
+      }
+      if ((s.pri || 1) >= 2) { boxes.push([ax, s.y - h, ax + w, s.y + h * 0.3]); out.push(s); }
+    });
+    return out;
+  };
+})(window.GEOM);
+
+</script>
+<script>
+/* ============================================================
+   PLAN-VIEW ENGINE
+   Blueprint, Almanac, Night Watch and Editorial are all
+   top-down. They share this engine and differ only in paint
+   and furniture.
+   ============================================================ */
+(function (G) {
+  var el = G.el, P = G.path, S = G.smooth;
+
+  function bbox(poly){
+    var xs = poly.map(function(p){return p[0];}), ys = poly.map(function(p){return p[1];});
+    return { x0:Math.min.apply(null,xs), y0:Math.min.apply(null,ys),
+             x1:Math.max.apply(null,xs), y1:Math.max.apply(null,ys) };
+  }
+  function jitter(poly, amt, seed){
+    if(!amt) return poly;
+    return poly.map(function(p,i){
+      return [p[0] + (G.rnd(seed+i*3.1)-0.5)*amt, p[1] + (G.rnd(seed+i*7.7)-0.5)*amt];
+    });
+  }
+  /* an arc between two stations, bowed perpendicular to the run */
+  function link(a, b, bow){
+    var mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2, dx=b[0]-a[0], dy=b[1]-a[1];
+    var L=Math.hypot(dx,dy)||1, nx=-dy/L, ny=dx/L, k=(bow==null?0.16:bow)*L;
+    return { d:'M'+a[0].toFixed(2)+' '+a[1].toFixed(2)+'Q'+(mx+nx*k).toFixed(2)+' '+(my+ny*k).toFixed(2)+
+                ' '+b[0].toFixed(2)+' '+b[1].toFixed(2),
+             mid:[mx+nx*k*0.5, my+ny*k*0.5], len:L };
+  }
+
+  G.makePlan = function (cfg) {
+    return function render(host, world, api) {
+      var pal = cfg.pal, o = api.opts;
+      host.innerHTML = '';
+      var svg = el('svg', { viewBox: cfg.viewBox || '-6 -6 112 82', preserveAspectRatio:'xMidYMid meet' }, host);
+      var defs = el('defs', null, svg);
+      if (cfg.defs) cfg.defs(defs, svg, pal);
+
+      var root = el('g', { 'data-pan':'1' }, svg);
+      el('rect', { x:-120, y:-120, width:360, height:320, fill:pal.ground }, root);
+      if (cfg.underlay) cfg.underlay(root, world, pal);
+
+      var L = {};
+      ['terrain','zones','ground','roads','fence','flora','build','flows','labels','furn']
+        .forEach(function(n){ L[n] = el('g', { 'data-layer':n }, root); });
+
+      var T = world.terrain, jx = cfg.jitter || 0, labelSpecs = [];
+
+      /* ---------- terrain ---------- */
+      (T.hills||[]).forEach(function(hl,i){
+        el('path', { d:P(jitter(hl.points,jx,i*11), true), fill:pal.hill,
+                     stroke:pal.hillLine||'none', 'stroke-width':cfg.hair||0.22,
+                     opacity: cfg.hillOpacity==null?1:cfg.hillOpacity }, L.terrain);
+      });
+      if (T.stream) el('path', { d:S(T.stream,0.8), fill:'none', stroke:pal.water,
+        'stroke-width':1.7, 'stroke-linecap':'round', opacity:cfg.waterOpacity||1 }, L.terrain);
+      if (T.pond){
+        el('ellipse', { cx:T.pond.x, cy:T.pond.y, rx:T.pond.rx, ry:T.pond.ry, fill:pal.water,
+          stroke:pal.waterLine||'none', 'stroke-width':cfg.hair||0.22 }, L.terrain);
+        if (cfg.pondSheen) el('ellipse', { cx:T.pond.x-1.2, cy:T.pond.y-0.9, rx:T.pond.rx*0.42,
+          ry:T.pond.ry*0.34, fill:pal.waterSheen, opacity:0.5 }, L.terrain);
+      }
+
+      /* ---------- zones ---------- */
+      world.zones.forEach(function (z, zi) {
+        var poly = jitter(z.polygon, jx, zi*29);
+        var g = el('g', { 'data-pick':'zone', 'data-id':z.id, tabindex:'0', role:'button',
+                          'aria-label':z.name+' — '+z.domain, class:'pickable' }, L.zones);
+        el('path', { d:P(poly,true), fill:cfg.zoneFill(z), stroke:cfg.zoneStroke(z),
+                     'stroke-width':cfg.zoneW||0.45, 'stroke-linejoin':'round',
+                     'stroke-dasharray':cfg.zoneDash||null }, g);
+        if (cfg.zoneInner) el('path', { d:P(G.inset(poly,1.1),true), fill:'none',
+          stroke:cfg.zoneStroke(z), 'stroke-width':cfg.hair||0.18, opacity:0.5 }, g);
+        var bb = bbox(poly);
+        labelSpecs.push({ x:bb.x0+1.5, y:bb.y0+3.2, size:cfg.zoneFS||2.25, pri:3, zone:z,
+          text: cfg.upper===false ? z.name : z.name.toUpperCase() });
+      });
+
+      /* ---------- ground-level stations (fields, pens) ---------- */
+      world.stations.forEach(function (st) {
+        var sp = G.spec(st.kind);
+        if (sp.prim !== 'field' && sp.prim !== 'pen') return;
+        var pl = G.plan(st), z = world.zones.find(function(q){return q.id===st.zone;});
+        var g = el('g', { 'data-pick':'station', 'data-id':st.id, tabindex:'0', role:'button',
+                          'aria-label':st.name, class:'pickable' }, L.ground);
+        var f = pl.foot;
+        el('rect', { x:f.x-f.w/2, y:f.y-f.h/2, width:f.w, height:f.h,
+          fill:cfg.groundFill(st,z), stroke:cfg.groundStroke(st,z),
+          'stroke-width':cfg.hair||0.22, 'stroke-dasharray':f.open?'1 0.9':null, rx:cfg.radius||0 }, g);
+        pl.marks.forEach(function(m){ drawMark(m, g, cfg, z, true); });
+      });
+
+      /* ---------- roads ---------- */
+      if (o.roads !== false) world.roads.forEach(function (rd) {
+        var pts = jitter(rd.points, jx*0.6, 3);
+        if (cfg.roadCasing) el('path', { d:S(pts,0.7), fill:'none', stroke:cfg.roadCasing,
+          'stroke-width':rd.width*(cfg.roadScale||1)+0.5, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, L.roads);
+        el('path', { d:S(pts,0.7), fill:'none', stroke:pal.road, 'stroke-width':rd.width*(cfg.roadScale||1),
+          'stroke-linecap':'round', 'stroke-linejoin':'round',
+          'stroke-dasharray':cfg.roadDash||null, opacity:cfg.roadOpacity||1 }, L.roads);
+      });
+
+      /* ---------- fence + gates ---------- */
+      el('path', { d:P(jitter(T.fence,jx,101), true), fill:'none', stroke:pal.fence,
+        'stroke-width':cfg.fenceW||0.3, 'stroke-dasharray':cfg.fenceDash||'1.6 1.1' }, L.fence);
+      (T.gates||[]).forEach(function(gt){
+        el('rect', { x:gt.x-2, y:gt.y-0.5, width:4, height:1, fill:pal.fence, opacity:0.9 }, L.fence);
+      });
+
+      /* ---------- flora ---------- */
+      if (cfg.trees !== false) {
+        (T.trees||[]).forEach(function(t,i){ cfg.tree(L.flora, t[0], t[1], t[2], pal, i); });
+        var oc = T.orchard;
+        for (var r=0; r<oc.rows; r++) for (var c=0; c<oc.cols; c++)
+          cfg.tree(L.flora, oc.x + c*oc.spacing, oc.y + r*oc.spacing, 1.15, pal, 500+r*10+c);
+      }
+
+      /* ---------- structures ---------- */
+      world.stations.slice().sort(function(a,b){ return (a.y+a.x)-(b.y+b.x); }).forEach(function (st) {
+        var sp = G.spec(st.kind);
+        if (sp.prim === 'field' || sp.prim === 'pen') return;
+        var pl = G.plan(st), z = world.zones.find(function(q){return q.id===st.zone;});
+        var g = el('g', { 'data-pick':'station', 'data-id':st.id, tabindex:'0', role:'button',
+                          'aria-label':st.name, class:'pickable' }, L.build);
+        var f = pl.foot;
+        if (cfg.shadow) {
+          if (f.t==='rect') el('rect', { x:f.x-f.w/2+cfg.shadow, y:f.y-f.h/2+cfg.shadow,
+            width:f.w, height:f.h, fill:pal.shadow, opacity:0.5, rx:cfg.radius||0 }, g);
+          else if (f.t==='circle') el('circle', { cx:f.x+cfg.shadow, cy:f.y+cfg.shadow, r:f.r,
+            fill:pal.shadow, opacity:0.5 }, g);
+        }
+        if (f.t === 'rect')
+          el('rect', { x:f.x-f.w/2, y:f.y-f.h/2, width:f.w, height:f.h, fill:cfg.buildFill(st,z),
+            stroke:cfg.buildStroke(st,z), 'stroke-width':cfg.buildW||0.3, rx:cfg.radius||0 }, g);
+        else if (f.t === 'circle')
+          el('circle', { cx:f.x, cy:f.y, r:f.r, fill:cfg.buildFill(st,z),
+            stroke:cfg.buildStroke(st,z), 'stroke-width':cfg.buildW||0.3 }, g);
+        else
+          el('ellipse', { cx:f.x, cy:f.y, rx:f.rx, ry:f.ry, fill:cfg.buildFill(st,z),
+            stroke:cfg.buildStroke(st,z), 'stroke-width':cfg.buildW||0.3 }, g);
+        pl.marks.forEach(function(m){ drawMark(m, g, cfg, z, false); });
+      });
+
+      /* ---------- station labels ---------- */
+      if (o.labels !== false) {
+        world.stations.forEach(function (st) {
+          var sp = G.spec(st.kind), z = world.zones.find(function(q){return q.id===st.zone;});
+          var ground = sp.prim==='field' || sp.prim==='pen';
+          labelSpecs.push({ x:st.x, y: ground ? st.y : st.y + st.h/2 + 1.8,
+            size:cfg.stFS||1.5, anchor:'middle', pri: (st.w*st.h > 55 ? 2 : 1),
+            station:st, zone:z, text: st.name.replace(/^The /,'') });
+        });
+        G.placeLabels(labelSpecs).forEach(function (sp2) {
+          var isZone = !!sp2.zone && !sp2.station;
+          var t = el('text', { x:sp2.x, y:sp2.y, 'text-anchor':sp2.anchor||'start',
+            fill: isZone ? cfg.zoneLabel(sp2.zone) : cfg.stationLabel(sp2.station, sp2.zone),
+            'font-size':sp2.size, 'font-family': isZone ? cfg.labelFont : cfg.monoFont,
+            'font-weight': isZone ? (cfg.zoneWeight||700) : 400,
+            'letter-spacing': isZone ? (cfg.zoneTrack||'0.12') : null,
+            'paint-order':'stroke', stroke:cfg.labelHalo||'none',
+            'stroke-width':cfg.labelHalo?0.55:0, 'stroke-linejoin':'round',
+            'pointer-events':'none' }, L.labels);
+          t.textContent = sp2.text;
+        });
+      }
+
+      /* ---------- flows ---------- */
+      var flowG = el('g', { 'data-flows':'1', opacity: o.flows ? 1 : 0,
+        style:'transition:opacity .25s' }, L.flows);
+      var byId = {}; world.stations.forEach(function(s){ byId[s.id]=s; });
+      world.flows.forEach(function (fl, i) {
+        var a = byId[fl.from], b = byId[fl.to];
+        if (!a || !b) return;
+        var k = world.flowKinds[fl.kind], col = cfg.flowColor(fl, k);
+        var lk = link([a.x,a.y],[b.x,b.y], i%2 ? 0.14 : -0.14);
+        var p = el('path', { d:lk.d, fill:'none', stroke:col, 'stroke-width':cfg.flowW||0.34,
+          'stroke-linecap':'round', 'stroke-dasharray':cfg.flowDash||null,
+          opacity:cfg.flowOpacity||0.85, 'marker-end':'url(#ar-'+fl.kind+')',
+          'data-flow':fl.kind }, flowG);
+        if (cfg.animateFlows) {
+          p.setAttribute('stroke-dasharray','1.4 2.6');
+          var an = el('animate', { attributeName:'stroke-dashoffset', from:'8', to:'0',
+            dur:(2.2 + (i%5)*0.35)+'s', repeatCount:'indefinite' }, p);
+          an.setAttribute('calcMode','linear');
+        }
+      });
+      /* arrowheads, one per flow kind */
+      Object.keys(world.flowKinds).forEach(function (kk) {
+        var m = el('marker', { id:'ar-'+kk, viewBox:'0 0 10 10', refX:'9', refY:'5',
+          markerWidth:'4.5', markerHeight:'4.5', orient:'auto-start-reverse' }, defs);
+        el('path', { d:'M0 1 L9 5 L0 9 z', fill:cfg.flowColor({kind:kk}, world.flowKinds[kk]) }, m);
+      });
+
+      if (cfg.furniture) cfg.furniture(L.furn, world, pal, svg, defs);
+      return { svg:svg, root:root, flows:flowG };
+    };
+  };
+
+  function drawMark(m, g, cfg, z, isGround) {
+    var sw = (m.soft ? (cfg.hair||0.18)*0.75 : (cfg.markW||0.24));
+    var col = m.soft ? cfg.markSoft(z) : cfg.markStroke(z);
+    if (m.t === 'line')
+      el('line', { x1:m.a[0], y1:m.a[1], x2:m.b[0], y2:m.b[1], stroke:col, 'stroke-width':sw,
+        'stroke-linecap':'round', opacity:m.soft?0.7:1 }, g);
+    else if (m.t === 'circle')
+      el('circle', { cx:m.x, cy:m.y, r:m.r, fill:m.fill?col:'none', stroke:col, 'stroke-width':sw }, g);
+    else if (m.t === 'ellipse')
+      el('ellipse', { cx:m.x, cy:m.y, rx:m.rx, ry:m.ry, fill:m.fill?col:'none', stroke:col,
+        'stroke-width':sw }, g);
+    else if (m.t === 'rect')
+      el('rect', { x:m.x-m.w/2, y:m.y-m.h/2, width:m.w, height:m.h, fill:m.fill?col:'none',
+        stroke:col, 'stroke-width':sw }, g);
+  }
+  G._drawMark = drawMark;
+
+})(window.GEOM);
+
+</script>
+<script>
+/* ============================================================
+   The four plan-view treatments.
+   ============================================================ */
+(function (G) {
+  var el = G.el, P = G.path;
+  var MONO = '"IBM Plex Mono", ui-monospace, Menlo, monospace';
+  var UI   = '"Archivo", ui-sans-serif, system-ui, sans-serif';
+  var SER  = '"EB Garamond", Georgia, serif';
+  G.RENDER = G.RENDER || {};
+
+  function hex2rgb(h){ h=h.replace('#',''); if(h.length===3) h=h.split('').map(function(c){return c+c;}).join('');
+    return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+  function rgba(h,a){ var c=hex2rgb(h); return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')'; }
+  function mix(h1,h2,t){ var a=hex2rgb(h1),b=hex2rgb(h2);
+    return '#'+[0,1,2].map(function(i){ return Math.round(a[i]+(b[i]-a[i])*t).toString(16).padStart(2,'0'); }).join(''); }
+  G.rgba = rgba; G.mix = mix;
+
+  /* ============================================================
+     1 — BLUEPRINT.  A drafting sheet: the farm as issued drawing.
+     ============================================================ */
+  G.RENDER.blueprint = G.makePlan({
+    pal:{ ground:'#0A1A2F', hill:'#0E2842', water:'#123D5C', road:'#2E5F84',
+          fence:'#2A5478', shadow:'#000', waterSheen:'#1D5A80' },
+    viewBox:'-9 -10 120 95', roadScale:0.5,
+    labelFont:MONO, monoFont:MONO, hair:0.14, markW:0.2, buildW:0.26, zoneW:0.3,
+    zoneDash:'2.2 1.4', zoneFS:2.3, stFS:1.45, roadDash:'2.4 1.5', hillOpacity:0.75,
+    zoneFill:function(){ return 'rgba(90,210,255,0.035)'; },
+    zoneStroke:function(){ return '#2E7FA8'; },
+    zoneLabel:function(){ return '#7FD4F5'; },
+    subLabel:function(){ return '#4E86A8'; },
+    groundFill:function(){ return 'url(#bp-hatch)'; },
+    groundStroke:function(){ return '#3E8CB4'; },
+    buildFill:function(){ return 'rgba(10,26,47,0.85)'; },
+    buildStroke:function(){ return '#5AD2FF'; },
+    markStroke:function(){ return '#5AD2FF'; },
+    markSoft:function(){ return '#2E7FA8'; },
+    stationLabel:function(){ return '#9FD9F2'; },
+    flowColor:function(f,k){ return k ? k.color : '#5AD2FF'; },
+    flowW:0.24, flowOpacity:0.75,
+    tree:function(g,x,y,s,pal){
+      el('circle',{cx:x,cy:y,r:s*0.85,fill:'none',stroke:'#2E7FA8','stroke-width':0.14},g);
+      el('line',{x1:x-s*0.5,y1:y,x2:x+s*0.5,y2:y,stroke:'#2E7FA8','stroke-width':0.11},g);
+      el('line',{x1:x,y1:y-s*0.5,x2:x,y2:y+s*0.5,stroke:'#2E7FA8','stroke-width':0.11},g);
+    },
+    defs:function(defs){
+      var h=el('pattern',{id:'bp-hatch',width:'2',height:'2',patternUnits:'userSpaceOnUse',
+        patternTransform:'rotate(45)'},defs);
+      el('rect',{width:2,height:2,fill:'rgba(46,127,168,0.10)'},h);
+      el('line',{x1:0,y1:0,x2:0,y2:2,stroke:'#2E7FA8','stroke-width':0.3,opacity:0.5},h);
+      var gr=el('pattern',{id:'bp-grid',width:'10',height:'10',patternUnits:'userSpaceOnUse'},defs);
+      el('path',{d:'M10 0 H0 V10',fill:'none',stroke:'rgba(90,210,255,0.11)','stroke-width':0.16},gr);
+      var gm=el('pattern',{id:'bp-grid-m',width:'2',height:'2',patternUnits:'userSpaceOnUse'},defs);
+      el('path',{d:'M2 0 H0 V2',fill:'none',stroke:'rgba(90,210,255,0.05)','stroke-width':0.09},gm);
+    },
+    underlay:function(root){
+      el('rect',{x:-6,y:-6,width:112,height:82,fill:'url(#bp-grid-m)'},root);
+      el('rect',{x:-6,y:-6,width:112,height:82,fill:'url(#bp-grid)'},root);
+    },
+    furniture:function(g,world){
+      var C='#5AD2FF', D='#2E7FA8';
+      /* sheet border */
+      el('rect',{x:-3.4,y:-3.4,width:106.8,height:76.8,fill:'none',stroke:D,'stroke-width':0.3},g);
+      el('rect',{x:-2.4,y:-2.4,width:104.8,height:74.8,fill:'none',stroke:D,'stroke-width':0.14},g);
+      /* dimension line across the top */
+      var dy=-4.6;
+      el('line',{x1:0,y1:dy,x2:100,y2:dy,stroke:C,'stroke-width':0.16},g);
+      [0,100].forEach(function(x){ el('line',{x1:x,y1:dy-0.9,x2:x,y2:dy+0.9,stroke:C,'stroke-width':0.16},g); });
+      var t=el('text',{x:50,y:dy-0.9,'text-anchor':'middle',fill:C,'font-size':1.7,'font-family':MONO},g);
+      t.textContent='100.00 ch';
+      var dx=-4.6;
+      el('line',{x1:dx,y1:0,x2:dx,y2:70,stroke:C,'stroke-width':0.16},g);
+      [0,70].forEach(function(y){ el('line',{x1:dx-0.9,y1:y,x2:dx+0.9,y2:y,stroke:C,'stroke-width':0.16},g); });
+      var t2=el('text',{x:dx-1.1,y:35,fill:C,'font-size':1.7,'font-family':MONO,
+        transform:'rotate(-90 '+(dx-1.1)+' 35)','text-anchor':'middle'},g);
+      t2.textContent='70.00 ch';
+      /* north arrow, in the right margin */
+      var nx=106,ny=9;
+      el('circle',{cx:nx,cy:ny,r:3.4,fill:'none',stroke:D,'stroke-width':0.16},g);
+      el('path',{d:'M'+nx+' '+(ny-3)+'L'+(nx+1.3)+' '+(ny+1.4)+'L'+nx+' '+(ny+0.5)+'L'+(nx-1.3)+' '+(ny+1.4)+'Z',
+        fill:C},g);
+      var nt=el('text',{x:nx,y:ny+5.6,'text-anchor':'middle',fill:C,'font-size':1.8,'font-family':MONO},g);
+      nt.textContent='N';
+      /* title block, in the bottom margin */
+      var bx=53,by=75,bw=57,bh=7.6;
+      el('rect',{x:bx,y:by,width:bw,height:bh,fill:'rgba(10,26,47,0.92)',stroke:C,'stroke-width':0.22},g);
+      el('line',{x1:bx,y1:by+2.9,x2:bx+bw,y2:by+2.9,stroke:D,'stroke-width':0.14},g);
+      el('line',{x1:bx+36,y1:by,x2:bx+36,y2:by+bh,stroke:D,'stroke-width':0.14},g);
+      function tx(x,y,s,sz,col,w){ var n=el('text',{x:x,y:y,fill:col||C,'font-size':sz,
+        'font-family':MONO,'letter-spacing':'0.08','font-weight':w||400},g); n.textContent=s; return n; }
+      tx(bx+1.2,by+2.2,'THE STEADING',1.9,C,600);
+      tx(bx+1.2,by+4.7,'GENERAL ARRANGEMENT · PLAN VIEW',1.25,D);
+      tx(bx+1.2,by+6.9,world.zones.length+' ZONES · '+world.stations.length+' STATIONS · SCALE 1:1 ch',1.25,D);
+      tx(bx+37.2,by+2.1,'SHEET',1.25,D); tx(bx+45,by+2.1,'01 OF 05',1.25,C,600);
+      tx(bx+37.2,by+4.4,'REV',1.25,D);   tx(bx+45,by+4.4,'v'+world.version,1.25,C,600);
+      tx(bx+37.2,by+6.7,'STATUS',1.25,D);tx(bx+45,by+6.7,'FOUNDATION',1.25,'#FFB454',600);
+    }
+  });
+
+  /* ============================================================
+     2 — SURVEYOR'S ALMANAC.  Inked estate survey on laid paper.
+     ============================================================ */
+  G.RENDER.almanac = G.makePlan({
+    pal:{ ground:'#E8DCC0', hill:'#D7C7A2', water:'#A9B9A8', road:'#B09A6E',
+          fence:'#7A6444', shadow:'#8B7550', waterSheen:'#C3CFBE', waterLine:'#7E8E7C' },
+    viewBox:'-12 -11 126 102', roadScale:0.5,
+    labelFont:SER, monoFont:SER, hair:0.16, markW:0.2, buildW:0.26, zoneW:0.34,
+    jitter:0.32, zoneFS:2.6, stFS:1.55, upper:false, zoneWeight:600, zoneTrack:'0.04',
+    zoneInner:true, hillOpacity:0.85, pondSheen:true, labelHalo:'#E8DCC0',
+    zoneFill:function(z){ return G.rgba(z.color,0.13); },
+    zoneStroke:function(z){ return G.mix(z.color,'#4A3728',0.45); },
+    zoneLabel:function(){ return '#3B2C1E'; },
+    subLabel:function(){ return '#8B6F47'; },
+    groundFill:function(z,zz){ return zz? G.rgba(zz.color,0.22):'rgba(0,0,0,0.05)'; },
+    groundStroke:function(z,zz){ return zz? G.mix(zz.color,'#4A3728',0.5):'#8B6F47'; },
+    buildFill:function(){ return '#F2E9D2'; },
+    buildStroke:function(){ return '#4A3728'; },
+    markStroke:function(){ return '#4A3728'; },
+    markSoft:function(){ return '#9A8461'; },
+    stationLabel:function(){ return '#5A4632'; },
+    flowColor:function(f,k){ return k ? G.mix(k.color,'#4A3728',0.3) : '#4A3728'; },
+    flowW:0.24, flowDash:'1.8 1.3', flowOpacity:0.6,
+    tree:function(g,x,y,s,pal,i){
+      var r=s*0.9, pts=[];
+      for(var a=0;a<9;a++){ var t=a/9*Math.PI*2, rr=r*(0.78+G.rnd(i*3+a)*0.42);
+        pts.push([x+Math.cos(t)*rr, y+Math.sin(t)*rr*0.86]); }
+      el('path',{d:P(pts,true),fill:'#B9C4A0',stroke:'#6B7355','stroke-width':0.14},g);
+      el('line',{x1:x,y1:y+r*0.5,x2:x,y2:y+r*1.25,stroke:'#6B5A3E','stroke-width':0.18},g);
+    },
+    defs:function(defs){
+      var f=el('filter',{id:'al-grain',x:'-5%',y:'-5%',width:'110%',height:'110%'},defs);
+      el('feTurbulence',{type:'fractalNoise',baseFrequency:'0.85',numOctaves:'4',result:'n'},f);
+      el('feColorMatrix',{type:'saturate',values:'0',in:'n',result:'g'},f);
+      el('feComponentTransfer',{in:'g',result:'c'},f).appendChild(
+        (function(){ var fn=document.createElementNS('http://www.w3.org/2000/svg','feFuncA');
+          fn.setAttribute('type','linear'); fn.setAttribute('slope','0.09'); return fn; })());
+      el('feBlend',{in:'SourceGraphic',in2:'c',mode:'multiply'},f);
+      var st=el('radialGradient',{id:'al-stain'},defs);
+      el('stop',{offset:'0%','stop-color':'#C9B187','stop-opacity':'0.30'},st);
+      el('stop',{offset:'100%','stop-color':'#C9B187','stop-opacity':'0'},st);
+    },
+    underlay:function(root){
+      [[14,12,22],[86,58,26],[52,66,17],[96,20,14],[8,52,18]].forEach(function(s){
+        el('ellipse',{cx:s[0],cy:s[1],rx:s[2],ry:s[2]*0.72,fill:'url(#al-stain)'},root);
+      });
+      /* laid-paper chain lines */
+      for(var i=0;i<=100;i+=4)
+        el('line',{x1:i,y1:-6,x2:i,y2:76,stroke:'#D9CBA9','stroke-width':0.12,opacity:0.6},root);
+    },
+    furniture:function(g,world){
+      var INK='#4A3728', SEAL='#8E3B2F';
+      /* double ruled border with corner ticks */
+      el('rect',{x:-3.6,y:-3.6,width:107.2,height:77.2,fill:'none',stroke:INK,'stroke-width':0.42},g);
+      el('rect',{x:-2.5,y:-2.5,width:105,height:75,fill:'none',stroke:INK,'stroke-width':0.16},g);
+      [[-3.6,-3.6],[103.6,-3.6],[-3.6,73.6],[103.6,73.6]].forEach(function(c){
+        el('circle',{cx:c[0],cy:c[1],r:0.8,fill:'none',stroke:INK,'stroke-width':0.22},g);
+      });
+      /* compass rose */
+      var cx=106,cy=8,R=5.4;
+      el('circle',{cx:cx,cy:cy,r:R,fill:'none',stroke:INK,'stroke-width':0.22},g);
+      el('circle',{cx:cx,cy:cy,r:R*0.72,fill:'none',stroke:INK,'stroke-width':0.12},g);
+      for(var a=0;a<8;a++){
+        var t=a*Math.PI/4, lg=(a%2===0)?R:R*0.62, wd=(a%2===0)?0.9:0.55;
+        var px=cx+Math.cos(t-Math.PI/2)*lg, py=cy+Math.sin(t-Math.PI/2)*lg;
+        var ox=cx+Math.cos(t-Math.PI/2+Math.PI/2)*wd, oy=cy+Math.sin(t-Math.PI/2+Math.PI/2)*wd;
+        var ox2=cx+Math.cos(t-Math.PI/2-Math.PI/2)*wd, oy2=cy+Math.sin(t-Math.PI/2-Math.PI/2)*wd;
+        el('path',{d:'M'+px+' '+py+'L'+ox+' '+oy+'L'+ox2+' '+oy2+'Z',
+          fill:(a===0)?SEAL:(a%2===0?INK:'#9A8461')},g);
+      }
+      var nn=el('text',{x:cx,y:cy-R-1.2,'text-anchor':'middle',fill:INK,'font-size':2.2,
+        'font-family':SER,'font-style':'italic'},g); nn.textContent='N';
+      /* cartouche */
+      var bx=-11,by=76,bw=52,bh=14;
+      el('rect',{x:bx,y:by,width:bw,height:bh,fill:'rgba(242,233,210,0.88)',stroke:INK,'stroke-width':0.34},g);
+      el('rect',{x:bx+0.9,y:by+0.9,width:bw-1.8,height:bh-1.8,fill:'none',stroke:'#9A8461','stroke-width':0.12},g);
+      function tx(x,y,s,sz,col,it,w){ var n=el('text',{x:x,y:y,fill:col||INK,'font-size':sz,
+        'font-family':SER,'font-style':it?'italic':'normal','font-weight':w||400,
+        'text-anchor':'middle'},g); n.textContent=s; return n; }
+      tx(bx+bw/2,by+5.2,'The Steading',5.6,INK,false,600);
+      el('line',{x1:bx+9,y1:by+6.8,x2:bx+bw-9,y2:by+6.8,stroke:'#9A8461','stroke-width':0.16},g);
+      tx(bx+bw/2,by+9.8,'A Survey of the Agent Ecosystem',2.4,'#6E5B42',true);
+      tx(bx+bw/2,by+12.8,world.zones.length+' Zones · '+world.stations.length+' Stations · '+world.roles.length+' Roles · '+world.tasks.length+' Tasks',1.9,'#8B6F47');
+      /* scale bar */
+      var sx=48,sy=81;
+      el('rect',{x:sx,y:sy,width:10,height:0.9,fill:INK},g);
+      el('rect',{x:sx+10,y:sy,width:10,height:0.9,fill:'#F2E9D2',stroke:INK,'stroke-width':0.14},g);
+      el('rect',{x:sx+20,y:sy,width:10,height:0.9,fill:INK},g);
+      [0,10,20,30].forEach(function(d){
+        var n=el('text',{x:sx+d,y:sy-0.8,'text-anchor':'middle',fill:INK,'font-size':1.5,'font-family':SER},g);
+        n.textContent=String(d); });
+      var sl=el('text',{x:sx+15,y:sy+3.3,'text-anchor':'middle',fill:'#6E5B42','font-size':1.6,
+        'font-family':SER,'font-style':'italic'},g); sl.textContent='chains';
+    }
+  });
+
+  /* ============================================================
+     3 — NIGHT WATCH.  The farm as a live operations display.
+     ============================================================ */
+  G.RENDER.neon = G.makePlan({
+    pal:{ ground:'#050B14', hill:'#08161F', water:'#07283A', road:'#14455A',
+          fence:'#123A4A', shadow:'#000', waterSheen:'#0C4E63' },
+    viewBox:'-9 -12 120 96', roadScale:0.45,
+    labelFont:MONO, monoFont:MONO, hair:0.14, markW:0.2, buildW:0.26, zoneW:0.3,
+    zoneFS:2.3, stFS:1.4, animateFlows:true, hillOpacity:0.9,
+    zoneFill:function(z){ return G.rgba(z.accent,0.055); },
+    zoneStroke:function(z){ return z.accent; },
+    zoneLabel:function(z){ return z.accent; },
+    subLabel:function(){ return '#3E7A6E'; },
+    groundFill:function(z,zz){ return zz? G.rgba(zz.accent,0.10):'rgba(61,245,208,0.06)'; },
+    groundStroke:function(z,zz){ return zz? zz.accent:'#3DF5D0'; },
+    buildFill:function(){ return '#081420'; },
+    buildStroke:function(z,zz){ return zz? zz.accent:'#3DF5D0'; },
+    markStroke:function(z){ return z? z.accent:'#3DF5D0'; },
+    markSoft:function(z){ return z? G.rgba(z.accent,0.45):'rgba(61,245,208,0.4)'; },
+    stationLabel:function(){ return '#7FD8C6'; },
+    flowColor:function(f,k){ return k ? k.color : '#3DF5D0'; },
+    flowW:0.28, flowOpacity:0.9,
+    tree:function(g,x,y,s){
+      el('circle',{cx:x,cy:y,r:s*0.5,fill:'rgba(61,245,208,0.13)'},g);
+      el('circle',{cx:x,cy:y,r:s*0.18,fill:'#2C7A6B'},g);
+    },
+    defs:function(defs){
+      var f=el('filter',{id:'nb-glow',x:'-60%',y:'-60%',width:'220%',height:'220%'},defs);
+      el('feGaussianBlur',{stdDeviation:'0.7',result:'b'},f);
+      var m=el('feMerge',null,f); el('feMergeNode',{in:'b'},m); el('feMergeNode',{in:'SourceGraphic'},m);
+      var gr=el('pattern',{id:'nb-grid',width:'5',height:'5',patternUnits:'userSpaceOnUse'},defs);
+      el('path',{d:'M5 0 H0 V5',fill:'none',stroke:'rgba(61,245,208,0.055)','stroke-width':0.1},gr);
+      var sc=el('pattern',{id:'nb-scan',width:'1',height:'2',patternUnits:'userSpaceOnUse'},defs);
+      el('rect',{width:1,height:1,fill:'rgba(0,0,0,0.20)'},sc);
+      var vg=el('radialGradient',{id:'nb-vig',cx:'50%',cy:'48%',r:'62%'},defs);
+      el('stop',{offset:'55%','stop-color':'#000','stop-opacity':'0'},vg);
+      el('stop',{offset:'100%','stop-color':'#000','stop-opacity':'0.62'},vg);
+    },
+    underlay:function(root){ el('rect',{x:-9,y:-12,width:120,height:96,fill:'url(#nb-grid)'},root); },
+    furniture:function(g,world,pal,svg){
+      var C='#3DF5D0';
+      /* glow on every stroked element in the build + zone layers */
+      svg.querySelectorAll('[data-layer="build"],[data-layer="zones"],[data-layer="flows"]')
+        .forEach(function(n){ n.setAttribute('filter','url(#nb-glow)'); });
+      /* corner brackets */
+      [[-3,-3,1,1],[103,-3,-1,1],[-3,73,1,-1],[103,73,-1,-1]].forEach(function(c){
+        el('path',{d:'M'+(c[0]+6*c[2])+' '+c[1]+'H'+c[0]+'V'+(c[1]+6*c[3]),fill:'none',
+          stroke:C,'stroke-width':0.3,opacity:0.8},g);
+      });
+      /* status readout */
+      function tx(x,y,s,sz,col,w){ var n=el('text',{x:x,y:y,fill:col||C,'font-size':sz,
+        'font-family':MONO,'letter-spacing':'0.1','font-weight':w||400},g); n.textContent=s; return n; }
+      tx(-8,-6.4,'THE STEADING // LIVE',2.2,C,600);
+      tx(26,-6.4,'▪ '+world.flows.length+' CHANNELS',1.6,'#6FB9A8');
+      tx(48,-6.4,'▪ '+world.roles.length+' ROLES',1.6,'#6FB9A8');
+      tx(66,-6.4,'▪ '+world.tasks.length+' TASKS',1.6,'#6FB9A8');
+      tx(110,-6.4,'STATUS: FOUNDATION',1.6,'#FFC857',600).setAttribute('text-anchor','end');
+      /* channel key, bottom-left, matching the animated flows */
+      var kx=-8, ky=79.5;
+      Object.keys(world.flowKinds).forEach(function(k,i){
+        var col=world.flowKinds[k].color, x=kx+i*23.4;
+        el('line',{x1:x,y1:ky-0.6,x2:x+4,y2:ky-0.6,stroke:col,'stroke-width':0.5,
+          'stroke-dasharray':'1.4 1.4'},g);
+        tx(x+5,ky,world.flowKinds[k].label.toUpperCase(),1.6,col);
+      });
+      el('rect',{x:-9,y:-12,width:120,height:96,fill:'url(#nb-scan)','pointer-events':'none',opacity:0.5},g);
+      el('rect',{x:-9,y:-12,width:120,height:96,fill:'url(#nb-vig)','pointer-events':'none'},g);
+    }
+  });
+
+  /* ============================================================
+     4 — EDITORIAL.  The version that goes in the deck.
+     ============================================================ */
+  G.RENDER.editorial = G.makePlan({
+    pal:{ ground:'#FCFCFA', hill:'#EFF1EC', water:'#DCE7EA', road:'#E2E4DF',
+          fence:'#C9CEC7', shadow:'#1A1D1C', waterSheen:'#EAF1F3', waterLine:'#C2D2D6' },
+    viewBox:'-7 -17 116 106', roadScale:0.5,
+    labelFont:UI, monoFont:UI, hair:0.16, markW:0.2, buildW:0.26, zoneW:0.3,
+    zoneFS:2.3, stFS:1.45, radius:0.4, roadCasing:'#FCFCFA', trees:true, shadow:0.35,
+    zoneFill:function(z){ return G.rgba(z.color,0.075); },
+    zoneStroke:function(z){ return G.rgba(z.color,0.55); },
+    zoneLabel:function(z){ return G.mix(z.color,'#1A1D1C',0.42); },
+    subLabel:function(){ return '#8D9693'; },
+    groundFill:function(z,zz){ return zz? G.rgba(zz.color,0.16):'#F0F1EE'; },
+    groundStroke:function(z,zz){ return zz? G.rgba(zz.color,0.6):'#C9CEC7'; },
+    buildFill:function(){ return '#FFFFFF'; },
+    buildStroke:function(z,zz){ return zz? G.mix(zz.color,'#1A1D1C',0.3):'#5C6663'; },
+    markStroke:function(z){ return z? G.mix(z.color,'#1A1D1C',0.35):'#5C6663'; },
+    markSoft:function(z){ return z? G.rgba(z.color,0.5):'#B8BEBA'; },
+    stationLabel:function(){ return '#5C6663'; },
+    flowColor:function(f,k){ return k ? k.color : '#5C6663'; },
+    flowW:0.24, flowOpacity:0.62,
+    tree:function(g,x,y,s){
+      el('circle',{cx:x,cy:y+0.25,r:s*0.8,fill:'rgba(26,29,28,0.07)'},g);
+      el('circle',{cx:x,cy:y,r:s*0.8,fill:'#CFDCC2'},g);
+      el('circle',{cx:x-s*0.22,cy:y-s*0.22,r:s*0.34,fill:'#DCE6D2'},g);
+    },
+    defs:function(defs){
+      var sh=el('filter',{id:'ed-soft',x:'-20%',y:'-20%',width:'140%',height:'140%'},defs);
+      el('feDropShadow',{dx:'0',dy:'0.3','stdDeviation':'0.35','flood-color':'#1A1D1C',
+        'flood-opacity':'0.10'},sh);
+    },
+    furniture:function(g,world,pal,svg){
+      svg.querySelectorAll('[data-layer="build"]').forEach(function(n){
+        n.setAttribute('filter','url(#ed-soft)'); });
+      var INK='#1A1D1C', SUB='#8D9693', ACC='#2E6F5E';
+      function tx(x,y,s,sz,col,w,anchor){ var n=el('text',{x:x,y:y,fill:col||INK,'font-size':sz,
+        'font-family':UI,'font-weight':w||400,'text-anchor':anchor||'start'},g); n.textContent=s; return n; }
+      /* title lockup */
+      tx(-6,-10.2,'The Steading',5.6,INK,700);
+      tx(-6,-6.4,'An AI agent ecosystem, mapped as a working farm',2.3,SUB,400);
+      el('line',{x1:-6,y1:-4.2,x2:36,y2:-4.2,stroke:ACC,'stroke-width':0.5},g);
+      /* figures, right-aligned against the title */
+      var stats=[[world.zones.length,'zones'],[world.stations.length,'stations'],
+                 [world.roles.length,'roles'],[world.tasks.length,'tasks']];
+      stats.forEach(function(s,i){
+        var x=62+i*12.4;
+        tx(x,-8,String(s[0]),4.6,ACC,700);
+        tx(x,-5,s[1],1.8,SUB,500);
+      });
+      /* numbered zone callouts — the zones are a set, not a sequence, so the
+         numbers key to the legend rather than implying an order */
+      world.zones.forEach(function(z,i){
+        var xs=z.polygon.map(function(p){return p[0];}), ys=z.polygon.map(function(p){return p[1];});
+        var x=Math.max.apply(null,xs)-2.2, y=Math.max.apply(null,ys)-2.4;
+        el('circle',{cx:x,cy:y,r:1.7,fill:z.color},g);
+        tx(x,y+0.62,String(i+1),2,'#fff',700,'middle');
+      });
+      /* key */
+      var kx=-6, ky=78.5;
+      world.zones.forEach(function(z,i){
+        var col=i%4, row=Math.floor(i/4), x=kx+col*27.4, y=ky+row*5.4;
+        el('circle',{cx:x+1,cy:y-0.62,r:1.2,fill:z.color},g);
+        tx(x+2.8,y,String(i+1)+'  '+z.name.replace(/^The /,''),1.9,INK,600);
+        tx(x+2.8,y+2.4,z.domain,1.6,SUB,400);
+      });
+    }
+  });
+
+})(window.GEOM);
+
+</script>
+<script>
+/* ============================================================
+   ISOMETRIC HOMESTEAD
+   2:1 dimetric. Everything is depth-sorted on (x + y) so the
+   farm occludes itself correctly. Light comes from upper-left.
+   ============================================================ */
+(function (G) {
+  var el = G.el, P = G.path;
+  var UI = '"Archivo", ui-sans-serif, system-ui, sans-serif';
+
+  /* shade toward a cool dark so lit faces stay warm and shadows go blue-green */
+  function sh(hex, k){ return G.mix(hex, '#26331F', k); }
+  function lt(hex, k){ return G.mix(hex, '#FFF6DC', k); }
+
+  var PAL = {
+    sky0:'#E3EEDB', sky1:'#C6D9BE',
+    grass:'#9DBC72', grassDark:'#8AAA62', grassEdge:'#7B9A55',
+    soil:'#A9784B', soilDark:'#8C6239',
+    wall:'#EFE4CB', wallWarm:'#E4D5B4',
+    metal:'#CBCEC5', water:'#7FA9B8', waterLip:'#9CC0CB',
+    road:'#C9B68E', roadEdge:'#B29E76',
+    shadow:'rgba(46,58,38,0.20)', trunk:'#6B4E31',
+    leaf:'#6E9647', leaf2:'#84AC57', leaf3:'#5C8039'
+  };
+
+  function face(g, poly, fill, stroke){
+    el('path', { d:P(poly,true), fill:fill, stroke:stroke||'none',
+      'stroke-width':stroke?0.22:0, 'stroke-linejoin':'round' }, g);
+  }
+  /* flat ground shadow: the footprint, projected, nudged toward the light's opposite */
+  function groundShadow(g, x, y, w, h, spread){
+    var s = spread||0.9;
+    face(g, G.isoPoly(G.rect(x+s*0.5, y+s*0.5, w+s, h+s), 0), PAL.shadow);
+  }
+
+  function tree(g, x, y, s, i){
+    groundShadow(g, x+0.5, y+0.4, s*1.5, s*1.5, 0.2);
+    var t = G.isoBox(x, y, s*0.32, s*0.32, 0, s*1.5);
+    face(g, t.right, sh(PAL.trunk,0.18)); face(g, t.left, sh(PAL.trunk,0.34));
+    var lv = [[0, s*1.4, s*1.35, PAL.leaf2], [-s*0.42, s*2.15, s*1.05, PAL.leaf],
+              [s*0.36, s*2.5, s*0.82, PAL.leaf3]];
+    lv.forEach(function(c, j){
+      var p = G.iso(x + c[0], y + c[0]*0.4, c[1]);
+      el('ellipse', { cx:p[0], cy:p[1], rx:c[2]*1.05, ry:c[2]*0.9,
+        fill: j===0 ? c[3] : (G.rnd(i+j)>0.5 ? c[3] : lt(c[3],0.1)) }, g);
+    });
+    var hp = G.iso(x - s*0.5, y - s*0.3, s*2.0);
+    el('ellipse', { cx:hp[0], cy:hp[1], rx:s*0.5, ry:s*0.38, fill:lt(PAL.leaf2,0.3), opacity:0.75 }, g);
+  }
+
+  function building(g, st, zone){
+    var s = G.spec(st.kind), x = st.x, y = st.y, w = st.w, h = st.h;
+    var roofCol = zone ? zone.color : '#A0522D';
+    var wallCol = s.glass ? '#DFF0EA' : PAL.wall;
+
+    groundShadow(g, x, y, w, h, 1.1);
+
+    if (s.prim === 'cyl'){
+      var r = Math.min(w,h)/2, c = G.isoCyl(x, y, r, 0, s.z);
+      face(g, c.body, PAL.metal);
+      /* corrugation — the detail that makes a silo read as a silo */
+      for (var i=-3; i<=3; i++){
+        var a0 = Math.PI*0.5 + i*0.22;
+        var p0 = G.iso(x+Math.cos(a0)*r*0.98, y+Math.sin(a0)*r*0.98, 0);
+        var p1 = G.iso(x+Math.cos(a0)*r*0.98, y+Math.sin(a0)*r*0.98, s.z);
+        el('line', { x1:p0[0], y1:p0[1], x2:p1[0], y2:p1[1],
+          stroke:sh(PAL.metal, 0.12), 'stroke-width':0.18, opacity:0.8 }, g);
+      }
+      for (var b=1; b<4; b++){
+        var zz = s.z*b/4, ring=[];
+        for (var t2=0; t2<=9; t2++){ var a2=Math.PI*0.08 + (t2/9)*Math.PI*0.84;
+          ring.push(G.iso(x+Math.cos(a2)*r, y+Math.sin(a2)*r, zz)); }
+        el('path', { d:P(ring), fill:'none', stroke:sh(PAL.metal,0.16), 'stroke-width':0.16, opacity:0.6 }, g);
+      }
+      face(g, c.top, lt(PAL.metal, 0.22));
+      G.isoRoof(x, y, r*2, r*2, s.z, 'dome').forEach(function(rf){
+        face(g, rf.poly, rf.shade==='top' ? lt(roofCol,0.08) : sh(roofCol,0.2));
+      });
+      return;
+    }
+    if (s.prim === 'mound'){
+      var m = G.isoCyl(x, y, Math.min(w,h)/2, 0, s.z*0.55);
+      face(g, m.body, sh(PAL.soil, 0.12));
+      face(g, m.top, PAL.soil);
+      el('ellipse', { cx:G.iso(x,y,s.z*0.55)[0], cy:G.iso(x,y,s.z*0.55)[1],
+        rx:Math.min(w,h)/2*0.55, ry:Math.min(w,h)/2*0.42, fill:sh(PAL.soilDark,0.15) }, g);
+      return;
+    }
+    if (s.prim === 'mast'){
+      var mz = s.z, mx = G.isoBox(x, y, 0.55, 0.55, 0, mz);
+      face(g, mx.right, sh(PAL.trunk,0.15)); face(g, mx.left, sh(PAL.trunk,0.32));
+      var tip = G.iso(x, y, mz);
+      if (s.top === 'sails'){
+        /* windmill tower plus four sails */
+        var tw = G.isoBox(x, y, w*0.5, h*0.5, 0, mz*0.78);
+        face(g, tw.right, sh(PAL.wallWarm,0.14)); face(g, tw.left, sh(PAL.wallWarm,0.3));
+        face(g, tw.top, lt(PAL.wallWarm,0.1));
+        G.isoRoof(x, y, w*0.5, h*0.5, mz*0.78, 'gable').forEach(function(rf){
+          face(g, rf.poly, rf.shade==='top'?lt(roofCol,0.06):sh(roofCol,0.22)); });
+        var hub = G.iso(x, y - h*0.3, mz*0.86);
+        for (var a=0; a<4; a++){
+          var ang = a*Math.PI/2 + 0.42;
+          el('line', { x1:hub[0], y1:hub[1], x2:hub[0]+Math.cos(ang)*5.4, y2:hub[1]+Math.sin(ang)*5.4,
+            stroke:'#7A6A4C', 'stroke-width':0.5, 'stroke-linecap':'round' }, g);
+          el('rect', { x:hub[0]+Math.cos(ang)*2.2-0.6, y:hub[1]+Math.sin(ang)*2.2-0.6,
+            width:1.6, height:1.6, fill:lt(PAL.wall,0.1), opacity:0.85,
+            transform:'rotate('+(ang*180/Math.PI)+' '+(hub[0]+Math.cos(ang)*2.2)+' '+(hub[1]+Math.sin(ang)*2.2)+')' }, g);
+        }
+        el('circle', { cx:hub[0], cy:hub[1], r:0.6, fill:sh(roofCol,0.3) }, g);
+      } else if (s.top === 'bell'){
+        el('path', { d:'M'+(tip[0]-1.1)+' '+tip[1]+' Q'+tip[0]+' '+(tip[1]-3.2)+' '+(tip[0]+1.1)+' '+tip[1]+' Z',
+          fill:'#C8A94E', stroke:sh('#C8A94E',0.3), 'stroke-width':0.18 }, g);
+        el('circle', { cx:tip[0], cy:tip[1]+0.45, r:0.32, fill:sh('#C8A94E',0.4) }, g);
+      } else if (s.top === 'board'){
+        var bw2 = w*1.0, bh2 = 2.4;
+        el('rect', { x:tip[0]-bw2/2, y:tip[1]-bh2, width:bw2, height:bh2, fill:lt('#8B6F47',0.28),
+          stroke:sh('#8B6F47',0.2), 'stroke-width':0.2, rx:0.2 }, g);
+        for (var ln=0; ln<3; ln++)
+          el('line', { x1:tip[0]-bw2/2+0.5, y1:tip[1]-bh2+0.6+ln*0.62, x2:tip[0]+bw2/2-0.5-ln*0.7,
+            y2:tip[1]-bh2+0.6+ln*0.62, stroke:sh('#8B6F47',0.35), 'stroke-width':0.16 }, g);
+      } else if (s.top === 'crow'){
+        el('line', { x1:tip[0]-2, y1:tip[1]+1.4, x2:tip[0]+2, y2:tip[1]+1.4,
+          stroke:PAL.trunk, 'stroke-width':0.42, 'stroke-linecap':'round' }, g);
+        el('circle', { cx:tip[0], cy:tip[1]-0.1, r:0.85, fill:'#B9793F' }, g);
+        el('path', { d:'M'+(tip[0]-1.3)+' '+(tip[1]-0.7)+'L'+tip[0]+' '+(tip[1]-2.1)+'L'+(tip[0]+1.3)+' '+(tip[1]-0.7)+'Z',
+          fill:'#8C6239' }, g);
+        el('path', { d:'M'+(tip[0]-2)+' '+(tip[1]+1.4)+'L'+(tip[0]-1.5)+' '+(tip[1]+3.4),
+          stroke:'#6E5B42', 'stroke-width':0.3, fill:'none' }, g);
+      } else {
+        var vt = G.isoBox(x, y, 1.5, 1.5, mz*0.5, mz);
+        face(g, vt.right, sh(PAL.metal,0.15)); face(g, vt.left, sh(PAL.metal,0.3));
+        face(g, vt.top, lt(PAL.metal,0.15));
+        el('circle', { cx:tip[0], cy:tip[1], r:0.9, fill:'none', stroke:sh(PAL.metal,0.35),
+          'stroke-width':0.3 }, g);
+      }
+      return;
+    }
+    if (s.prim === 'field'){
+      var fq = G.isoPoly(G.rect(x,y,w,h), 0);
+      face(g, fq, PAL.soil);
+      var rows = st.rows || 5;
+      for (var r2=0; r2<rows; r2++){
+        var yy = y - h/2 + (h/rows)*(r2+0.5);
+        var a3 = G.iso(x-w/2+0.5, yy, 0.35), b3 = G.iso(x+w/2-0.5, yy, 0.35);
+        el('line', { x1:a3[0], y1:a3[1], x2:b3[0], y2:b3[1], stroke:PAL.leaf,
+          'stroke-width':0.85, 'stroke-linecap':'round', opacity:0.92 }, g);
+        el('line', { x1:a3[0], y1:a3[1]+0.34, x2:b3[0], y2:b3[1]+0.34, stroke:sh(PAL.soilDark,0.18),
+          'stroke-width':0.3, opacity:0.55 }, g);
+      }
+      el('path', { d:P(fq,true), fill:'none', stroke:sh(PAL.soilDark,0.2), 'stroke-width':0.26 }, g);
+      return;
+    }
+    /* pen: low rails around an open patch */
+    if (s.prim === 'pen'){
+      var pq = G.isoPoly(G.rect(x,y,w,h), 0);
+      face(g, pq, s.glass ? '#D3E7DF' : G.mix(PAL.grass, PAL.soil, 0.28));
+      if (s.rows) for (var c2=1; c2<4; c2++){
+        var xx = x - w/2 + (w/4)*c2;
+        var p1b = G.iso(xx, y-h/2+0.4, 0.3), p2b = G.iso(xx, y+h/2-0.4, 0.3);
+        el('line', { x1:p1b[0], y1:p1b[1], x2:p2b[0], y2:p2b[1], stroke:PAL.leaf2,
+          'stroke-width':0.75, 'stroke-linecap':'round' }, g);
+      }
+      var corners = G.rect(x,y,w,h);
+      corners.forEach(function(cp, ci){
+        var nx = corners[(ci+1)%4];
+        var t1 = G.iso(cp[0], cp[1], 1.5), t2 = G.iso(nx[0], nx[1], 1.5);
+        el('line', { x1:t1[0], y1:t1[1], x2:t2[0], y2:t2[1], stroke:'#B39A72',
+          'stroke-width':0.26, opacity:0.95 }, g);
+        var b1 = G.iso(cp[0], cp[1], 0);
+        el('line', { x1:b1[0], y1:b1[1], x2:t1[0], y2:t1[1], stroke:'#9C8563', 'stroke-width':0.34 }, g);
+      });
+      return;
+    }
+    if (s.prim === 'disc'){
+      var wc = G.isoCyl(x, y, Math.min(w,h)/2, 0, s.z);
+      face(g, wc.body, sh('#B7ADA0',0.1));
+      face(g, wc.top, '#6E7A80');
+      el('ellipse', { cx:G.iso(x,y,s.z)[0], cy:G.iso(x,y,s.z)[1], rx:Math.min(w,h)/2*0.6,
+        ry:Math.min(w,h)/2*0.46, fill:'#2E3A40' }, g);
+      var r3 = Math.min(w,h)/2;
+      [[-1,0],[1,0]].forEach(function(d){
+        var pb = G.iso(x+d[0]*r3*0.8, y, s.z), pt = G.iso(x+d[0]*r3*0.8, y, s.z+3.4);
+        el('line', { x1:pb[0], y1:pb[1], x2:pt[0], y2:pt[1], stroke:PAL.trunk, 'stroke-width':0.4 }, g);
+      });
+      var ra = G.iso(x-r3*0.8, y, s.z+3.4), rb2 = G.iso(x+r3*0.8, y, s.z+3.4);
+      el('path', { d:'M'+ra[0]+' '+ra[1]+'L'+((ra[0]+rb2[0])/2)+' '+(ra[1]-1.6)+'L'+rb2[0]+' '+rb2[1],
+        fill:sh(roofCol,0.1), stroke:sh(roofCol,0.3), 'stroke-width':0.2 }, g);
+      return;
+    }
+
+    /* box: walls, then roof */
+    var bx = G.isoBox(x, y, w, h, 0, s.z);
+    face(g, bx.right, s.glass ? '#CFE7DE' : sh(wallCol, 0.13));
+    face(g, bx.left,  s.glass ? '#BBD9CF' : sh(wallCol, 0.28));
+    face(g, bx.top,   lt(wallCol, 0.12));
+    /* siding + openings */
+    if (!s.glass){
+      for (var v=1; v<4; v++){
+        var fx = x - w/2 + (w/4)*v;
+        var s1 = G.iso(fx, y+h/2, 0), s2 = G.iso(fx, y+h/2, s.z);
+        el('line', { x1:s1[0], y1:s1[1], x2:s2[0], y2:s2[1], stroke:sh(wallCol,0.34),
+          'stroke-width':0.12, opacity:0.5 }, g);
+      }
+      var dw = Math.min(w,h)*0.3, dh = s.z*0.55;
+      var d1 = G.iso(x, y+h/2, 0), d2 = G.iso(x, y+h/2, dh);
+      el('path', { d:'M'+(d1[0]-dw/2)+' '+(d1[1]-dw*0.28)+'L'+(d1[0]+dw/2)+' '+(d1[1]+dw*0.28)+
+        'L'+(d2[0]+dw/2)+' '+(d2[1]+dw*0.28)+'L'+(d2[0]-dw/2)+' '+(d2[1]-dw*0.28)+'Z',
+        fill:sh(roofCol,0.42), opacity:0.9 }, g);
+      if (s.z > 4){
+        var wy = G.iso(x - w*0.26, y+h/2, s.z*0.66);
+        el('rect', { x:wy[0]-0.75, y:wy[1]-0.75, width:1.5, height:1.5, fill:'#F7E9B8',
+          stroke:sh(wallCol,0.4), 'stroke-width':0.14 }, g);
+      }
+    } else {
+      for (var gx2=1; gx2<5; gx2++){
+        var px2 = x - w/2 + (w/5)*gx2;
+        var q1 = G.iso(px2, y+h/2, 0), q2 = G.iso(px2, y+h/2, s.z);
+        el('line', { x1:q1[0], y1:q1[1], x2:q2[0], y2:q2[1], stroke:'#8FBCAC', 'stroke-width':0.16 }, g);
+      }
+    }
+    G.isoRoof(x, y, w, h, s.z, s.roof || 'gable').forEach(function(rf){
+      var c3 = rf.shade === 'top'  ? lt(roofCol, 0.1)
+             : rf.shade === 'right'? sh(roofCol, 0.2)
+             : rf.shade === 'left' ? sh(roofCol, 0.34)
+             : rf.shade === 'glass'? '#D6ECE4'
+             : sh(roofCol, 0.12);
+      face(g, rf.poly, c3, sh(roofCol, 0.42));
+    });
+    if (s.chimney){
+      var ch = G.isoBox(x + w*0.28, y - h*0.2, 1.1, 1.1, s.z, s.z + Math.min(w,h)*0.75);
+      face(g, ch.right, sh('#9E6A54',0.16)); face(g, ch.left, sh('#9E6A54',0.32));
+      face(g, ch.top, lt('#9E6A54',0.16));
+    }
+  }
+
+  G.RENDER.isometric = function (host, world, api) {
+    var o = api.opts;
+    host.innerHTML = '';
+    var svg = el('svg', { viewBox:'-67 -20 153 116', preserveAspectRatio:'xMidYMid meet' }, host);
+    var defs = el('defs', null, svg);
+    var sky = el('linearGradient', { id:'iso-sky', x1:'0', y1:'0', x2:'0.25', y2:'1' }, defs);
+    el('stop', { offset:'0%', 'stop-color':PAL.sky0 }, sky);
+    el('stop', { offset:'100%', 'stop-color':PAL.sky1 }, sky);
+    var glow = el('radialGradient', { id:'iso-sun', cx:'26%', cy:'14%', r:'52%' }, defs);
+    el('stop', { offset:'0%', 'stop-color':'#FFF3CE', 'stop-opacity':'0.75' }, glow);
+    el('stop', { offset:'100%', 'stop-color':'#FFF3CE', 'stop-opacity':'0' }, glow);
+
+    var root = el('g', { 'data-pan':'1' }, svg);
+    el('rect', { x:-200, y:-200, width:600, height:500, fill:'url(#iso-sky)' }, root);
+    el('rect', { x:-200, y:-200, width:600, height:500, fill:'url(#iso-sun)' }, root);
+
+    var L = {};
+    ['ground','zones','water','roads','props','labels','furn'].forEach(function(n){
+      L[n] = el('g', { 'data-layer':n }, root);
+    });
+
+    /* ---- the parcel, with a thickness so it reads as a solid block of land ---- */
+    var parcel = [[-1,-1],[101,-1],[101,71],[-1,71]];
+    var pTop = G.isoPoly(parcel, 0);
+    var depth = 5;
+    face(L.ground, [pTop[1], pTop[2], G.iso(101,71,-depth), G.iso(101,-1,-depth)], sh(PAL.soilDark,0.15));
+    face(L.ground, [pTop[2], pTop[3], G.iso(-1,71,-depth), G.iso(101,71,-depth)], sh(PAL.soilDark,0.32));
+    face(L.ground, pTop, PAL.grass);
+    /* mown variation so the field is not one flat green */
+    for (var band=0; band<7; band++){
+      var y0 = -1 + band*10.3;
+      face(L.ground, G.isoPoly([[-1,y0],[101,y0],[101,y0+5.1],[-1,y0+5.1]], 0.02),
+        band%2 ? PAL.grassDark : PAL.grass);
+    }
+    (world.terrain.hills||[]).forEach(function(hl){
+      face(L.ground, G.isoPoly(hl.points, 1.6), G.mix(PAL.grass,'#B6C98C',0.45));
+      face(L.ground, G.isoPoly(G.inset(hl.points,2.5), 2.8), G.mix(PAL.grass,'#C4D49B',0.5));
+    });
+
+    /* ---- zone tints ---- */
+    world.zones.forEach(function(z){
+      var zg = el('g', { 'data-pick':'zone', 'data-id':z.id, tabindex:'0', role:'button',
+        'aria-label':z.name+' — '+z.domain, class:'pickable' }, L.zones);
+      face(zg, G.isoPoly(z.polygon, 0.05), G.rgba(z.color, 0.17));
+      el('path', { d:P(G.isoPoly(z.polygon, 0.05), true), fill:'none',
+        stroke:G.rgba(z.color, 0.6), 'stroke-width':0.4, 'stroke-dasharray':'2 1.4' }, zg);
+    });
+
+    /* ---- water ---- */
+    var T = world.terrain;
+    if (T.stream) el('path', { d:G.smooth(G.isoPoly(T.stream, 0.06), 0.8), fill:'none',
+      stroke:PAL.water, 'stroke-width':2.4, 'stroke-linecap':'round' }, L.water);
+    if (T.pond){
+      var ring = [];
+      for (var i=0; i<=28; i++){ var t=i/28*Math.PI*2;
+        ring.push([T.pond.x+Math.cos(t)*T.pond.rx, T.pond.y+Math.sin(t)*T.pond.ry]); }
+      face(L.water, G.isoPoly(ring,0.02), PAL.waterLip);
+      face(L.water, G.isoPoly(G.inset(ring,0.55),0.08), PAL.water);
+      var sp = G.iso(T.pond.x-1.4, T.pond.y-0.8, 0.12);
+      el('ellipse', { cx:sp[0], cy:sp[1], rx:2.6, ry:0.9, fill:'#C8E2E8', opacity:0.55 }, L.water);
+    }
+
+    /* ---- roads ---- */
+    if (o.roads !== false) world.roads.forEach(function(rd){
+      var ip = G.isoPoly(rd.points, 0.1);
+      el('path', { d:G.smooth(ip,0.7), fill:'none', stroke:PAL.roadEdge,
+        'stroke-width':rd.width*0.8+0.5, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, L.roads);
+      el('path', { d:G.smooth(ip,0.7), fill:'none', stroke:PAL.road,
+        'stroke-width':rd.width*0.8, 'stroke-linecap':'round', 'stroke-linejoin':'round' }, L.roads);
+    });
+
+    /* ---- perimeter fence: posts and two rails ---- */
+    var fen = T.fence.concat([T.fence[0]]);
+    for (var f=0; f<fen.length-1; f++){
+      var a = fen[f], b = fen[f+1], seg = Math.hypot(b[0]-a[0], b[1]-a[1]), n = Math.round(seg/4);
+      for (var k=0; k<n; k++){
+        var u = k/n, u2 = (k+1)/n;
+        var pA = [a[0]+(b[0]-a[0])*u,  a[1]+(b[1]-a[1])*u];
+        var pB = [a[0]+(b[0]-a[0])*u2, a[1]+(b[1]-a[1])*u2];
+        var t0 = G.iso(pA[0],pA[1],0), t1 = G.iso(pA[0],pA[1],2.1);
+        el('line', { x1:t0[0], y1:t0[1], x2:t1[0], y2:t1[1], stroke:'#8C7550', 'stroke-width':0.36 }, L.roads);
+        [1.9, 1.05].forEach(function(hz){
+          var r1 = G.iso(pA[0],pA[1],hz), r2 = G.iso(pB[0],pB[1],hz);
+          el('line', { x1:r1[0], y1:r1[1], x2:r2[0], y2:r2[1], stroke:'#A18B63', 'stroke-width':0.26 }, L.roads);
+        });
+      }
+    }
+
+    /* ---- every prop, depth sorted ---- */
+    var props = [];
+    world.stations.forEach(function(st){
+      props.push({ d:G.depth(st.x, st.y), kind:'st', st:st,
+        zone: world.zones.find(function(z){ return z.id===st.zone; }) });
+    });
+    (T.trees||[]).forEach(function(t,i){ props.push({ d:G.depth(t[0],t[1]), kind:'tree', t:t, i:i }); });
+    var oc = T.orchard;
+    for (var r4=0; r4<oc.rows; r4++) for (var c4=0; c4<oc.cols; c4++){
+      var ox = oc.x + c4*oc.spacing, oy = oc.y + r4*oc.spacing;
+      props.push({ d:G.depth(ox,oy), kind:'tree', t:[ox,oy,1.1], i:900+r4*7+c4 });
+    }
+    /* ground-level stations sit under everything else at the same depth */
+    props.sort(function(a,b){
+      var fa = a.kind==='st' && (G.spec(a.st.kind).prim==='field'||G.spec(a.st.kind).prim==='pen') ? -0.5 : 0;
+      var fb = b.kind==='st' && (G.spec(b.st.kind).prim==='field'||G.spec(b.st.kind).prim==='pen') ? -0.5 : 0;
+      return (a.d+fa) - (b.d+fb);
+    });
+    props.forEach(function(p){
+      if (p.kind === 'tree'){ tree(L.props, p.t[0], p.t[1], p.t[2], p.i); return; }
+      var g = el('g', { 'data-pick':'station', 'data-id':p.st.id, tabindex:'0', role:'button',
+        'aria-label':p.st.name, class:'pickable' }, L.props);
+      building(g, p.st, p.zone);
+    });
+
+    /* ---- flows, drawn above the farm in the air ---- */
+    var byId = {}; world.stations.forEach(function(s){ byId[s.id]=s; });
+    var flowG = el('g', { 'data-flows':'1', opacity:o.flows?1:0, style:'transition:opacity .25s' }, L.props);
+    world.flows.forEach(function(fl,i){
+      var a = byId[fl.from], b = byId[fl.to]; if(!a||!b) return;
+      var lift = 26 + (i%4)*3.4;
+      var pa = G.iso(a.x,a.y,G.spec(a.kind).z), pb = G.iso(b.x,b.y,G.spec(b.kind).z);
+      var pm = G.iso((a.x+b.x)/2,(a.y+b.y)/2, lift);
+      var col = world.flowKinds[fl.kind].color;
+      var pth = el('path', { d:'M'+pa[0]+' '+pa[1]+'Q'+pm[0]+' '+pm[1]+' '+pb[0]+' '+pb[1],
+        fill:'none', stroke:col, 'stroke-width':0.42, 'stroke-linecap':'round',
+        'stroke-dasharray':'3.4 3.2', opacity:0.55 }, flowG);
+      el('animate', { attributeName:'stroke-dashoffset', from:'13.2', to:'0',
+        dur:(2.6+(i%5)*0.35)+'s', repeatCount:'indefinite' }, pth);
+    });
+
+    /* ---- labels ---- */
+    if (o.labels !== false){
+      var specs = [];
+      world.zones.forEach(function(z){
+        var c = G.centroid(z.polygon), p = G.iso(c[0], c[1], 7);
+        specs.push({ x:p[0], y:p[1], size:2.9, anchor:'middle', pri:3, zone:z,
+          text:z.name.replace(/^The /,'').toUpperCase() });
+      });
+      world.stations.forEach(function(st){
+        var sp = G.spec(st.kind), ground = sp.prim==='field'||sp.prim==='pen';
+        var p = G.iso(st.x, st.y, sp.z + (ground ? 2.2 : 5.4));
+        specs.push({ x:p[0], y:p[1], size:1.9, anchor:'middle',
+          pri: st.w*st.h > 55 ? 2 : 1, text:st.name.replace(/^The /,'') });
+      });
+      G.placeLabels(specs).forEach(function(sp){
+        var isZone = !!sp.zone;
+        var t = el('text', { x:sp.x, y:sp.y, 'text-anchor':'middle',
+          fill: isZone ? G.mix(sp.zone.color,'#2A331F',0.32) : '#33402A',
+          'font-size':sp.size, 'font-family':UI, 'font-weight': isZone ? 700 : 600,
+          'letter-spacing': isZone ? '0.14' : null, 'paint-order':'stroke',
+          stroke: isZone ? 'rgba(250,252,244,0.9)' : 'rgba(246,250,240,0.92)',
+          'stroke-width': isZone ? 1.3 : 0.9, 'stroke-linejoin':'round',
+          'pointer-events':'none', opacity: isZone ? 0.94 : 1 }, L.labels);
+        t.textContent = sp.text;
+      });
+    }
+
+    /* ---- title ---- */
+    var ttl = el('text', { x:-65, y:-12, fill:'#2C3A24', 'font-size':6, 'font-family':UI,
+      'font-weight':700, 'letter-spacing':'-0.01' }, L.furn);
+    ttl.textContent = 'The Steading';
+    var sub = el('text', { x:-65, y:-7.6, fill:'#5F6E52', 'font-size':2.5, 'font-family':UI }, L.furn);
+    sub.textContent = world.tagline;
+
+    return { svg:svg, root:root, flows:flowG };
+  };
+
+})(window.GEOM);
+
+</script>
+<script>
+/* ============================================================
+   THE STEADING — app shell
+   ============================================================ */
+(function () {
+  var G = window.GEOM, W = window.WORLD;
+
+  var STYLES = [
+    { id:'blueprint', label:'Blueprint',  chip:['#0A1A2F','#5AD2FF'],
+      note:'Issued drawing. Dimensioned, hatched, title-blocked.' },
+    { id:'isometric', label:'Homestead',  chip:['#9DBC72','#A0522D'],
+      note:'Built in three dimensions, lit from the north-west.' },
+    { id:'almanac',   label:'Almanac',    chip:['#E8DCC0','#8E3B2F'],
+      note:"Surveyor's estate plan, inked on laid paper." },
+    { id:'neon',      label:'Night Watch',chip:['#050B14','#3DF5D0'],
+      note:'Live operations display. Channels animate.' },
+    { id:'editorial', label:'Editorial',  chip:['#FCFCFA','#2E6F5E'],
+      note:'The clean one. Built for a deck or a wall.' }
+  ];
+
+  var idx = {
+    zone:{}, station:{}, role:{}, task:{},
+    stationsByZone:{}, rolesByZone:{}, rolesByStation:{}, tasksByStation:{}
+  };
+  W.zones.forEach(function(z){ idx.zone[z.id]=z; idx.stationsByZone[z.id]=[]; idx.rolesByZone[z.id]=[]; });
+  W.stations.forEach(function(s){ idx.station[s.id]=s; idx.stationsByZone[s.zone].push(s);
+    idx.rolesByStation[s.id]=[]; idx.tasksByStation[s.id]=[]; });
+  W.roles.forEach(function(r){ idx.role[r.id]=r; idx.rolesByZone[r.zone].push(r);
+    (idx.rolesByStation[r.station]||[]).push(r); });
+  W.tasks.forEach(function(t){ idx.task[t.id]=t; (idx.tasksByStation[t.station]||[]).push(t); });
+
+  var state = {
+    style: 'isometric',
+    sel: null,
+    opts: { flows:false, labels:true, roads:true },
+    view: { s:1, tx:0, ty:0 }
+  };
+  try { var sv = localStorage.getItem('steading.style');
+    if (sv && STYLES.some(function(s){return s.id===sv;})) state.style = sv; } catch(e){}
+
+  var $ = function(s){ return document.querySelector(s); };
+  var stage, panel, tip, tabsEl, zoomLabel, current;
+
+  /* ---------------- rendering ---------------- */
+  function draw(){
+    document.documentElement.setAttribute('data-style', state.style);
+    current = G.RENDER[state.style](stage, W, { opts: state.opts });
+    applyView();
+    wireStage();
+    markSelection();
+    tabsEl.querySelectorAll('.tab').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.style === state.style)); });
+    $('#styleNote').textContent = STYLES.filter(function(s){return s.id===state.style;})[0].note;
+  }
+  function applyView(){
+    if (!current) return;
+    var v = state.view;
+    current.root.setAttribute('transform',
+      'translate('+v.tx.toFixed(2)+' '+v.ty.toFixed(2)+') scale('+v.s.toFixed(3)+')');
+    zoomLabel.textContent = Math.round(v.s*100) + '%';
+  }
+  function resetView(){ state.view = { s:1, tx:0, ty:0 }; applyView(); }
+
+  function wireStage(){
+    var svg = current.svg, drag = null;
+    function unit(){
+      var vb = svg.viewBox.baseVal, r = svg.getBoundingClientRect();
+      return vb.width / Math.max(r.width, 1);
+    }
+    svg.addEventListener('pointerdown', function(e){
+      if (e.button !== 0) return;
+      drag = { x:e.clientX, y:e.clientY, tx:state.view.tx, ty:state.view.ty, moved:false, u:unit() };
+      svg.setPointerCapture(e.pointerId); svg.classList.add('dragging');
+    });
+    svg.addEventListener('pointermove', function(e){
+      if (drag){
+        var dx = e.clientX-drag.x, dy = e.clientY-drag.y;
+        if (Math.abs(dx)+Math.abs(dy) > 3) drag.moved = true;
+        state.view.tx = drag.tx + dx*drag.u; state.view.ty = drag.ty + dy*drag.u;
+        applyView(); return;
+      }
+      var host = e.target.closest ? e.target.closest('[data-pick]') : null;
+      if (host){
+        var n = host.dataset.pick==='zone' ? idx.zone[host.dataset.id] : idx.station[host.dataset.id];
+        if (n) showTip(e.clientX, e.clientY, n.name, host.dataset.pick==='zone' ? n.domain : idx.zone[n.zone].name);
+      } else hideTip();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+      svg.addEventListener(ev, function(e){
+        if (drag) svg.classList.remove('dragging');
+        if (ev==='pointerup' && drag && !drag.moved){
+          var host = e.target.closest ? e.target.closest('[data-pick]') : null;
+          select(host ? { kind:host.dataset.pick, id:host.dataset.id } : null);
+        }
+        drag = null; if (ev!=='pointerup') hideTip();
+      });
+    });
+    svg.addEventListener('wheel', function(e){
+      e.preventDefault();
+      var r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
+      var u = vb.width/Math.max(r.width,1);
+      var px = (e.clientX-r.left)*u + vb.x, py = (e.clientY-r.top)*u + vb.y;
+      var k = Math.exp(-e.deltaY*0.0016), ns = Math.min(6, Math.max(0.45, state.view.s*k));
+      var f = ns/state.view.s;
+      state.view.tx = px - (px-state.view.tx)*f;
+      state.view.ty = py - (py-state.view.ty)*f;
+      state.view.s = ns; applyView();
+    }, { passive:false });
+    svg.querySelectorAll('[data-pick]').forEach(function(n){
+      n.addEventListener('keydown', function(e){
+        if (e.key==='Enter' || e.key===' '){ e.preventDefault();
+          select({ kind:n.dataset.pick, id:n.dataset.id }); }
+      });
+    });
+  }
+
+  function showTip(cx, cy, title, sub){
+    var r = stage.getBoundingClientRect();
+    tip.style.left = (cx-r.left)+'px'; tip.style.top = (cy-r.top)+'px';
+    tip.innerHTML = '';
+    tip.appendChild(document.createTextNode(title));
+    var k = document.createElement('span'); k.className='k'; k.textContent = '  '+sub;
+    tip.appendChild(k); tip.classList.add('on');
+  }
+  function hideTip(){ tip.classList.remove('on'); }
+
+  function markSelection(){
+    if (!current) return;
+    current.svg.querySelectorAll('.pickable.sel').forEach(function(n){ n.classList.remove('sel'); });
+    if (!state.sel) return;
+    var n = current.svg.querySelector('[data-pick="'+state.sel.kind+'"][data-id="'+state.sel.id+'"]');
+    if (n) n.classList.add('sel');
+  }
+  function select(sel){ state.sel = sel; markSelection(); renderPanel(); }
+
+  /* ---------------- panel ---------------- */
+  function h(tag, cls, txt){ var n=document.createElement(tag); if(cls)n.className=cls;
+    if(txt!=null)n.textContent=txt; return n; }
+  function list(items){ var ul=h('ul','lst'); items.forEach(function(t){ ul.appendChild(h('li',null,t)); }); return ul; }
+  function tierPill(t){
+    var mt = W.modelTiers[t], p = h('span','tier', mt.label);
+    p.style.background = mt.color; p.title = mt.model + ' — ' + mt.use; return p;
+  }
+  function roleCard(r, withZone){
+    var c = h('div','rolecard');
+    var head = h('div','rhead'), left = h('div');
+    left.appendChild(h('div','rname', r.name));
+    left.appendChild(h('div','rtitle', r.title + (withZone ? ' · '+idx.zone[r.zone].name : '')));
+    head.appendChild(left); head.appendChild(tierPill(r.tier));
+    c.appendChild(head);
+    c.appendChild(h('div','rchart', r.charter));
+    var d = h('dl','kv');
+    d.appendChild(h('dt',null,'Reads')); d.appendChild(h('dd',null, r.reads.join(' · ')));
+    d.appendChild(h('dt',null,'Writes')); d.appendChild(h('dd',null, r.writes.join(' · ')));
+    d.appendChild(h('dt',null,'Escalates'));
+    d.appendChild(h('dd',null, idx.role[r.escalatesTo] ? idx.role[r.escalatesTo].name : r.escalatesTo));
+    c.appendChild(d);
+    var du = h('details'); du.appendChild(h('summary','chipbtn','Duties ('+r.duties.length+')'));
+    du.appendChild(list(r.duties)); du.style.marginTop='2px';
+    c.appendChild(du);
+    return c;
+  }
+  function block(title, node){
+    var b = h('div','block'); b.appendChild(h('h3',null,title)); b.appendChild(node); return b;
+  }
+  function chipRow(items, onPick){
+    var d = h('div','chips');
+    items.forEach(function(it){
+      var b = h('button','chipbtn', it.label); b.type='button';
+      b.addEventListener('click', function(){ onPick(it); }); d.appendChild(b);
+    });
+    return d;
+  }
+
+  function renderPanel(){
+    panel.innerHTML = '';
+    var w = h('div','panel-in');
+    if (!state.sel) overview(w);
+    else if (state.sel.kind === 'zone') zoneView(w, idx.zone[state.sel.id]);
+    else stationView(w, idx.station[state.sel.id]);
+    panel.appendChild(w);
+    panel.scrollTop = 0;
+  }
+
+  function overview(w){
+    var e = h('div','eyebrow'); e.appendChild(h('span',null,'The map')); w.appendChild(e);
+    w.appendChild(h('h2','ptitle', W.name));
+    w.appendChild(h('p','psub', W.tagline));
+    w.appendChild(h('p','pbody',
+      'Every concept a multi-agent system needs has a physical place here. Click a building to see who works '+
+      'there and what they do; click the open ground inside a boundary to read the zone it belongs to.'));
+    var warn = h('div','warn');
+    warn.appendChild(h('b',null,'Status — foundation'));
+    warn.appendChild(document.createTextNode(W.note));
+    w.appendChild(warn);
+    w.appendChild(block('Zones', chipRow(W.zones.map(function(z){
+      return { label:z.name.replace(/^The /,'') + ' — ' + z.domain, id:z.id };
+    }), function(it){ select({kind:'zone', id:it.id}); })));
+    var counts = h('dl','kv');
+    [['Zones',W.zones.length],['Stations',W.stations.length],['Roles',W.roles.length],
+     ['Tasks',W.tasks.length],['Channels',W.flows.length]].forEach(function(p){
+      counts.appendChild(h('dt',null,p[0])); counts.appendChild(h('dd',null,String(p[1])));
+    });
+    w.appendChild(block('Scale', counts));
+    var tiers = h('div','chips');
+    Object.keys(W.modelTiers).forEach(function(k){
+      var mt = W.modelTiers[k], c = h('div','rolecard');
+      var hd = h('div','rhead'); hd.appendChild(h('div','rname', mt.label)); hd.appendChild(tierPill(k));
+      c.appendChild(hd); c.appendChild(h('div','rchart', mt.use));
+      c.appendChild(h('div','rtitle', mt.model)); c.style.width='100%'; tiers.appendChild(c);
+    });
+    w.appendChild(block('Model tiers', tiers));
+  }
+
+  function zoneView(w, z){
+    var e = h('div','eyebrow'); var d = h('span','dot'); d.style.background = z.color;
+    e.appendChild(d); e.appendChild(h('span',null,'Zone · '+z.domain)); w.appendChild(e);
+    w.appendChild(h('h2','ptitle', z.name));
+    w.appendChild(h('p','psub', z.subtitle + ' · branch ' + z.branch));
+    w.appendChild(h('p','pbody', z.charter));
+    w.appendChild(block('Owns', list(z.owns)));
+    var warn = h('div','warn'); warn.appendChild(h('b',null,'Where it breaks'));
+    warn.appendChild(document.createTextNode(z.failsWhen)); w.appendChild(warn);
+    w.appendChild(block('Stations ('+idx.stationsByZone[z.id].length+')',
+      chipRow(idx.stationsByZone[z.id].map(function(s){ return { label:s.name, id:s.id }; }),
+        function(it){ select({kind:'station', id:it.id}); })));
+    var rw = h('div','block'); rw.appendChild(h('h3',null,'Roles ('+idx.rolesByZone[z.id].length+')'));
+    var box = h('div'); box.style.display='grid'; box.style.gap='8px';
+    idx.rolesByZone[z.id].forEach(function(r){ box.appendChild(roleCard(r)); });
+    rw.appendChild(box); w.appendChild(rw);
+  }
+
+  function stationView(w, st){
+    var z = idx.zone[st.zone];
+    var e = h('div','eyebrow'); var d = h('span','dot'); d.style.background = z.color;
+    e.appendChild(d);
+    var back = h('button','chipbtn', z.name); back.type='button';
+    back.style.cssText = 'border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;letter-spacing:inherit;text-transform:inherit';
+    back.addEventListener('click', function(){ select({kind:'zone', id:z.id}); });
+    e.appendChild(back); w.appendChild(e);
+    w.appendChild(h('h2','ptitle', st.name));
+    w.appendChild(h('p','psub', G.spec(st.kind).label + ' · ' + st.x + ', ' + st.y));
+    w.appendChild(h('p','pbody', st.purpose));
+    w.appendChild(block('Takes in', list(st.inputs)));
+    w.appendChild(block('Puts out', list(st.outputs)));
+
+    var roles = idx.rolesByStation[st.id] || [];
+    if (roles.length){
+      var rw = h('div','block'); rw.appendChild(h('h3',null,'Stationed here ('+roles.length+')'));
+      var box = h('div'); box.style.display='grid'; box.style.gap='8px';
+      roles.forEach(function(r){ box.appendChild(roleCard(r)); });
+      rw.appendChild(box); w.appendChild(rw);
+    }
+    var tasks = idx.tasksByStation[st.id] || [];
+    if (tasks.length){
+      var tw = h('div','block'); tw.appendChild(h('h3',null,'Tasks ('+tasks.length+')'));
+      var tb = h('div');
+      tasks.forEach(function(t){
+        var row = h('div','taskrow');
+        row.appendChild(h('div','tn', t.name));
+        [['Runs when', t.trigger],['In', t.input],['Out', t.output],
+         ['Done when', t.doneWhen],['Watch for', t.watchFor]].forEach(function(p){
+          var m = h('div','tm'); var b = h('b',null,p[0]+': ');
+          m.appendChild(b); m.appendChild(document.createTextNode(p[1])); row.appendChild(m);
+        });
+        var ow = idx.role[t.owner];
+        var m2 = h('div','tm'); m2.appendChild(h('b',null,'Owner: '));
+        m2.appendChild(document.createTextNode(ow ? ow.name+' ('+ow.title+')' : t.owner));
+        row.appendChild(m2);
+        tb.appendChild(row);
+      });
+      tw.appendChild(tb); w.appendChild(tw);
+    }
+    var fl = W.flows.filter(function(f){ return f.from===st.id || f.to===st.id; });
+    if (fl.length){
+      var fw = h('div','block'); fw.appendChild(h('h3',null,'Connections ('+fl.length+')'));
+      var fb = h('dl','kv');
+      fl.forEach(function(f){
+        var other = f.from===st.id ? idx.station[f.to] : idx.station[f.from];
+        var dir = f.from===st.id ? '→ ' : '← ';
+        var dt = h('dt',null, W.flowKinds[f.kind].label);
+        dt.style.color = W.flowKinds[f.kind].color;
+        fb.appendChild(dt); fb.appendChild(h('dd',null, dir + other.name + ' · ' + f.label));
+      });
+      fw.appendChild(fb); w.appendChild(fw);
+    }
+  }
+
+  /* ---------------- roster ---------------- */
+  function openRoster(){
+    var ov = h('div','roster'); ov.id='roster';
+    var inn = h('div','roster-in');
+    var close = h('button','closeR','Close'); close.type='button';
+    close.addEventListener('click', closeRoster);
+    inn.appendChild(close);
+    inn.appendChild(h('h2',null,'The roster'));
+    inn.appendChild(h('p','rlead',
+      'Every role on the farm, grouped by the zone it answers to. Each one has a charter, a fixed set of '+
+      'things it may read and write, and one place to escalate. What each role actually does at runtime is '+
+      'the next pass — this is the org chart, not the implementation.'));
+    W.zones.forEach(function(z){
+      var sec = h('section','rzone');
+      var hh = h('h3'); var dot = h('span','dot');
+      dot.style.cssText='width:11px;height:11px;border-radius:50%;background:'+z.color;
+      hh.appendChild(dot); hh.appendChild(document.createTextNode(z.name+' — '+z.domain));
+      var cnt = h('span',null,idx.rolesByZone[z.id].length+' roles');
+      cnt.style.cssText='margin-left:auto;color:var(--ink-3);font-weight:400;letter-spacing:0';
+      hh.appendChild(cnt); sec.appendChild(hh);
+      var grid = h('div','rgrid');
+      idx.rolesByZone[z.id].forEach(function(r){ grid.appendChild(roleCard(r)); });
+      sec.appendChild(grid); inn.appendChild(sec);
+    });
+    ov.appendChild(inn); document.body.appendChild(ov);
+    document.addEventListener('keydown', escRoster);
+    close.focus();
+  }
+  function closeRoster(){ var r=$('#roster'); if(r) r.remove();
+    document.removeEventListener('keydown', escRoster); }
+  function escRoster(e){ if(e.key==='Escape') closeRoster(); }
+
+  /* ---------------- boot ---------------- */
+  function boot(){
+    stage = $('#stage'); panel = $('#panel'); tip = $('#tip');
+    tabsEl = $('#tabs'); zoomLabel = $('#zoomval');
+
+    STYLES.forEach(function(s){
+      var b = h('button','tab'); b.type='button'; b.dataset.style = s.id;
+      b.title = s.note;
+      var c = h('span','chip');
+      c.style.background = 'linear-gradient(135deg,'+s.chip[0]+' 0 50%,'+s.chip[1]+' 50% 100%)';
+      b.appendChild(c);
+      var l = h('span','lab', s.label); b.appendChild(l);
+      b.addEventListener('click', function(){
+        if (state.style === s.id) return;
+        state.style = s.id;
+        try { localStorage.setItem('steading.style', s.id); } catch(e){}
+        resetView(); draw();
+      });
+      tabsEl.appendChild(b);
+    });
+
+    [['flows','Channels'],['labels','Labels'],['roads','Tracks']].forEach(function(p){
+      var b = h('button','tgl', p[1]); b.type='button';
+      b.setAttribute('aria-pressed', String(state.opts[p[0]]));
+      b.addEventListener('click', function(){
+        state.opts[p[0]] = !state.opts[p[0]];
+        b.setAttribute('aria-pressed', String(state.opts[p[0]]));
+        if (p[0]==='flows' && current) current.flows.setAttribute('opacity', state.opts.flows?1:0);
+        else draw();
+      });
+      $('#toggles').appendChild(b);
+    });
+
+    $('#rosterBtn').addEventListener('click', openRoster);
+    $('#zin').addEventListener('click', function(){
+      state.view.s = Math.min(6, state.view.s*1.25); applyView(); });
+    $('#zout').addEventListener('click', function(){
+      state.view.s = Math.max(0.45, state.view.s/1.25); applyView(); });
+    $('#zfit').addEventListener('click', function(){ resetView(); select(null); });
+
+    var lg = $('#legendRows');
+    W.legend.forEach(function(L){
+      var row = h('div','row'); var dash = h('span','dash');
+      dash.style.borderTopColor = W.flowKinds[L.swatch].color;
+      row.appendChild(dash); row.appendChild(h('span',null,W.flowKinds[L.swatch].label));
+      row.title = L.text; lg.appendChild(row);
+    });
+
+    draw(); renderPanel();
+    window.addEventListener('resize', function(){ if (current) applyView(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+</script>
