@@ -4,8 +4,28 @@
 
 Every role on the farm, grouped by the zone it answers to. **48 roles across 8 zones.**
 
-A role is a charter, not an implementation. Each one states what it is for, what it may read, what it may
-write, and the single place it escalates. None of them have runtime functions yet — that is the next pass.
+A role is a charter: what it is for, what it may read, what it may write, and the single place it escalates.
+
+**24 of them are live** — they run today as Claude Code subagents in `.claude/agents/`, with no
+API key. Invoke one by name, or let the `farmer` route to it. The rest are charters waiting for a reason to
+exist; see [08-AGENTS.md](08-AGENTS.md).
+
+## Live agents
+
+| Agent | Covers | File |
+| --- | --- | --- |
+| `farmer` | The Farmer | `.claude/agents/farmer.md` |
+| `row-boss` | The Row Boss | `.claude/agents/row-boss.md` |
+| `field-hand` | The Sower, The Reaper, The Thresher, The Plowhand | `.claude/agents/field-hand.md` |
+| `gleaner` | The Gleaner | `.claude/agents/gleaner.md` |
+| `scarecrow` | The Scarecrow | `.claude/agents/scarecrow.md` |
+| `chronicler` | The Chronicler, The Winnower, The Water Carrier, The Statekeeper | `.claude/agents/chronicler.md` |
+| `grader` | The Grader, The Soil Tester | `.claude/agents/grader.md` |
+| `grafter` | The Grafter, The Pruner | `.claude/agents/grafter.md` |
+| `smith` | The Smith, The Wright | `.claude/agents/smith.md` |
+| `inspector` | The Inspector | `.claude/agents/inspector.md` |
+| `watchman` | The Watchman, The Tally Clerk, The Surveyor | `.claude/agents/watchman.md` |
+| `sheepdog` | The Sheepdog, The Vet | `.claude/agents/sheepdog.md` |
 
 ## Model tiers
 
@@ -21,56 +41,56 @@ write, and the single place it escalates. None of them have runtime functions ye
 
 ## Index
 
-| Role | Title | Zone | Station | Tier |
+| Role | Title | Zone | Tier | Live as |
 | --- | --- | --- | --- | --- |
-| [The Farmer](#the-farmer) | Prime Orchestrator | The Farmhouse | The Farmhouse | Steward |
-| [The Foreman](#the-foreman) | Task Router | The Farmhouse | The Dispatch Porch | Steward |
-| [The Ledger Keeper](#the-ledger-keeper) | Work-State Authority | The Farmhouse | The Chore Board | Hand |
-| [The Dispatcher](#the-dispatcher) | Queue & Backpressure Manager | The Farmhouse | The Dispatch Porch | Sorter |
-| [The Almanac Reader](#the-almanac-reader) | Long-Horizon Planner | The Farmhouse | The Farmhouse | Specialist |
-| [The Scribe](#the-scribe) | Decision Recorder | The Farmhouse | The Ledger Office | Hand |
-| [The Well Keeper](#the-well-keeper) | Capacity Rationer | The Farmhouse | The Well | Sorter |
-| [The Row Boss](#the-row-boss) | Field Sub-Orchestrator | The Fields | North Field — Sowing | Steward |
-| [The Plowhand](#the-plowhand) | Input Preparer | The Fields | The Irrigation Head | Hand |
-| [The Sower](#the-sower) | Generator | The Fields | North Field — Sowing | Hand |
-| [The Reaper](#the-reaper) | Extractor | The Fields | East Field — Reaping | Hand |
-| [The Thresher](#the-thresher) | Reducer | The Fields | South Field — Threshing | Specialist |
-| [The Gleaner](#the-gleaner) | Failure Recoverer | The Fields | Fallow Field — Gleaning | Hand |
-| [The Scarecrow](#the-scarecrow) | Input Guard | The Fields | The Scarecrow Post | Sorter |
-| [The Composter](#the-composter) | Failure Metabolist | The Fields | The Compost Heap | Specialist |
-| [The Herdsman](#the-herdsman) | Session Manager | The Barn | The Great Barn | Hand |
-| [The Sheepdog](#the-sheepdog) | Supervisor | The Barn | The Kennel | Sorter |
-| [The Milkmaid](#the-milkmaid) | Scheduled Runner | The Barn | The Henhouse | Hand |
-| [The Vet](#the-vet) | Health & Drift Checker | The Barn | The Vet Stall | Specialist |
-| [The Stablehand](#the-stablehand) | Workspace Steward | The Barn | The Paddock | Sorter |
-| [The Granary Keeper](#the-granary-keeper) | Procedural Memory Keeper | The Silo Row | The Granary | Hand |
-| [The Chronicler](#the-chronicler) | Episodic Memory Keeper | The Silo Row | Silo II — Episodic | Sorter |
-| [The Winnower](#the-winnower) | Memory Consolidator | The Silo Row | Silo III — Semantic | Specialist |
-| [The Water Carrier](#the-water-carrier) | Retrieval Agent | The Silo Row | Silo III — Semantic | Sorter |
-| [The Cellarer](#the-cellarer) | Archivist | The Silo Row | The Root Cellar | Sorter |
-| [The Statekeeper](#the-statekeeper) | Working Memory Steward | The Silo Row | Silo I — Working | Sorter |
-| [The Smith](#the-smith) | Tool Builder | The Toolshed | The Smithy | Specialist |
-| [The Sharpener](#the-sharpener) | Tool Curator | The Toolshed | The Toolshed | Specialist |
-| [The Quartermaster](#the-quartermaster) | Tool Registry & Permissions | The Toolshed | The Quartermaster's Hut | Hand |
-| [The Wright](#the-wright) | Integration Engineer | The Toolshed | The Smithy | Hand |
-| [The Tractor Driver](#the-tractor-driver) | Batch & Sandbox Operator | The Toolshed | The Tractor Yard | Hand |
-| [The Grafter](#the-grafter) | Prompt Engineer | The Greenhouse | The Glasshouse | Specialist |
-| [The Nurseryman](#the-nurseryman) | Agent Incubator | The Greenhouse | The Nursery Beds | Steward |
-| [The Grader](#the-grader) | Evaluator | The Greenhouse | The Grading Bench | Specialist |
-| [The Soil Tester](#the-soil-tester) | Dataset Curator | The Greenhouse | The Grading Bench | Hand |
-| [The Pruner](#the-pruner) | Simplifier | The Greenhouse | The Cold Frames | Specialist |
-| [The Pollinator](#the-pollinator) | Cross-Zone Propagator | The Greenhouse | The Cold Frames | Hand |
-| [The Watchman](#the-watchman) | Tracer | The Watchtower | The Tower | Sorter |
-| [The Weathervane](#the-weathervane) | Forecaster | The Watchtower | The Windmill | Sorter |
-| [The Tally Clerk](#the-tally-clerk) | Cost Accountant | The Watchtower | The Tally Office | Sorter |
-| [The Bell Ringer](#the-bell-ringer) | Alerting | The Watchtower | The Bell Post | Sorter |
-| [The Surveyor](#the-surveyor) | Quality Reporter | The Watchtower | The Tower | Specialist |
-| [The Gatekeeper](#the-gatekeeper) | Identity & Authorisation | The Gatehouse | The Gatehouse | Hand |
-| [The Fencewright](#the-fencewright) | Isolation Engineer | The Gatehouse | The Fence Line | Specialist |
-| [The Toll Taker](#the-toll-taker) | Rate Limiter | The Gatehouse | The Gatehouse | Sorter |
-| [The Inspector](#the-inspector) | Outbound Guard | The Gatehouse | The Weigh Station | Specialist |
-| [The Marketkeeper](#the-marketkeeper) | Delivery Interface | The Gatehouse | The Market Stall | Hand |
-| [The Herald](#the-herald) | Human Notifier | The Gatehouse | The Market Stall | Sorter |
+| [The Farmer](#the-farmer) | Prime Orchestrator | The Farmhouse | Steward | `farmer` |
+| [The Foreman](#the-foreman) | Task Router | The Farmhouse | Steward | — |
+| [The Ledger Keeper](#the-ledger-keeper) | Work-State Authority | The Farmhouse | Hand | — |
+| [The Dispatcher](#the-dispatcher) | Queue & Backpressure Manager | The Farmhouse | Sorter | — |
+| [The Almanac Reader](#the-almanac-reader) | Long-Horizon Planner | The Farmhouse | Specialist | — |
+| [The Scribe](#the-scribe) | Decision Recorder | The Farmhouse | Hand | — |
+| [The Well Keeper](#the-well-keeper) | Capacity Rationer | The Farmhouse | Sorter | — |
+| [The Row Boss](#the-row-boss) | Field Sub-Orchestrator | The Fields | Steward | `row-boss` |
+| [The Plowhand](#the-plowhand) | Input Preparer | The Fields | Hand | `field-hand` |
+| [The Sower](#the-sower) | Generator | The Fields | Hand | `field-hand` |
+| [The Reaper](#the-reaper) | Extractor | The Fields | Hand | `field-hand` |
+| [The Thresher](#the-thresher) | Reducer | The Fields | Specialist | `field-hand` |
+| [The Gleaner](#the-gleaner) | Failure Recoverer | The Fields | Hand | `gleaner` |
+| [The Scarecrow](#the-scarecrow) | Input Guard | The Fields | Sorter | `scarecrow` |
+| [The Composter](#the-composter) | Failure Metabolist | The Fields | Specialist | — |
+| [The Herdsman](#the-herdsman) | Session Manager | The Barn | Hand | — |
+| [The Sheepdog](#the-sheepdog) | Supervisor | The Barn | Sorter | `sheepdog` |
+| [The Milkmaid](#the-milkmaid) | Scheduled Runner | The Barn | Hand | — |
+| [The Vet](#the-vet) | Health & Drift Checker | The Barn | Specialist | `sheepdog` |
+| [The Stablehand](#the-stablehand) | Workspace Steward | The Barn | Sorter | — |
+| [The Granary Keeper](#the-granary-keeper) | Procedural Memory Keeper | The Silo Row | Hand | — |
+| [The Chronicler](#the-chronicler) | Episodic Memory Keeper | The Silo Row | Sorter | `chronicler` |
+| [The Winnower](#the-winnower) | Memory Consolidator | The Silo Row | Specialist | `chronicler` |
+| [The Water Carrier](#the-water-carrier) | Retrieval Agent | The Silo Row | Sorter | `chronicler` |
+| [The Cellarer](#the-cellarer) | Archivist | The Silo Row | Sorter | — |
+| [The Statekeeper](#the-statekeeper) | Working Memory Steward | The Silo Row | Sorter | `chronicler` |
+| [The Smith](#the-smith) | Tool Builder | The Toolshed | Specialist | `smith` |
+| [The Sharpener](#the-sharpener) | Tool Curator | The Toolshed | Specialist | — |
+| [The Quartermaster](#the-quartermaster) | Tool Registry & Permissions | The Toolshed | Hand | — |
+| [The Wright](#the-wright) | Integration Engineer | The Toolshed | Hand | `smith` |
+| [The Tractor Driver](#the-tractor-driver) | Batch & Sandbox Operator | The Toolshed | Hand | — |
+| [The Grafter](#the-grafter) | Prompt Engineer | The Greenhouse | Specialist | `grafter` |
+| [The Nurseryman](#the-nurseryman) | Agent Incubator | The Greenhouse | Steward | — |
+| [The Grader](#the-grader) | Evaluator | The Greenhouse | Specialist | `grader` |
+| [The Soil Tester](#the-soil-tester) | Dataset Curator | The Greenhouse | Hand | `grader` |
+| [The Pruner](#the-pruner) | Simplifier | The Greenhouse | Specialist | `grafter` |
+| [The Pollinator](#the-pollinator) | Cross-Zone Propagator | The Greenhouse | Hand | — |
+| [The Watchman](#the-watchman) | Tracer | The Watchtower | Sorter | `watchman` |
+| [The Weathervane](#the-weathervane) | Forecaster | The Watchtower | Sorter | — |
+| [The Tally Clerk](#the-tally-clerk) | Cost Accountant | The Watchtower | Sorter | `watchman` |
+| [The Bell Ringer](#the-bell-ringer) | Alerting | The Watchtower | Sorter | — |
+| [The Surveyor](#the-surveyor) | Quality Reporter | The Watchtower | Specialist | `watchman` |
+| [The Gatekeeper](#the-gatekeeper) | Identity & Authorisation | The Gatehouse | Hand | — |
+| [The Fencewright](#the-fencewright) | Isolation Engineer | The Gatehouse | Specialist | — |
+| [The Toll Taker](#the-toll-taker) | Rate Limiter | The Gatehouse | Sorter | — |
+| [The Inspector](#the-inspector) | Outbound Guard | The Gatehouse | Specialist | `inspector` |
+| [The Marketkeeper](#the-marketkeeper) | Delivery Interface | The Gatehouse | Hand | — |
+| [The Herald](#the-herald) | Human Notifier | The Gatehouse | Sorter | — |
 
 ---
 
@@ -78,11 +98,11 @@ write, and the single place it escalates. None of them have runtime functions ye
 
 *Receives intent from the outside world, turns it into a plan, and decides who does what. Nothing self-assigns on this farm; work is handed out here.*
 
-**7 roles.** Branch: `claude/steading-farmhouse`
+**7 roles, 1 live.** Branch: `claude/steading-farmhouse`
 
 ### The Farmer
 
-**Prime Orchestrator** · Steward tier · stationed at The Farmhouse
+**Prime Orchestrator** · Steward tier · stationed at The Farmhouse · **live as `farmer`**
 
 Owns the outcome of everything the farm is asked to do. The only role permitted to decide that a job is finished.
 
@@ -218,11 +238,11 @@ Guards the shared draw. Rate limit headroom and budget are finite and everyone c
 
 *Where the actual labour happens, in parallel rows. A field runs one kind of work at scale: prepare, generate, extract, reduce. Rows do not talk to each other.*
 
-**8 roles.** Branch: `claude/steading-fields`
+**8 roles, 7 live.** Branch: `claude/steading-fields`
 
 ### The Row Boss
 
-**Field Sub-Orchestrator** · Steward tier · stationed at North Field — Sowing
+**Field Sub-Orchestrator** · Steward tier · stationed at North Field — Sowing · **live as `row-boss`**
 
 Runs one field so the Farmhouse does not have to hold every row in its head. Reports one result, not fifty.
 
@@ -241,7 +261,7 @@ Runs one field so the Farmhouse does not have to hold every row in its head. Rep
 
 ### The Plowhand
 
-**Input Preparer** · Hand tier · stationed at The Irrigation Head
+**Input Preparer** · Hand tier · stationed at The Irrigation Head · **live as `field-hand`**
 
 Prepares the ground. Normalises, chunks and orders input so every row starts from the same clean state.
 
@@ -260,7 +280,7 @@ Prepares the ground. Normalises, chunks and orders input so every row starts fro
 
 ### The Sower
 
-**Generator** · Hand tier · stationed at North Field — Sowing
+**Generator** · Hand tier · stationed at North Field — Sowing · **live as `field-hand`**
 
 First-pass generation at volume. Produces candidates; does not judge them.
 
@@ -279,7 +299,7 @@ First-pass generation at volume. Produces candidates; does not judge them.
 
 ### The Reaper
 
-**Extractor** · Hand tier · stationed at East Field — Reaping
+**Extractor** · Hand tier · stationed at East Field — Reaping · **live as `field-hand`**
 
 Pulls structure out of unstructured input and guarantees it matches the schema.
 
@@ -298,7 +318,7 @@ Pulls structure out of unstructured input and guarantees it matches the schema.
 
 ### The Thresher
 
-**Reducer** · Specialist tier · stationed at South Field — Threshing
+**Reducer** · Specialist tier · stationed at South Field — Threshing · **live as `field-hand`**
 
 Many into one. Merges, ranks, synthesises — and says what it discarded.
 
@@ -317,7 +337,7 @@ Many into one. Merges, ranks, synthesises — and says what it discarded.
 
 ### The Gleaner
 
-**Failure Recoverer** · Hand tier · stationed at Fallow Field — Gleaning
+**Failure Recoverer** · Hand tier · stationed at Fallow Field — Gleaning · **live as `gleaner`**
 
 Walks the field after harvest and picks up everything dropped. The reason nothing leaves the farm unaccounted for.
 
@@ -336,7 +356,7 @@ Walks the field after harvest and picks up everything dropped. The reason nothin
 
 ### The Scarecrow
 
-**Input Guard** · Sorter tier · stationed at The Scarecrow Post
+**Input Guard** · Sorter tier · stationed at The Scarecrow Post · **live as `scarecrow`**
 
 Stands at the field edge. Treats all external content as data, never as instruction.
 
@@ -377,7 +397,7 @@ Turns failure into eval cases. A failure that does not become a test will happen
 
 *Home to everything that stays alive between requests: durable sessions, scheduled jobs, and the supervisors that keep them honest. Fields forget; the barn remembers.*
 
-**5 roles.** Branch: `claude/steading-barn`
+**5 roles, 2 live.** Branch: `claude/steading-barn`
 
 ### The Herdsman
 
@@ -400,7 +420,7 @@ Keeps durable agents alive, named and resumable across days.
 
 ### The Sheepdog
 
-**Supervisor** · Sorter tier · stationed at The Kennel
+**Supervisor** · Sorter tier · stationed at The Kennel · **live as `sheepdog`**
 
 Watches for the three ways a long-running agent goes wrong: stuck, looping, or quietly working on the wrong thing.
 
@@ -438,7 +458,7 @@ Runs the work that happens on a cadence rather than on request.
 
 ### The Vet
 
-**Health & Drift Checker** · Specialist tier · stationed at The Vet Stall
+**Health & Drift Checker** · Specialist tier · stationed at The Vet Stall · **live as `sheepdog`**
 
 Health, not behaviour. Catches the slow problems: context bloat, quality drift, a poisoned working set.
 
@@ -479,7 +499,7 @@ Owns the physical stalls: containers, workspaces, temp files. Cleans up after ev
 
 *Four kinds of remembering, kept in four separate stores on purpose. Mixing them is the most common reason an agent ecosystem slowly goes senile.*
 
-**6 roles.** Branch: `claude/steading-silo`
+**6 roles, 4 live.** Branch: `claude/steading-silo`
 
 ### The Granary Keeper
 
@@ -502,7 +522,7 @@ Holds how we do things: versioned prompts, role charters, rubrics and blueprints
 
 ### The Chronicler
 
-**Episodic Memory Keeper** · Sorter tier · stationed at Silo II — Episodic
+**Episodic Memory Keeper** · Sorter tier · stationed at Silo II — Episodic · **live as `chronicler`**
 
 Records what happened, in order, with the arguments and the results. The thing you need most at 2am and vectors are worst at.
 
@@ -521,7 +541,7 @@ Records what happened, in order, with the arguments and the results. The thing y
 
 ### The Winnower
 
-**Memory Consolidator** · Specialist tier · stationed at Silo III — Semantic
+**Memory Consolidator** · Specialist tier · stationed at Silo III — Semantic · **live as `chronicler`**
 
 Separates the grain from the chaff. Distils episodes into durable facts and throws the rest away.
 
@@ -540,7 +560,7 @@ Separates the grain from the chaff. Distils episodes into durable facts and thro
 
 ### The Water Carrier
 
-**Retrieval Agent** · Sorter tier · stationed at Silo III — Semantic
+**Retrieval Agent** · Sorter tier · stationed at Silo III — Semantic · **live as `chronicler`**
 
 Fetches exactly the context an agent asked for, and no more. The difference between a cheap farm and an expensive one.
 
@@ -578,7 +598,7 @@ Retention and deletion. The only role on the farm authorised to destroy a record
 
 ### The Statekeeper
 
-**Working Memory Steward** · Sorter tier · stationed at Silo I — Working
+**Working Memory Steward** · Sorter tier · stationed at Silo I — Working · **live as `chronicler`**
 
 Holds the scratch state of runs in flight, and empties it when they end.
 
@@ -600,11 +620,11 @@ Holds the scratch state of runs in flight, and empties it when they end.
 
 *Every capability an agent has, it got from here. Tools are built, sharpened, catalogued and handed out — and taken away again when they go dull.*
 
-**5 roles.** Branch: `claude/steading-toolshed`
+**5 roles, 2 live.** Branch: `claude/steading-toolshed`
 
 ### The Smith
 
-**Tool Builder** · Specialist tier · stationed at The Smithy
+**Tool Builder** · Specialist tier · stationed at The Smithy · **live as `smith`**
 
 Forges the tools. A tool is not done until its failure modes are written down.
 
@@ -661,7 +681,7 @@ Issues a toolbelt scoped to the chore at hand, and takes it back afterwards.
 
 ### The Wright
 
-**Integration Engineer** · Hand tier · stationed at The Smithy
+**Integration Engineer** · Hand tier · stationed at The Smithy · **live as `smith`**
 
 Makes stubborn external systems behave. Adapters, retries, pagination, auth refresh.
 
@@ -702,11 +722,11 @@ Runs the heavy and the dangerous: batch jobs and code execution, always inside a
 
 *Nothing reaches a field untested. New prompts, new agents and new tools are grown here under glass, graded against real data, and only then transplanted.*
 
-**6 roles.** Branch: `claude/steading-greenhouse`
+**6 roles, 4 live.** Branch: `claude/steading-greenhouse`
 
 ### The Grafter
 
-**Prompt Engineer** · Specialist tier · stationed at The Glasshouse
+**Prompt Engineer** · Specialist tier · stationed at The Glasshouse · **live as `grafter`**
 
 Designs and tunes the prompts every role is grown from. Changes one thing at a time and measures it.
 
@@ -744,7 +764,7 @@ Grows a candidate from prompt to production-ready. Owns the gate between the gre
 
 ### The Grader
 
-**Evaluator** · Specialist tier · stationed at The Grading Bench
+**Evaluator** · Specialist tier · stationed at The Grading Bench · **live as `grader`**
 
 Scores work against a written rubric. Independent of whoever produced it, on purpose.
 
@@ -763,7 +783,7 @@ Scores work against a written rubric. Independent of whoever produced it, on pur
 
 ### The Soil Tester
 
-**Dataset Curator** · Hand tier · stationed at The Grading Bench
+**Dataset Curator** · Hand tier · stationed at The Grading Bench · **live as `grader`**
 
 Owns the golden set. Keeps it drawn from real traffic rather than from imagination.
 
@@ -782,7 +802,7 @@ Owns the golden set. Keeps it drawn from real traffic rather than from imaginati
 
 ### The Pruner
 
-**Simplifier** · Specialist tier · stationed at The Cold Frames
+**Simplifier** · Specialist tier · stationed at The Cold Frames · **live as `grafter`**
 
 Removes what no longer earns its place. Dead agents, redundant steps, instructions nobody follows.
 
@@ -823,11 +843,11 @@ Carries what works from one zone to another. Stops every crew from solving the s
 
 *Sits on the high ground and can see every zone at once. If it did not happen in a trace here, it did not happen — and nobody will be able to explain it later.*
 
-**5 roles.** Branch: `claude/steading-watchtower`
+**5 roles, 3 live.** Branch: `claude/steading-watchtower`
 
 ### The Watchman
 
-**Tracer** · Sorter tier · stationed at The Tower
+**Tracer** · Sorter tier · stationed at The Tower · **live as `watchman`**
 
 Captures every run end to end, with the reasoning attached. If it is not traced, it did not happen.
 
@@ -865,7 +885,7 @@ Reads the trend and warns before it becomes an incident.
 
 ### The Tally Clerk
 
-**Cost Accountant** · Sorter tier · stationed at The Tally Office
+**Cost Accountant** · Sorter tier · stationed at The Tally Office · **live as `watchman`**
 
 Counts what everything cost, per completed task rather than per request.
 
@@ -903,7 +923,7 @@ Wakes a human, rarely. Owns the judgement of what is worth someone's night.
 
 ### The Surveyor
 
-**Quality Reporter** · Specialist tier · stationed at The Tower
+**Quality Reporter** · Specialist tier · stationed at The Tower · **live as `watchman`**
 
 Turns telemetry into a picture a human can act on. Owns the weekly read on whether the farm is getting better.
 
@@ -925,7 +945,7 @@ Turns telemetry into a picture a human can act on. Owns the weekly read on wheth
 
 *The only lawful way in or out. Every request from outside is identified here, every artifact leaving is inspected here, and the fence line is everyone's business.*
 
-**6 roles.** Branch: `claude/steading-gatehouse`
+**6 roles, 1 live.** Branch: `claude/steading-gatehouse`
 
 ### The Gatekeeper
 
@@ -986,7 +1006,7 @@ Fair share at the entrance. Stops one caller consuming the farm.
 
 ### The Inspector
 
-**Outbound Guard** · Specialist tier · stationed at The Weigh Station
+**Outbound Guard** · Specialist tier · stationed at The Weigh Station · **live as `inspector`**
 
 Nothing leaves unweighed. The last check before the farm's work becomes someone else's problem.
 
