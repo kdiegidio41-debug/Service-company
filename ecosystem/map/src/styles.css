@@ -295,3 +295,15 @@ body{
 .pickable:focus{ outline:none; }
 .pickable.sel > *{ filter:brightness(1.18) saturate(1.2); }
 .selring{ pointer-events:none; }
+
+/* ---- live agents ---- */
+.livepill{
+  display:inline-block; margin-left:7px; vertical-align:2px;
+  font:600 8.5px/1 var(--font-ui); letter-spacing:.12em; text-transform:uppercase;
+  padding:3px 5px; border-radius:2px; background:var(--accent); color:var(--accent-ink);
+}
+.rolecard.live{ border-left:2px solid var(--accent); }
+.agentline{
+  font:500 11px/1 var(--font-mono); color:var(--accent);
+  letter-spacing:.04em;
+}
