@@ -4,8 +4,8 @@
   "name": "The Steading",
   "tagline": "An AI agent ecosystem, mapped as a working farm.",
   "version": "0.1.0",
-  "status": "staffed-in-part",
-  "note": "12 of the 48 roles are now live as Claude Code subagents in .claude/agents/ and work today with no API keys. The rest are still charters. Roles marked LIVE can be invoked by name.",
+  "status": "earning",
+  "note": "15 of the 51 roles are live as Claude Code subagents in .claude/agents/, working today with no API keys. The Market is the only zone that faces a customer \u2014 it is where the farm stops costing money and starts making it. The rest are charters.",
   "grid": {
     "width": 100,
     "height": 70,
@@ -450,6 +450,56 @@
         [
           36,
           60
+        ]
+      ]
+    },
+    {
+      "id": "market",
+      "name": "The Market",
+      "subtitle": "The Wayside",
+      "domain": "Finding and winning work",
+      "charter": "The only zone that faces a customer. Everything else on this farm spends money; this one brings it in. Its whole method is to do the work before asking for it \u2014 arrive holding a finished diagnostic rather than a pitch.",
+      "owns": [
+        "Finding prospects with a verifiable problem",
+        "Qualifying who can actually pay",
+        "The diagnostic that becomes the free artifact",
+        "Outreach and follow-up",
+        "Pricing and quotes",
+        "Delivery and retention"
+      ],
+      "failsWhen": "It leads with the agent instead of the outcome. Nobody buys 'an AI audit'; they buy 'your phone number is not tappable and you are losing calls'. The moment the pitch is about how the work was done, the work stops being worth paying for.",
+      "color": "#B8860B",
+      "accent": "#E8C468",
+      "icon": "stall",
+      "branch": "claude/steading-market",
+      "polygon": [
+        [
+          85,
+          30
+        ],
+        [
+          93,
+          29
+        ],
+        [
+          97,
+          33
+        ],
+        [
+          97,
+          47
+        ],
+        [
+          93,
+          51
+        ],
+        [
+          86,
+          50
+        ],
+        [
+          85,
+          42
         ]
       ]
     }
@@ -1325,6 +1375,102 @@
       ],
       "tasks": [
         "t-inspect-outbound"
+      ]
+    },
+    {
+      "id": "mk-wayside",
+      "zone": "market",
+      "name": "The Wayside",
+      "kind": "board",
+      "x": 90,
+      "y": 33,
+      "w": 8,
+      "h": 4,
+      "purpose": "Where you stand at the road and watch who goes past. Prospects are found here \u2014 businesses with a problem you can name and prove before you ever speak to them.",
+      "inputs": [
+        "A trade and a geography",
+        "A problem that is checkable from outside"
+      ],
+      "outputs": [
+        "A prospect list with a named, verifiable defect each",
+        "The ones not worth approaching, and why"
+      ],
+      "tasks": [
+        "t-find-prospects",
+        "t-build-list"
+      ]
+    },
+    {
+      "id": "mk-bench",
+      "zone": "market",
+      "name": "The Assay Bench",
+      "kind": "shed",
+      "x": 90,
+      "y": 38.5,
+      "w": 9,
+      "h": 4.5,
+      "purpose": "Where a prospect's problem is measured rather than asserted. The output is the artifact you hand over \u2014 it has to be right, because it is the entire argument for paying you.",
+      "inputs": [
+        "A qualified prospect",
+        "Their public web presence"
+      ],
+      "outputs": [
+        "A scored audit naming each defect, what it costs, and the fix",
+        "A note when there is nothing worth fixing"
+      ],
+      "tasks": [
+        "t-run-audit",
+        "t-write-report"
+      ]
+    },
+    {
+      "id": "mk-book",
+      "zone": "market",
+      "name": "The Order Book",
+      "kind": "hut",
+      "x": 90,
+      "y": 43.5,
+      "w": 8,
+      "h": 4,
+      "purpose": "The pipeline. Who was found, who was approached, who replied, who paid, and who is due a follow-up. Without it the whole zone runs on memory and loses people.",
+      "inputs": [
+        "Prospects",
+        "Responses",
+        "Delivered work"
+      ],
+      "outputs": [
+        "A pipeline with a next action and a date on every row",
+        "Pricing decisions and the reasoning behind them"
+      ],
+      "tasks": [
+        "t-qualify-lead",
+        "t-price-work",
+        "t-track-pipeline"
+      ]
+    },
+    {
+      "id": "mk-stand",
+      "zone": "market",
+      "name": "The Market Stand",
+      "kind": "stall",
+      "x": 90,
+      "y": 48,
+      "w": 9,
+      "h": 4.5,
+      "purpose": "Where the farm meets a stranger. The approach is made here, the work is delivered here, and the relationship is kept here \u2014 which is worth more than any single sale.",
+      "inputs": [
+        "A finished audit",
+        "A cleared artifact from the Weigh Station"
+      ],
+      "outputs": [
+        "An approach, in the prospect's language",
+        "Delivered work and a receipt",
+        "A renewal, or an honest close"
+      ],
+      "tasks": [
+        "t-make-approach",
+        "t-follow-up",
+        "t-deliver-fix"
       ]
     }
   ],
@@ -2509,6 +2655,160 @@
         "Summaries"
       ],
       "escalatesTo": "r-marketkeeper"
+    },
+    {
+      "id": "r-dowser",
+      "name": "The Dowser",
+      "title": "Prospect Finder",
+      "zone": "market",
+      "station": "mk-wayside",
+      "tier": "sorter",
+      "agent": "dowser",
+      "charter": "Finds businesses with a problem you can name, prove, and fix. A prospect without a specific verifiable defect is a stranger, not a lead.",
+      "duties": [
+        "Search a named trade in a named geography",
+        "Confirm the business is real and currently trading",
+        "Find one concrete, checkable defect before listing anyone",
+        "Discard the ones already doing it right \u2014 they are not prospects, they are proof the standard is achievable",
+        "Never guess at a contact detail"
+      ],
+      "reads": [
+        "Public listings, directories, search results",
+        "Their own website"
+      ],
+      "writes": [
+        "A prospect list, each row carrying its evidence"
+      ],
+      "escalatesTo": "r-appraiser"
+    },
+    {
+      "id": "r-appraiser",
+      "name": "The Appraiser",
+      "title": "Lead Qualifier",
+      "zone": "market",
+      "station": "mk-book",
+      "tier": "sorter",
+      "charter": "Decides who is worth the trip. Being fixable is not the same as being worth fixing, and neither is the same as being able to pay.",
+      "duties": [
+        "Check the business is trading and has revenue to spend",
+        "Weigh the size of the defect against the effort to fix it",
+        "Rule out anyone already paying an agency for this",
+        "Kill a lead early rather than carry it",
+        "State the reason for every kill"
+      ],
+      "reads": [
+        "The prospect list",
+        "Public signals of size and activity"
+      ],
+      "writes": [
+        "Qualified leads, with a reason",
+        "Killed leads, with a reason"
+      ],
+      "escalatesTo": "r-factor"
+    },
+    {
+      "id": "r-assayer",
+      "name": "The Assayer",
+      "title": "Diagnostic Surveyor",
+      "zone": "market",
+      "station": "mk-bench",
+      "tier": "specialist",
+      "agent": "surveyor",
+      "charter": "Measures the problem instead of asserting it. Produces the artifact the whole business rests on \u2014 if the audit is generic, there is nothing to sell.",
+      "duties": [
+        "Run the audit against what is actually published, never against an assumption",
+        "Report the specific evidence for every finding",
+        "Say what each defect costs in customers, not in jargon",
+        "Rank by what it costs, not by how hard it is to fix",
+        "Say plainly when a site is already fine"
+      ],
+      "reads": [
+        "The prospect's public pages"
+      ],
+      "writes": [
+        "A scored audit with evidence and fixes per finding"
+      ],
+      "escalatesTo": "r-factor"
+    },
+    {
+      "id": "r-factor",
+      "name": "The Factor",
+      "title": "Outreach & Follow-up",
+      "zone": "market",
+      "station": "mk-stand",
+      "tier": "specialist",
+      "agent": "factor",
+      "charter": "Takes the work to market. Historically the agent who sold a farmer's crop on their behalf \u2014 here, the one who turns a finished audit into a conversation.",
+      "duties": [
+        "Lead with the single most expensive defect, in the owner's language",
+        "Give the finding away for free and charge for the fix",
+        "Never describe how the work was done \u2014 it is irrelevant to the buyer",
+        "Follow up twice, then stop, and record the stop",
+        "Keep every claim inside what the audit actually establishes"
+      ],
+      "reads": [
+        "The audit",
+        "The pipeline",
+        "Prior contact history"
+      ],
+      "writes": [
+        "Approaches",
+        "Follow-ups",
+        "Outcomes on the order book"
+      ],
+      "escalatesTo": "r-farmer"
+    },
+    {
+      "id": "r-auctioneer",
+      "name": "The Auctioneer",
+      "title": "Pricing & Quotes",
+      "zone": "market",
+      "station": "mk-book",
+      "tier": "specialist",
+      "charter": "Sets the price. Prices the outcome the buyer gets, never the hours the farm spent.",
+      "duties": [
+        "Quote one number for a defined scope",
+        "Price against what the defect costs them, not what the work costs you",
+        "Hold a floor and say no below it",
+        "Offer a recurring option where the work actually recurs",
+        "Never discount silently \u2014 trade scope for price, visibly"
+      ],
+      "reads": [
+        "The audit",
+        "Prior deals",
+        "What the market pays"
+      ],
+      "writes": [
+        "Quotes",
+        "Scope definitions"
+      ],
+      "escalatesTo": "r-factor"
+    },
+    {
+      "id": "r-reeve",
+      "name": "The Reeve",
+      "title": "Account Steward",
+      "zone": "market",
+      "station": "mk-stand",
+      "tier": "hand",
+      "charter": "Keeps the customer after the sale. A second month from an existing customer costs nothing to acquire and is the only thing that turns work into a business.",
+      "duties": [
+        "Deliver what was quoted, then confirm it landed",
+        "Re-run the audit after the fix and show the movement",
+        "Ask for the referral while the result is fresh",
+        "Notice a lapsing account before it lapses",
+        "Close an account honestly rather than let it rot"
+      ],
+      "reads": [
+        "Delivered work",
+        "The order book",
+        "Re-audit results"
+      ],
+      "writes": [
+        "Delivery receipts",
+        "Renewal and referral records"
+      ],
+      "escalatesTo": "r-factor"
     }
   ],
   "tasks": [
@@ -3094,6 +3394,116 @@
       "output": "A delivery and a receipt linked to the trace",
       "doneWhen": "Delivery is confirmed, not assumed",
       "watchFor": "Reporting success on an unconfirmed send"
+    },
+    {
+      "id": "t-find-prospects",
+      "name": "Find prospects with a named defect",
+      "station": "mk-wayside",
+      "owner": "r-dowser",
+      "trigger": "A trade and a geography are chosen",
+      "input": "Trade, town, the defect being hunted",
+      "output": "Candidate businesses, each with the evidence for its defect",
+      "doneWhen": "Every row names a specific checkable defect, not a general impression",
+      "watchFor": "Listing businesses because they exist rather than because something is wrong"
+    },
+    {
+      "id": "t-build-list",
+      "name": "Build the prospect list",
+      "station": "mk-wayside",
+      "owner": "r-dowser",
+      "trigger": "Candidates are found",
+      "input": "Candidates and their evidence",
+      "output": "A list with name, site, contact route and the defect",
+      "doneWhen": "Contact details are verified rather than guessed",
+      "watchFor": "Inventing an email address from a pattern"
+    },
+    {
+      "id": "t-qualify-lead",
+      "name": "Qualify a lead",
+      "station": "mk-book",
+      "owner": "r-appraiser",
+      "trigger": "A prospect reaches the order book",
+      "input": "The prospect and its defect",
+      "output": "Qualified or killed, with a reason",
+      "doneWhen": "The reason would still convince you a week later",
+      "watchFor": "Qualifying everyone because the list looks thin"
+    },
+    {
+      "id": "t-run-audit",
+      "name": "Run the audit",
+      "station": "mk-bench",
+      "owner": "r-assayer",
+      "trigger": "A lead is qualified",
+      "input": "The prospect's published pages",
+      "output": "Scored findings with evidence",
+      "doneWhen": "Every finding cites what was actually found on the page",
+      "watchFor": "Reporting a defect the page does not actually have \u2014 one wrong finding discredits the whole audit"
+    },
+    {
+      "id": "t-write-report",
+      "name": "Write the report they receive",
+      "station": "mk-bench",
+      "owner": "r-assayer",
+      "trigger": "The audit is run",
+      "input": "The findings",
+      "output": "A report a business owner can read and act on",
+      "doneWhen": "Each finding says what it costs in customers, in their words",
+      "watchFor": "Writing for an engineer. The reader does not know what a meta description is and does not need to"
+    },
+    {
+      "id": "t-price-work",
+      "name": "Price the fix",
+      "station": "mk-book",
+      "owner": "r-auctioneer",
+      "trigger": "An audit is ready to be taken to market",
+      "input": "The findings and their severity",
+      "output": "One number for a defined scope",
+      "doneWhen": "The scope is specific enough that 'done' is not arguable",
+      "watchFor": "Pricing the hours instead of the outcome"
+    },
+    {
+      "id": "t-track-pipeline",
+      "name": "Keep the order book",
+      "station": "mk-book",
+      "owner": "r-appraiser",
+      "trigger": "Any contact or response",
+      "input": "What happened",
+      "output": "An updated row with a next action and a date",
+      "doneWhen": "No row is without a next action",
+      "watchFor": "Leads going quiet and quietly disappearing from the book"
+    },
+    {
+      "id": "t-make-approach",
+      "name": "Make the approach",
+      "station": "mk-stand",
+      "owner": "r-factor",
+      "trigger": "A priced audit exists",
+      "input": "The audit, the contact route",
+      "output": "A short approach leading with the most expensive finding",
+      "doneWhen": "The finding is given away free and the ask is for the fix",
+      "watchFor": "Explaining the method. Nobody is buying the method"
+    },
+    {
+      "id": "t-follow-up",
+      "name": "Follow up, then stop",
+      "station": "mk-stand",
+      "owner": "r-factor",
+      "trigger": "No response after a set interval",
+      "input": "Prior contact history",
+      "output": "A follow-up, or a recorded stop",
+      "doneWhen": "At most two follow-ups, and the stop is written down",
+      "watchFor": "A third and fourth follow-up. That is not persistence, it is a reputation cost"
+    },
+    {
+      "id": "t-deliver-fix",
+      "name": "Deliver and prove it",
+      "station": "mk-stand",
+      "owner": "r-reeve",
+      "trigger": "Work is paid for and done",
+      "input": "The fix, the original audit",
+      "output": "Delivery, plus a re-audit showing the movement",
+      "doneWhen": "The customer can see the score change, not just take your word",
+      "watchFor": "Declaring delivery without confirming it landed"
     }
   ],
   "flows": [
@@ -3378,6 +3788,54 @@
       "to": "wt-tower",
       "kind": "signal",
       "label": "receipt"
+    },
+    {
+      "from": "fh-porch",
+      "to": "mk-wayside",
+      "kind": "task",
+      "label": "go find work"
+    },
+    {
+      "from": "mk-wayside",
+      "to": "mk-book",
+      "kind": "task",
+      "label": "prospect list"
+    },
+    {
+      "from": "mk-book",
+      "to": "mk-bench",
+      "kind": "task",
+      "label": "qualified prospect"
+    },
+    {
+      "from": "mk-bench",
+      "to": "mk-stand",
+      "kind": "artifact",
+      "label": "the audit"
+    },
+    {
+      "from": "mk-stand",
+      "to": "gt-scale",
+      "kind": "artifact",
+      "label": "bound for a stranger"
+    },
+    {
+      "from": "mk-stand",
+      "to": "mk-book",
+      "kind": "task",
+      "label": "response"
+    },
+    {
+      "from": "mk-stand",
+      "to": "si-episodic",
+      "kind": "memory",
+      "label": "what was sent, what came back"
+    },
+    {
+      "from": "mk-book",
+      "to": "wt-tally",
+      "kind": "signal",
+      "label": "pipeline value"
     }
   ],
   "roads": [
@@ -3577,6 +4035,25 @@
         ]
       ],
       "width": 1.2
+    },
+    {
+      "id": "rd-market",
+      "points": [
+        [
+          72,
+          40
+        ],
+        [
+          79,
+          42
+        ],
+        [
+          86,
+          44
+        ]
+      ],
+      "width": 1.4,
+      "name": "Market Lane"
     }
   ],
   "terrain": {
@@ -3935,6 +4412,24 @@
         "r-vet"
       ],
       "file": ".claude/agents/sheepdog.md"
+    },
+    "dowser": {
+      "roles": [
+        "r-dowser"
+      ],
+      "file": ".claude/agents/dowser.md"
+    },
+    "surveyor": {
+      "roles": [
+        "r-assayer"
+      ],
+      "file": ".claude/agents/surveyor.md"
+    },
+    "factor": {
+      "roles": [
+        "r-factor"
+      ],
+      "file": ".claude/agents/factor.md"
     }
   }
 }
