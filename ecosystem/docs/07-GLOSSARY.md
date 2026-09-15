@@ -44,6 +44,7 @@ conversation is usually faster than the engineering one. The mapping below is th
 | 6 | **The Greenhouse** | R&D and evaluation | 4 | 6 | `claude/steading-greenhouse` |
 | 7 | **The Watchtower** | Observability | 4 | 5 | `claude/steading-watchtower` |
 | 8 | **The Gatehouse** | Security & the outside world | 4 | 6 | `claude/steading-gatehouse` |
+| 9 | **The Market** | Finding and winning work | 4 | 6 | `claude/steading-market` |
 
 ## Channel kinds
 
