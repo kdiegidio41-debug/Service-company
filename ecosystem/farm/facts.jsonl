@@ -1,0 +1,1 @@
+{"at":"2026-09-15T15:46:35.861Z","text":"WebFetch and direct HTTP are EGRESS_BLOCKED for ordinary business domains in the Claude Code web sandbox. Prospecting and auditing real sites must run in a local Claude Code session. WebSearch still works, which exposes titles and URL slugs but nothing else.","source":"ch-0002"}

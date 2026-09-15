@@ -283,7 +283,10 @@ CMD.report = () => {
   console.log(`  goals      ${gs.length}`);
   console.log(`  chores     ${cs.length}   open ${cs.filter((c) => !TERMINAL.includes(c.state)).length}`);
   ['DONE', 'REJECTED', 'BLOCKED', 'FAILED', 'RUNNING', 'CLAIMED', 'OPEN'].forEach((s) => { if (by(s)) console.log(`    ${s.padEnd(10)} ${by(s)}`); });
-  console.log(`  retried    ${cs.filter((c) => c.attempts > 1).length}  (chores that took more than one attempt)`);
+  const touched = (c, st) => (c.history || []).some((h) => h.to === st);
+  const recovered = cs.filter((c) => touched(c, 'FAILED') || touched(c, 'GLEANING'));
+  const restarted = cs.filter((c) => c.attempts > 1);
+  console.log(`  retried    ${restarted.length} restarted · ${recovered.length} failed then recovered or rejected`);
   console.log(`  traces     ${traces.length}   spans ${spans}`);
   console.log(`  episodes   ${scoped(read(EPIS)).length}   facts ${scoped(read(FACTS)).length}`);
   const undone = cs.filter((c) => !c.spec.doneWhen && !TERMINAL.includes(c.state));
@@ -295,8 +298,8 @@ CMD.report = () => {
   if (undone.length) console.log(`  ⚠ ${undone.length} open chore(s) have no checkable "done when".`);
   const rej = cs.filter((c) => c.state === 'REJECTED');
   if (rej.length)    console.log(`  ⚠ ${rej.length} rejected chore(s) owe the Compost Heap an eval case.`);
-  const zeroRetry = cs.filter((c) => c.attempts > 1).length === 0 && rej.length > 0;
-  if (zeroRetry) console.log(`  ⚠ nothing was retried, but ${rej.length} chore(s) were rejected — failures were abandoned, not recovered.`);
+  if (!recovered.length && rej.length)
+    console.log(`  ⚠ nothing was retried, but ${rej.length} chore(s) were rejected — failures were abandoned, not recovered.`);
   if (!noReason && !undone.length && !rej.length && !ghosts.length && !noTrace.length) console.log('  no warnings.');
 };
 

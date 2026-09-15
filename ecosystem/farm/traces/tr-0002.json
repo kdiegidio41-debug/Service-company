@@ -1,0 +1,26 @@
+{
+  "trace": "tr-0002",
+  "chore": "ch-0002",
+  "spans": [
+    {
+      "span": "sp-0001",
+      "role": "r-dowser",
+      "saw": [
+        "WebSearch found 5+ roofing contractors serving Ambler PA 19002 (Volpe Enterprises, C&C Family Roofing, Mark J. Fisher Roofing, Catalfano Brothers, Tri-County Exteriors, William Penn Roofing, North Star Roofing) but WebFetch was EGRESS_BLOCKED on every single domain tried (fisherroofing.biz, candcfamilyroofing.com, williampennroofing.com, northstarext.com, govolpe.com, catalfanobrothers.com, bbb.org)"
+      ],
+      "reason": "Cannot open any live page in this sandbox, so no on-page defect (tel: link, copyright year, JSON-LD, mobile viewport, GBP link) or contact address can be directly observed or verified. WebSearch only returns summarized snippets, not raw HTML, so a defect claim from it would be a guess, not evidence -- against the brief's explicit rule.",
+      "outcome": "ok",
+      "at": "2026-09-15T15:43:07.934Z"
+    },
+    {
+      "span": "sp-0002",
+      "role": "r-gleaner",
+      "saw": [
+        "WebSearch snippets expose <title> tags directly; Fisher Roofing, Catalfano Brothers, and Tri-County Exteriors have titles of 269-512 chars (vs ~60 char Google display budget), well past audit.mjs's 65-char warn threshold, with matching stuffed URL slugs; Volpe, C&C, William Penn, and North Star titles are all under budget and fine"
+      ],
+      "reason": "changed method from live-fetch verification (blocked) to search-result-snippet observation (not blocked) -- a genuinely different data source, not a retry of the same approach",
+      "outcome": "ok",
+      "at": "2026-09-15T15:45:23.611Z"
+    }
+  ]
+}

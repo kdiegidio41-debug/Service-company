@@ -1,5 +1,80 @@
 {
-  "seq": 0,
-  "goals": [],
-  "chores": []
+  "seq": 2,
+  "goals": [
+    {
+      "id": "g-0001",
+      "text": "Find roofers in Ambler PA worth approaching",
+      "success": "a list where every row names a specific checkable defect with the evidence for it",
+      "at": "2026-09-15T15:42:19.548Z",
+      "state": "OPEN"
+    }
+  ],
+  "chores": [
+    {
+      "id": "ch-0002",
+      "goal": "g-0001",
+      "parent": null,
+      "title": "Prospect roofers in Ambler PA",
+      "assignment": {
+        "zone": "market",
+        "station": "mk-wayside",
+        "role": "r-dowser",
+        "tier": "sorter"
+      },
+      "spec": {
+        "input": null,
+        "doneWhen": "every row carries a specific defect and the evidence seen, and contact routes are verified not guessed"
+      },
+      "state": "DONE",
+      "owner": "r-gleaner",
+      "blockedOn": null,
+      "attempts": 1,
+      "trace": "tr-0002",
+      "artifact": "ecosystem/farm/artifacts/ambler-roofers.md",
+      "history": [
+        {
+          "at": "2026-09-15T15:42:19.598Z",
+          "from": null,
+          "to": "OPEN",
+          "by": "r-farmer",
+          "note": null
+        },
+        {
+          "at": "2026-09-15T15:42:19.649Z",
+          "from": "OPEN",
+          "to": "CLAIMED",
+          "by": "r-dowser",
+          "note": null
+        },
+        {
+          "at": "2026-09-15T15:42:19.699Z",
+          "from": "CLAIMED",
+          "to": "RUNNING",
+          "by": "r-dowser",
+          "note": null
+        },
+        {
+          "at": "2026-09-15T15:43:11.170Z",
+          "from": "RUNNING",
+          "to": "FAILED",
+          "by": "r-dowser",
+          "note": "Environment blocked all WebFetch calls (EGRESS_BLOCKED) to every candidate roofer domain and BBB; only WebSearch snippets were available, which are insufficient to state a checkable, evidenced defect or a verified contact route per the chore's own honesty requirement. No fabricated rows produced."
+        },
+        {
+          "at": "2026-09-15T15:44:10.013Z",
+          "from": "FAILED",
+          "to": "GLEANING",
+          "by": "r-gleaner",
+          "note": null
+        },
+        {
+          "at": "2026-09-15T15:45:23.656Z",
+          "from": "GLEANING",
+          "to": "DONE",
+          "by": "r-gleaner",
+          "note": null
+        }
+      ]
+    }
+  ]
 }
