@@ -1,8 +1,8 @@
 # The crew
 
-Twelve working agents. They live in `.claude/agents/` and run in Claude Code
+Fifteen working agents. They live in `.claude/agents/` and run in Claude Code
 **with no API key.** Each embodies one or more roles from
-[the roster](03-ROSTER.md) — 24 of the 48 roles are now staffed.
+[the roster](03-ROSTER.md) — 27 of the 54 roles are now staffed.
 
 > ### Start a new session to use them
 >
@@ -62,6 +62,20 @@ the planning overhead, which is the point.
 | **`chronicler`** | Chronicler, Winnower, Water Carrier, Statekeeper | Record what happened, or recall what was decided before. |
 | **`grader`** | Grader, Soil Tester | Judge output against a standard, or compare candidates. |
 
+### Finding and winning work — the Market
+
+The only agents that face a customer. Full playbook: [09-MARKET.md](09-MARKET.md).
+
+| Agent | Roles | Use it when |
+| --- | --- | --- |
+| **`dowser`** | The Dowser | Build a prospect list — local businesses with a *provable* defect, with evidence per row. |
+| **`surveyor`** | The Assayer | Audit a prospect and write the report you hand over. Runs `tools/audit.mjs`. |
+| **`factor`** | The Factor | Turn the audit into an approach. Leads with the finding, gives it free, asks for the fix. |
+
+> **A human sends the outreach, always.** `factor` writes it; `inspector` checks
+> every claim traces to a real finding; you press send. That is not a formality —
+> it is what keeps ten pieces of outreach from becoming fifty pieces of spam.
+
 ### Keeping the farm running
 
 | Agent | Roles | Use it when |
@@ -77,8 +91,8 @@ the planning overhead, which is the point.
 
 | Tier | Model | Agents |
 | --- | --- | --- |
-| Steward / specialist | `claude-opus-5` | `farmer`, `row-boss`, `grader`, `grafter`, `smith` |
-| Hand | `claude-sonnet-5` | `field-hand`, `gleaner`, `chronicler`, `inspector`, `watchman`, `sheepdog` |
+| Steward / specialist | `claude-opus-5` | `farmer`, `row-boss`, `grader`, `grafter`, `smith`, `factor` |
+| Hand | `claude-sonnet-5` | `field-hand`, `gleaner`, `chronicler`, `inspector`, `watchman`, `sheepdog`, `dowser`, `surveyor` |
 | Sorter | `claude-haiku-4-5` | `scarecrow` |
 
 Set in each agent's frontmatter. **These are starting points, not conclusions** —
@@ -135,6 +149,7 @@ That's the point of having a state machine rather than a status field.
 | **Gatehouse** | Gatekeeper, Fencewright, Toll Taker, Marketkeeper, Herald | Nothing is exposed to anyone but you. **These go in before the farm is reachable by anyone else.** |
 | **Silo** | Granary Keeper, Cellarer | No retention obligations and no prompt library large enough to need a keeper. |
 | **Greenhouse** | Nurseryman, Pollinator | Nothing is being promoted to production yet, so there is no gate to hold. |
+| **Market** | Appraiser, Auctioneer, Reeve | Qualify, price and retain by hand until there is a pipeline — you learn the trade doing it. [09-MARKET.md](09-MARKET.md) says exactly when each earns its place. |
 | **Watchtower** | Weathervane, Bell Ringer | There is no load to forecast and no one to page but you. |
 
 **Building an agent before there is work for it buys complexity and no

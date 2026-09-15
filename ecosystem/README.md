@@ -5,10 +5,11 @@
 Eight zones, thirty-eight stations, forty-eight roles, fifty-three tasks, and the wiring between them —
 designed as one system, described in one file, and drawn five different ways.
 
-> **Status: staffed in part.** 12 working agents now live in `.claude/agents/` and cover 24 of the 48
-> roles. They run in Claude Code **today, with no API key** — see [docs/08-AGENTS.md](docs/08-AGENTS.md).
-> The remaining 24 roles are still charters, deliberately: building an agent before there is work for it
-> buys complexity and no capability.
+> **Status: earning.** 15 working agents in `.claude/agents/` cover 27 of the 54 roles, running in Claude
+> Code **with no API key** — see [docs/08-AGENTS.md](docs/08-AGENTS.md). The Market is the only zone that
+> faces a customer; [docs/09-MARKET.md](docs/09-MARKET.md) is the playbook for turning it into money. The
+> remaining roles are charters, deliberately: building an agent before there is work for it buys complexity
+> and no capability.
 
 ---
 
@@ -52,6 +53,7 @@ Drag to pan, scroll to zoom, `⌂` to reset.
 | **The Greenhouse** | R&D and evaluation | Prompt design, eval sets, grading, shadow runs, staged rollout | 4 | 6 |
 | **The Watchtower** | Observability | Traces, cost, forecasting, alerting, quality reporting | 4 | 5 |
 | **The Gatehouse** | Security & the outside world | Identity, scope, sandboxing, outbound inspection, delivery | 4 | 6 |
+| **The Market** | Finding and winning work | Prospecting, qualifying, the diagnostic, outreach, pricing, retention | 4 | 6 |
 
 Each zone carries a `failsWhen` — the specific way it degrades. That field is required by the schema, because
 a zone nobody can describe the failure of is not understood yet.
