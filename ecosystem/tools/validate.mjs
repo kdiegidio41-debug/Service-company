@@ -57,6 +57,21 @@ W.stations.forEach((s) => {
     warns.push(`station ${s.id} has no roles and no tasks`);
 });
 
+/* live agents must have a file, and claim only roles that exist */
+if (W.agents) {
+  for (const [name, a] of Object.entries(W.agents)) {
+    if (!existsSync(join(root, '..', a.file))) errs.push(`agent ${name}: no file at ${a.file}`);
+    a.roles.forEach((rid) => {
+      const r = W.roles.find((q) => q.id === rid);
+      if (!r) errs.push(`agent ${name}: claims unknown role "${rid}"`);
+      else if (r.agent !== name) errs.push(`role ${rid} says agent "${r.agent}" but ${name} claims it`);
+    });
+  }
+  W.roles.filter((r) => r.agent).forEach((r) => {
+    if (!W.agents[r.agent]) errs.push(`role ${r.id}: agent "${r.agent}" is not registered`);
+  });
+}
+
 /* escalation chains must terminate */
 W.roles.forEach((r) => {
   const seen = new Set([r.id]);
