@@ -222,6 +222,9 @@ already licensed — most printers won't ask.
 
 ## 4. Placing them
 
+**See [`SIGN_PLACEMENT.md`](SIGN_PLACEMENT.md)** for the legal position in
+Pennsylvania and 25 ranked corridor targets. The short version is below.
+
 - **Always get permission.** "Mind if we leave a sign in the yard through the
   weekend?" at the end of the install. Ask on the day, in person — nearly
   everyone says yes when their house has just been lit.

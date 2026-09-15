@@ -77,7 +77,9 @@ may legally be placed.
     │                       projection, startup capital, ops calendar, risks
     ├── LEAD_GENERATION.md  Ranked channel playbook, ad budgets, commercial
     │                       outreach, follow-up scripts, renewal campaign
-    └── YARD_SIGN.md        Sign design rationale, print spec, QR setup, placement
+    ├── YARD_SIGN.md        Sign design rationale, print spec, QR setup
+    └── SIGN_PLACEMENT.md   Where signs may legally go in Montgomery County,
+                            25 ranked corridor targets, permission script
 ```
 
 The website has no build step, no dependencies, no framework. Open `index.html` and it runs.
