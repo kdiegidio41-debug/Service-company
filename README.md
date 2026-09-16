@@ -128,10 +128,14 @@ switches one on.
 | --- | --- | --- |
 | `service` | 14 | Local service businesses — lead finding, proposals, review replies, follow-ups |
 | `trading` | 8 | Market research — ticker briefs, filings, thesis stress-testing, risk arithmetic, trade journal review |
+| `betting` | 8 | Betting math — vig, EV, line shopping, staking, closing line value, bet log review |
 
-The trading pack holds a hard research-only boundary: no buy/sell calls, no
-invented figures, no price predictions, and a dated disclaimer on every output.
-Tests enforce it. Read `agents/packs/trading/README.md` before selling it.
+The `trading` and `betting` packs hold hard research-only boundaries: no
+buy/sell calls, no picks or guarantees, no invented figures, no predictions,
+and dated disclaimers on every output. `test/packs.test.js` enforces this on
+every spec, so stripping a guardrail fails the build. Both carry legal and
+payment-processor considerations the other packs don't — read each pack's own
+README before selling it.
 
 Every agent carries the same house rules: never invent a fact, price, or quote —
 write `[NEEDS: ...]` instead. That constraint is the difference between output

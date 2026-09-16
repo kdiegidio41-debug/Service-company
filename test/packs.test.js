@@ -70,3 +70,41 @@ test("no trading agent asks the model to place an order or predict a price", () 
     assert.doesNotMatch(text, /\bprice target\b(?! *,? *(or|and) *a? *recommendation)/i, `${agent.id} mentions a price target outside a prohibition`);
   }
 });
+
+test("every betting agent carries the responsible-gambling guardrails", () => {
+  const agents = loadPackAgents("betting");
+  assert.equal(agents.length, 8);
+
+  for (const agent of agents) {
+    // Normalize wrapping so an assertion isn't defeated by a line break.
+    const system = agent.system.replace(/\s+/g, " ");
+
+    assert.match(system, /Never call anything a lock, a guarantee, free money, or a sure thing/i,
+      `${agent.id} is missing the no-guarantee rule`);
+    assert.match(system, /Never encourage chasing losses/i,
+      `${agent.id} is missing the no-chasing rule`);
+    assert.match(system, /never suggest automating wagers/i,
+      `${agent.id} is missing the no-automated-wagering rule`);
+    assert.match(system, /NEEDS:/,
+      `${agent.id} is missing the no-fabricated-figures rule`);
+    assert.match(system, /You do not know their finances/i,
+      `${agent.id} is missing the no-assumed-finances rule`);
+
+    // Both closing lines must survive templating or they never reach the reader.
+    const rendered = render(agent.system, context(agent)).replace(/\s+/g, " ");
+    assert.match(rendered, /Research and math only, generated 2026-01-01\. Not a guarantee; every bet can lose\./,
+      `${agent.id} loses its disclaimer when rendered`);
+    assert.match(rendered, /National Problem Gambling Helpline is 1-800-GAMBLER/,
+      `${agent.id} loses the helpline when rendered`);
+  }
+});
+
+test("no betting agent sells picks or promises a winner", () => {
+  for (const agent of loadPackAgents("betting")) {
+    const text = `${agent.prompt} ${agent.description}`.replace(/\s+/g, " ");
+    assert.doesNotMatch(text, /\bguaranteed\b/i, `${agent.id} uses "guaranteed"`);
+    assert.doesNotMatch(text, /\b(best|top|winning) (pick|bet)s?\b/i, `${agent.id} reads like a picks service`);
+    assert.doesNotMatch(text, /\b(place|submit|auto-?place) (a |the )?(bet|wager)\b/i,
+      `${agent.id} looks like it places wagers`);
+  }
+});
