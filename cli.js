@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { createPrompter } from "./core/prompt.js";
 import { loadEnv, loadConfig, saveConfig, blankConfig, configExists } from "./core/config.js";
-import { loadAgents, getAgent } from "./core/registry.js";
+import { loadAgents, getAgent, listPacks, loadPackAgents, installPack } from "./core/registry.js";
 import { runAgent } from "./core/runner.js";
 import { makeClient } from "./core/client.js";
 import { startScheduler, intervalMinutes } from "./core/scheduler.js";
@@ -174,6 +174,42 @@ function recent() {
   console.log("");
 }
 
+function packs() {
+  const name = positional[0];
+  const all = listPacks();
+
+  if (!name) {
+    if (!all.length) return console.log(dim("\n  No packs installed.\n"));
+    console.log(bold("\n  Available packs\n"));
+    for (const pack of all) {
+      console.log(`  ${bold(pack.name.padEnd(12))} ${dim(`${pack.agents.length} agents`)}`);
+      for (const agent of pack.agents) console.log(`    ${dim("-")} ${agent.name}`);
+      console.log("");
+    }
+    console.log(dim(`  Switch one on with: node cli.js packs add <name>\n`));
+    return;
+  }
+
+  if (name !== "add") {
+    console.error(`Usage: node cli.js packs [add <name>]`);
+    process.exit(1);
+  }
+
+  const target = positional[1];
+  if (!target) {
+    console.error("Usage: node cli.js packs add <name>");
+    process.exit(1);
+  }
+
+  loadPackAgents(target); // throws with a useful message on a bad name
+  const { installed, skipped } = installPack(target);
+  console.log(green(`\n  Installed ${installed.length} agents from "${target}".`));
+  if (skipped.length) {
+    console.log(dim(`  Left alone (already present): ${skipped.join(", ")}`));
+  }
+  console.log(dim(`  Turn them on with: node cli.js setup\n`));
+}
+
 function help() {
   console.log(`
   ${bold("agentops")} -- your AI agent operation
@@ -183,14 +219,14 @@ function help() {
     node cli.js run <id>           Run one agent now
     node cli.js runs               Recent run history
     node cli.js start              Run the schedule until you stop it
-    node cli.js dash               Open mission control in a browser
+    node cli.js dash               Open mission control in a browser\n    node cli.js packs              Agent packs you own, and how to switch one on
 
   ${bold("Flags")}
     --dry-run                      Render the prompt, make no API call, spend nothing
 `);
 }
 
-const commands = { setup, list, agents: list, run, runs: recent, start, dash, help };
+const commands = { setup, list, agents: list, run, runs: recent, start, dash, packs, help };
 const handler = commands[command];
 if (!handler) {
   console.error(`Unknown command "${command}"`);

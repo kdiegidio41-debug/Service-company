@@ -91,6 +91,7 @@ call. Use it to read exactly what an agent would send before you pay for it.
 | `node cli.js runs` | Recent run history with cost |
 | `node cli.js start` | Run the schedule until Ctrl-C |
 | `node cli.js dash` | Mission control at http://localhost:4317 |
+| `node cli.js packs` | List your agent packs, and `packs add <name>` to switch one on |
 | `npm test` | Verify the install |
 | `npm run package` | Build a clean zip to hand a buyer |
 
@@ -117,10 +118,20 @@ Add `--dry-run` to any of these to spend nothing.
 | Niche Validator | research | manual | A straight go / no-go before you spend money |
 | Operator Report | research | weekly | What the numbers say and three things to do Monday |
 
-`agents/packs/service/` holds a second set of 14 aimed at local service
-businesses (lead finding, proposals, review replies, follow-ups). They're
-inactive — move one up into `agents/` to switch it on, or sell the pack as an
-add-on.
+### Packs
+
+Packs are agent sets that ship inactive, so the library you see is the one
+you chose. `node cli.js packs` lists them; `node cli.js packs add <name>`
+switches one on.
+
+| Pack | Agents | For |
+| --- | --- | --- |
+| `service` | 14 | Local service businesses — lead finding, proposals, review replies, follow-ups |
+| `trading` | 8 | Market research — ticker briefs, filings, thesis stress-testing, risk arithmetic, trade journal review |
+
+The trading pack holds a hard research-only boundary: no buy/sell calls, no
+invented figures, no price predictions, and a dated disclaimer on every output.
+Tests enforce it. Read `agents/packs/trading/README.md` before selling it.
 
 Every agent carries the same house rules: never invent a fact, price, or quote —
 write `[NEEDS: ...]` instead. That constraint is the difference between output

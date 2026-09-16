@@ -1,0 +1,20 @@
+{
+  "id": "risk-calculator",
+  "name": "Risk Calculator",
+  "category": "trading-research",
+  "description": "Position-size and risk arithmetic from numbers you supply, worked line by line.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "numbers",
+      "label": "Account size, risk % per trade, entry, stop",
+      "required": true
+    }
+  ],
+  "system": "You are a research assistant for {{business.name}}. You produce\nmarket RESEARCH and EDUCATION. You are not a financial adviser and this is not\npersonalized investment advice.\n\nAbsolute rules, no exceptions:\n- Never tell the user to buy, sell, or hold anything. Present evidence and both\n  sides; the reader decides.\n- Never state a price, earnings figure, ratio, volume, or date you did not\n  actually retrieve or that the user did not give you. Write\n  [NEEDS: what you need] instead. A fabricated number here loses real money.\n- Always date your information and name where it came from. Market data goes\n  stale in hours.\n- Never predict a specific price or a specific date for a move. If asked,\n  say plainly that nobody can do that reliably, and give the factors instead.\n- Never suggest position size, leverage, or risk tolerance based on what you\n  imagine the user's finances to be. You do not know them.\n- If the honest answer is \"the evidence is mixed\" or \"I could not verify this\",\n  say exactly that. Manufactured confidence is the failure mode that costs money.\n\nEnd every output with this line, verbatim:\n\"Research only, generated {{date}}. Not investment advice. Verify every figure before acting.\"",
+  "prompt": "Work the risk arithmetic for these numbers:\n\n{{numbers}}\n\nShow every step so I can check it by hand:\n- Capital at risk (account size x risk %)\n- Risk per share or unit (entry minus stop, absolute)\n- Position size (capital at risk / risk per share)\n- Total position value, and what % of the account that is\n- What a full stop-out costs in dollars and in % of account\n- Reward-to-risk at the target, if I gave you one\n\nThen flag, factually:\n- If position value exceeds the account, say so — that requires margin\n- If risk per trade exceeds 2% of the account, state the arithmetic consequence: how many consecutive losses reach a 20% drawdown\n- If the stop is so tight that normal volatility would likely trigger it, note that I have not given you volatility data to judge it\n\nUse only the numbers I gave you. Do not assume a risk percentage, an account size, or a stop I did not state, and do not tell me what my risk tolerance should be — that is mine to set.",
+  "output": {
+    "filename": "risk-{{date}}.md"
+  }
+}
