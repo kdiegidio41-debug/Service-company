@@ -98,17 +98,16 @@
     <div class="bar"><i></i><i></i><i></i></div>
 <pre><span class="c-dim">$</span> node cli.js start
 
-  <b>Northside Gutter Co — agent operation running</b>
+  <b>Lunar Loom — agent operation running</b>
 
-  scheduled Competitor Watch  <span class="c-dim">-&gt; tomorrow, 7:00 AM</span>
-  scheduled Lead Finder       <span class="c-dim">-&gt; tomorrow, 8:00 AM</span>
-  scheduled Customer Follow-Up<span class="c-dim">-&gt; tomorrow, 9:00 AM</span>
-  scheduled Weekly Report     <span class="c-dim">-&gt; Monday, 9:00 AM</span>
+  scheduled Trend Scout       <span class="c-dim">-&gt; tomorrow, 7:00 AM</span>
+  scheduled Product Scout     <span class="c-dim">-&gt; Monday, 9:00 AM</span>
+  scheduled Operator Report   <span class="c-dim">-&gt; Monday, 9:00 AM</span>
 
-<span class="c-dim">[8:00:04 AM]</span> running Lead Finder...
-  <span class="c-ok">done in 31.4s</span> <span class="c-dim">-&gt; data/artifacts/leads-2026-09-15.md</span>
-<span class="c-dim">[9:00:02 AM]</span> running Customer Follow-Up...
-  <span class="c-ok">done in 18.7s</span> <span class="c-dim">-&gt; data/artifacts/followups-2026-09-15.md</span>
+<span class="c-dim">[7:00:04 AM]</span> running Trend Scout...
+  <span class="c-ok">done in 28.1s</span> <span class="c-dim">-&gt; data/artifacts/trends-2026-09-16.md</span>
+<span class="c-dim">[9:00:02 AM]</span> running Product Scout...
+  <span class="c-ok">done in 34.7s</span> <span class="c-dim">-&gt; data/artifacts/products-2026-09-16.md</span>
 
   <span class="c-acc">Mission control: http://localhost:4317</span></pre>
   </div>
@@ -157,20 +156,20 @@
   <table>
     <thead><tr><th>Agent</th><th>Runs</th><th>What it does</th></tr></thead>
     <tbody>
-      <tr><td><b>Lead Finder</b></td><td><span class="pill">daily</span></td><td>Web-searches for businesses matching your ideal customer, verified before listing</td></tr>
-      <tr><td><b>Outreach Writer</b></td><td><span class="pill">manual</span></td><td>A cold email plus two follow-ups, written to one lead's actual situation</td></tr>
-      <tr><td><b>Proposal Builder</b></td><td><span class="pill">manual</span></td><td>Call notes into a scoped proposal with a three-tier price ladder</td></tr>
-      <tr><td><b>Competitor Watch</b></td><td><span class="pill">daily</span></td><td>Tracks competitor pricing and positioning, reports only what changed</td></tr>
-      <tr><td><b>Pricing Analyst</b></td><td><span class="pill">manual</span></td><td>Researches real published rates and recommends where you should sit</td></tr>
-      <tr><td><b>SEO Brief</b></td><td><span class="pill">manual</span></td><td>A writer-ready brief built from what currently ranks</td></tr>
-      <tr><td><b>Content Calendar</b></td><td><span class="pill">weekly</span></td><td>A month of content where every piece points at an offer</td></tr>
-      <tr><td><b>Blog Drafter</b></td><td><span class="pill">manual</span></td><td>A full publish-ready draft, not an outline</td></tr>
-      <tr><td><b>Social Repurposer</b></td><td><span class="pill">manual</span></td><td>One long piece into a week of posts that each stand alone</td></tr>
-      <tr><td><b>Inbox Triage</b></td><td><span class="pill">manual</span></td><td>Sorts messages into needs-you, reply-drafted, and later</td></tr>
-      <tr><td><b>Review Responder</b></td><td><span class="pill">manual</span></td><td>Public replies that sound like a person, including the bad ones</td></tr>
-      <tr><td><b>Customer Follow-Up</b></td><td><span class="pill">daily</span></td><td>Today's follow-up list, ordered by what you'll lose if you ignore it</td></tr>
-      <tr><td><b>Weekly Report</b></td><td><span class="pill">weekly</span></td><td>What happened, what it means, and three things to do Monday</td></tr>
-      <tr><td><b>Offer Refiner</b></td><td><span class="pill">manual</span></td><td>Pressure-tests what you sell and names the objection you haven't answered</td></tr>
+      <tr><td><b>Product Scout</b></td><td><span class="pill">weekly</span></td><td>Hunts product ideas with real demand signals, and names the ones already crowded</td></tr>
+      <tr><td><b>Keyword Miner</b></td><td><span class="pill">manual</span></td><td>A marketplace keyword set — 13 tags, long-tails, and the terms to avoid</td></tr>
+      <tr><td><b>Listing Writer</b></td><td><span class="pill">manual</span></td><td>A complete listing: titles, tags, description, FAQ, and a photo shot list</td></tr>
+      <tr><td><b>Listing Doctor</b></td><td><span class="pill">manual</span></td><td>Audits a listing that isn't converting, with fixes ranked by payoff</td></tr>
+      <tr><td><b>Shop Teardown</b></td><td><span class="pill">manual</span></td><td>Reverse-engineers a competitor shop and names three openings</td></tr>
+      <tr><td><b>Margin Checker</b></td><td><span class="pill">manual</span></td><td>Real margin math — fees, shipping, ads, returns — shown line by line</td></tr>
+      <tr><td><b>Offer Designer</b></td><td><span class="pill">manual</span></td><td>Bundles, tiers, order bumps and upsells that raise order value</td></tr>
+      <tr><td><b>Trend Scout</b></td><td><span class="pill">daily</span></td><td>What's actually moving in your niche today, and the non-obvious angle</td></tr>
+      <tr><td><b>Short-Form Writer</b></td><td><span class="pill">manual</span></td><td>Five scripts with hooks that survive the first three seconds</td></tr>
+      <tr><td><b>Repurposer</b></td><td><span class="pill">manual</span></td><td>One asset into a week of posts that each stand alone</td></tr>
+      <tr><td><b>Title Lab</b></td><td><span class="pill">manual</span></td><td>Ten titles plus thumbnail concepts, tested against what ranks</td></tr>
+      <tr><td><b>Review Miner</b></td><td><span class="pill">manual</span></td><td>Mines reviews for copy, complaints, and your next product</td></tr>
+      <tr><td><b>Niche Validator</b></td><td><span class="pill">manual</span></td><td>A straight go / no-go before you spend money</td></tr>
+      <tr><td><b>Operator Report</b></td><td><span class="pill">weekly</span></td><td>What the numbers say and three things to do Monday</td></tr>
     </tbody>
   </table>
 </section>
@@ -182,12 +181,12 @@
   <div class="terminal">
     <div class="bar"><i></i><i></i><i></i></div>
 <pre>{
-  <span class="c-acc">"id"</span>: "quote-chaser",
-  <span class="c-acc">"name"</span>: "Quote Chaser",
+  <span class="c-acc">"id"</span>: "restock-watcher",
+  <span class="c-acc">"name"</span>: "Restock Watcher",
   <span class="c-acc">"schedule"</span>: { "dailyAt": "10:00" },
-  <span class="c-acc">"inputs"</span>: [{ "key": "quotes", "label": "Open quotes", "required": true }],
-  <span class="c-acc">"prompt"</span>: "From these open quotes: {{quotes}} — write today's chase
-             messages for {{business.name}}, most urgent first."
+  <span class="c-acc">"inputs"</span>: [{ "key": "stock", "label": "Current stock", "required": true }],
+  <span class="c-acc">"prompt"</span>: "From this stock list: {{stock}} — what runs out first for
+             {{business.name}}, and what to reorder today."
 }</pre>
   </div>
 </section>

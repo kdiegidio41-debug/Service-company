@@ -1,0 +1,20 @@
+{
+  "id": "margin-checker",
+  "name": "Margin Checker",
+  "category": "money",
+  "description": "Does the real margin math — fees, shipping, ads, returns — and tells you if the price works.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "numbers",
+      "label": "Price, cost of goods, shipping, platform, ad spend",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Run the real margin on this:\n\n{{numbers}}\n\nShow the arithmetic line by line, so I can check it:\n- Revenue per unit\n- Cost of goods\n- Platform and payment processing fees (state the rate you're using; if I didn't give it, mark it [NEEDS: fee rate] rather than assuming)\n- Shipping and packaging\n- Ad cost per sale\n- Returns and defects allowance\n- Net profit per unit and net margin %\n\nThen: the break-even ad spend per sale, the price needed to hit a 30% net margin, and the single biggest cost to attack first.\n\nDo not guess at a number I did not give you. Mark it and carry on.",
+  "output": {
+    "filename": "margin-{{date}}.md"
+  }
+}

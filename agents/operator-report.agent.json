@@ -1,0 +1,22 @@
+{
+  "id": "operator-report",
+  "name": "Operator Report",
+  "category": "research",
+  "description": "Weekly: what your numbers say, what's working, and the three things to do Monday.",
+  "tools": [],
+  "schedule": {
+    "everyHours": 168
+  },
+  "inputs": [
+    {
+      "key": "numbers",
+      "label": "Paste this week's numbers — views, sales, spend, listings",
+      "required": false
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Write the weekly operating report for {{business.name}}, week ending {{date}}.\n\nSource material: {{numbers}}\n\nSections:\n- What happened (facts only, no interpretation)\n- What it means (clearly separated from the facts)\n- What's stuck and why\n- Three things to do Monday, priority order, each with its first concrete action\n\nIf the source material is thin, say what you'd need to make this useful instead of padding it out. Under one page.",
+  "output": {
+    "filename": "operator-{{date}}.md"
+  }
+}

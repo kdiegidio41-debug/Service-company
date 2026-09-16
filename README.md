@@ -26,16 +26,16 @@ An agent is just a file. This is the whole spec format:
 
 ```json
 {
-  "id": "lead-finder",
-  "name": "Lead Finder",
-  "category": "sales",
-  "description": "Searches the web for businesses matching your ICP.",
+  "id": "product-scout",
+  "name": "Product Scout",
+  "category": "store",
+  "description": "Hunts product ideas with real demand signals.",
   "tools": ["web_search"],
-  "schedule": { "dailyAt": "08:00" },
-  "inputs": [{ "key": "territory", "label": "Area to search", "required": true }],
+  "schedule": { "everyHours": 168 },
+  "inputs": [{ "key": "niche", "label": "Niche to hunt in", "required": true }],
   "system": "You work for {{business.name}}...",
-  "prompt": "Find 10 businesses in {{territory}} that fit {{business.audience}}...",
-  "output": { "filename": "leads-{{date}}.md" }
+  "prompt": "Find product opportunities in {{niche}} for {{business.audience}}...",
+  "output": { "filename": "products-{{date}}.md" }
 }
 ```
 
@@ -73,7 +73,7 @@ Vague answers here produce vague output everywhere — be specific.
 **4. Try it without spending anything:**
 
 ```bash
-node cli.js run lead-finder --dry-run
+node cli.js run product-scout --dry-run
 ```
 
 `--dry-run` renders the full prompt and saves it as an artifact, but makes no API
@@ -102,20 +102,25 @@ Add `--dry-run` to any of these to spend nothing.
 
 | Agent | Category | Schedule | What it does |
 | --- | --- | --- | --- |
-| Lead Finder | sales | daily 08:00 | Web-searches for businesses matching your ICP, verified |
-| Outreach Writer | sales | manual | Cold email + two follow-ups for one specific lead |
-| Proposal Builder | sales | manual | Call notes → scoped proposal with a price ladder |
-| Competitor Watch | research | daily 07:00 | Tracks competitor pricing and positioning changes |
-| Pricing Analyst | finance | manual | Researches real market rates, recommends a ladder |
-| SEO Brief | marketing | manual | Writer-ready brief from what actually ranks |
-| Content Calendar | marketing | weekly | A month of content tied to an offer |
-| Blog Drafter | content | manual | Full publish-ready draft |
-| Social Repurposer | content | manual | One long piece → a week of platform-native posts |
-| Inbox Triage | ops | manual | Sorts messages, drafts the routine replies |
-| Review Responder | ops | manual | Public replies, including the hard negative ones |
-| Customer Follow-Up | ops | daily 09:00 | Today's follow-up list from your pipeline notes |
-| Weekly Report | ops | weekly | What happened, what it means, what to do Monday |
-| Offer Refiner | strategy | manual | Pressure-tests what you sell |
+| Product Scout | store | weekly | Hunts product ideas with real demand signals, flags crowded ones |
+| Keyword Miner | store | manual | Marketplace keyword set — 13 tags, long-tails, terms to avoid |
+| Listing Writer | store | manual | Full listing: titles, tags, description, FAQ, photo shot list |
+| Listing Doctor | store | manual | Audits a listing that isn't converting, fixes ranked by payoff |
+| Shop Teardown | store | manual | Reverse-engineers a competitor shop and names their weak spots |
+| Margin Checker | money | manual | Real margin math — fees, shipping, ads, returns — shown line by line |
+| Offer Designer | money | manual | Bundles, tiers, order bumps, and upsells that raise order value |
+| Trend Scout | content | daily 07:00 | What's actually moving in your niche today, and the non-obvious angle |
+| Short-Form Writer | content | manual | 5 TikTok/Reels/Shorts scripts with hooks, shot lists, overlays |
+| Repurposer | content | manual | One asset into a week of platform-native posts |
+| Title Lab | content | manual | 10 titles plus thumbnail concepts, stress-tested against what ranks |
+| Review Miner | research | manual | Mines reviews for copy, complaints, and the next product |
+| Niche Validator | research | manual | A straight go / no-go before you spend money |
+| Operator Report | research | weekly | What the numbers say and three things to do Monday |
+
+`agents/packs/service/` holds a second set of 14 aimed at local service
+businesses (lead finding, proposals, review replies, follow-ups). They're
+inactive — move one up into `agents/` to switch it on, or sell the pack as an
+add-on.
 
 Every agent carries the same house rules: never invent a fact, price, or quote —
 write `[NEEDS: ...]` instead. That constraint is the difference between output

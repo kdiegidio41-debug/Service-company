@@ -1,0 +1,20 @@
+{
+  "id": "review-miner",
+  "name": "Review Miner",
+  "category": "research",
+  "description": "Mines customer reviews — yours or a competitor's — for the product and copy insight buried in them.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "reviews",
+      "label": "Paste the reviews",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Mine these reviews:\n\n{{reviews}}\n\nExtract:\n- The exact phrases buyers use to describe the benefit — verbatim, for use as copy\n- What they complain about, ranked by frequency\n- Unmet needs they mention in passing (this is where the next product is)\n- The objection that shows up before purchase\n- Which complaints are product problems vs. expectation problems\n\nEnd with: one product change, one listing-copy change, and one new product idea — each traceable to a specific review. Quote the review that drove it.",
+  "output": {
+    "filename": "review-mining-{{date}}.md"
+  }
+}

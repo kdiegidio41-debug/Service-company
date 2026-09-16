@@ -1,0 +1,20 @@
+{
+  "id": "offer-designer",
+  "name": "Offer Designer",
+  "category": "money",
+  "description": "Turns single products into bundles, tiers, and upsells that raise order value.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "products",
+      "label": "What you currently sell",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Design a better offer structure from these products: {{products}}\n\nProduce:\n- 3 bundles, each with the reason a buyer picks it over the single item\n- A good/better/best ladder and the one feature that moves someone up a tier\n- 2 order-bump ideas (cheap, added at checkout)\n- 1 upsell for after purchase\n- A reason each bundle is worth more than its parts that is not just \"saves money\"\n\nFor every price, use [PRICE: which item] unless I gave you the number. Flag any bundle that would hurt margin.",
+  "output": {
+    "filename": "offers-{{date}}.md"
+  }
+}

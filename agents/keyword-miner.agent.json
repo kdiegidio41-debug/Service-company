@@ -1,0 +1,22 @@
+{
+  "id": "keyword-miner",
+  "name": "Keyword Miner",
+  "category": "store",
+  "description": "Builds a marketplace keyword set for a product — the long-tail buyers actually type.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "product",
+      "label": "The product to rank",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Build a marketplace keyword set for: {{product}}.\n\nSearch for how buyers actually describe this. Produce:\n- 13 tags at 20 characters or under (Etsy's limit), ordered best first\n- 5 long-tail phrases a ready-to-buy shopper types\n- 5 terms to avoid and why (too broad, wrong intent, or wrong audience)\n- Occasion and gift-angle variants, if this product has any\n\nMark anything you inferred rather than found. Do not state search volumes you did not see.",
+  "output": {
+    "filename": "keywords-{{date}}.md"
+  }
+}

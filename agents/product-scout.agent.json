@@ -1,0 +1,24 @@
+{
+  "id": "product-scout",
+  "name": "Product Scout",
+  "category": "store",
+  "description": "Hunts for product ideas with real demand signals and reports what's already crowded.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": {
+    "everyHours": 168
+  },
+  "inputs": [
+    {
+      "key": "niche",
+      "label": "Niche or category to hunt in",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Find product opportunities in: {{niche}}.\n\nSearch for what is actually selling and what people are asking for. Return 8 ideas as a table: Product, Demand signal (quote what you found and where), Competition level, Why it fits {{business.name}}, Rough effort to launch.\n\nThen two sections:\n- \"Crowded — skip these\": ideas that look good but the market is saturated, with what you saw.\n- \"What I could not verify\": anything you are guessing at. Be honest here; a short verified list beats a long invented one.",
+  "output": {
+    "filename": "products-{{date}}.md"
+  }
+}

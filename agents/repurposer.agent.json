@@ -1,0 +1,20 @@
+{
+  "id": "repurposer",
+  "name": "Repurposer",
+  "category": "content",
+  "description": "Splits one asset into a week of platform-native posts that each stand alone.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "source",
+      "label": "Paste the video, article, or notes",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Repurpose this into a week of content:\n\n{{source}}\n\nProduce: 3 short-form video scripts, 4 image-post captions, 2 carousel outlines (slide by slide), and 1 email.\n\nEvery piece must make sense to someone who never saw the original. Rewrite for the format — do not chop the source into fragments. No hashtag walls.",
+  "output": {
+    "filename": "repurposed-{{date}}.md"
+  }
+}

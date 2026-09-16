@@ -1,0 +1,25 @@
+{
+  "id": "listing-writer",
+  "name": "Listing Writer",
+  "category": "store",
+  "description": "Writes a complete marketplace listing — title, tags, description, and the photo shot list.",
+  "tools": [],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "product",
+      "label": "Product details, materials, sizes",
+      "required": true
+    },
+    {
+      "key": "keywords",
+      "label": "Target keywords, if you have them",
+      "required": false
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Write a complete marketplace listing for: {{product}}\nTarget keywords: {{keywords}}\n\nProduce:\n- 3 title options, each under 140 characters, front-loading the buying term\n- 13 tags, 20 characters max each\n- A description: what it is in the first two lines (buyers stop reading fast), then materials, dimensions, what's included, processing and shipping, care\n- A FAQ answering the 4 questions that cause \"message seller\" instead of \"buy\"\n- A photo shot list: 10 shots in order, saying what each one has to prove\n\nLeave anything you weren't told as [NEEDS: ...]. Do not invent dimensions or materials.",
+  "output": {
+    "filename": "listing-{{date}}.md"
+  }
+}

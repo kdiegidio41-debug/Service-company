@@ -1,0 +1,22 @@
+{
+  "id": "title-lab",
+  "name": "Title Lab",
+  "category": "content",
+  "description": "Generates and stress-tests titles and thumbnail concepts against what people actually click.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "video",
+      "label": "What the video or post is about",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Build titles and thumbnails for: {{video}}\n\nSearch what currently ranks or trends for this topic and note what those titles do.\n\nThen produce:\n- 10 titles under 60 characters, each using a different mechanism, ordered by your confidence\n- For the top 3: a thumbnail concept — the image, the 3-word text, the facial expression or focal point\n- The one title you would actually ship, and the specific reason\n- 2 titles that would get clicks but under-deliver, marked as traps to avoid\n\nSay which titles you based on real examples and which you invented.",
+  "output": {
+    "filename": "titles-{{date}}.md"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "shop-teardown",
+  "name": "Shop Teardown",
+  "category": "store",
+  "description": "Reverse-engineers a competitor shop: what they sell, how they price, and what they're bad at.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": null,
+  "inputs": [
+    {
+      "key": "shop",
+      "label": "Competitor shop name or URL",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Tear down this competitor: {{shop}}\n\nSearch and report only what you can actually see:\n- What they lead with and who they're clearly targeting\n- Their range and where the bulk of their listings sit\n- Prices you can read (quote them; if hidden, say \"not visible\")\n- How they photograph and describe things\n- What their reviews praise, and what the negative ones complain about\n\nThen \"Where they're weak\" — three specific openings for {{business.name}}, each tied to something you observed. No generic advice.",
+  "output": {
+    "filename": "teardown-{{date}}.md"
+  }
+}

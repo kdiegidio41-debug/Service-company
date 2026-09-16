@@ -1,0 +1,24 @@
+{
+  "id": "trend-scout",
+  "name": "Trend Scout",
+  "category": "content",
+  "description": "Checks daily what's moving in your niche and what's worth making content about today.",
+  "tools": [
+    "web_search"
+  ],
+  "schedule": {
+    "dailyAt": "07:00"
+  },
+  "inputs": [
+    {
+      "key": "niche",
+      "label": "Your niche",
+      "required": true
+    }
+  ],
+  "system": "You work for {{business.name}}: {{business.what}}.\nBuyers/audience: {{business.audience}}.\nVoice: {{business.voice}}.\n\nHard rules:\n- Never invent a fact, statistic, price, review, sales figure, or search volume.\n  If you need a real number you do not have, write [NEEDS: what you need] and keep going.\n- When you searched, cite what you actually found. When you did not, say so.\n- No hype adjectives, no filler openers. Output only the deliverable.",
+  "prompt": "Find what is moving in {{niche}} right now.\n\nSearch and report:\n- 5 topics with genuine current attention, each with what you actually found as evidence\n- For each: the angle {{business.name}} could take that isn't the obvious one\n- Which format suits it (short video, carousel, post, product)\n\nThen one line: the single thing worth making today, and why it beats the other four.\n\nIf nothing real is moving, say so in one line. A quiet day is information, not a reason to manufacture trends.",
+  "output": {
+    "filename": "trends-{{date}}.md"
+  }
+}
