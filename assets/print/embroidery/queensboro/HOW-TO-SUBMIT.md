@@ -3,12 +3,12 @@
 Two files in this folder. Everything else in `assets/print/embroidery/` is for a human
 to read — Queensboro's uploader only wants artwork.
 
-| File | Upload as | Notes |
+| File | Use | Notes |
 | --- | --- | --- |
-| `EVERGLOW-front-logo.pdf` | Front / left chest | **Use these.** Vector, 11 KB |
-| `EVERGLOW-back-logo.pdf` | Full back | Vector, 18 KB |
-| `EVERGLOW-front-logo.png` | — | Transparent PNG fallback, 300dpi |
-| `EVERGLOW-back-logo.png` | — | Transparent PNG fallback, 300dpi |
+| `EVERGLOW-crewneck-LOGOS.pdf` | **Upload this.** | One page, both logos, labelled FRONT and BACK. Vector, 24 KB |
+| `EVERGLOW-front-logo.pdf` | If they want one file per position | Vector, 11 KB |
+| `EVERGLOW-back-logo.pdf` | If they want one file per position | Vector, 18 KB |
+| `EVERGLOW-*-logo.png` | If the uploader refuses a PDF | Transparent, 300dpi |
 
 **Upload the PDFs.** Queensboro accepts .AI, .PSD, .EPS, .PNG, .JPEG and .PDF under
 15MB, and for embroidery a vector file beats a raster one every time — the digitiser
