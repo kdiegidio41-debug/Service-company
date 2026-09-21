@@ -18,7 +18,10 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 garment colour — take whatever green Carhartt actually offers and match the *thread* to
 the brand. Nobody holds a swatch up to a hoodie.
 
-**Quantity: 12** (six crew, two each). Sizes to confirm.
+**Quantity: 5.** Sizes to confirm.
+
+Please confirm you can run five — some shops set a 6- or 12-piece minimum on
+embroidery. We expect to reorder, so keep the stitch files on hand.
 
 ---
 
@@ -64,4 +67,4 @@ floats with no fitting. This is deliberate — do not "correct" it back to green
 ## Before the full run
 
 **Send a sew-out** — a test stitch of the left-chest mark on the actual garment fabric,
-not on stabiliser scrap. We'll approve it before you stitch twelve.
+not on stabiliser scrap. We'll approve it before you stitch the run.
