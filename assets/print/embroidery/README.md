@@ -4,7 +4,8 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 
 | File | What it is |
 | --- | --- |
-| `EVERGLOW-crewneck-1page.pdf` | **Send this.** One page, letter landscape: both sides, sizes, thread colours, notes. |
+| `EVERGLOW-crewneck-design.pdf` | **The design, nothing else.** Front and back on one page — for upload forms that only want artwork. |
+| `EVERGLOW-crewneck-1page.pdf` | Same design plus sizes, thread colours and notes, one page. |
 | `EVERGLOW-crewneck-FINAL.pdf` | The same plus front and back artwork at true printed scale, 3 pages. |
 | `front-layout-10.5in.pdf` | Front artwork on its own, if they want it separately. |
 | `mark-3in.svg` | Bulb mark on its own. Not used on this garment — keep for hats and stickers. |
