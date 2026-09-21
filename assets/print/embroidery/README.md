@@ -4,6 +4,7 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 
 | File | What it is |
 | --- | --- |
+| `hoodie-spec-sheet.pdf` | **Start here.** One page: both views, positions, thread colours, digitiser notes. |
 | `mark-3in.svg` | Bulb mark, **left chest**, 3in wide. Vector. |
 | `back-lockup-11in.pdf` | Full back lockup — wordmark, descriptor, phone. Fonts embedded, nothing to install. |
 
