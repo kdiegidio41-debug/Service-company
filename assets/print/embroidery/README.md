@@ -5,7 +5,7 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 | File | What it is |
 | --- | --- |
 | `crewneck-spec-sheet.pdf` | **Start here.** One page: both views, positions, thread colours, digitiser notes. |
-| `chest-lockup-3.5in.pdf` | Wordmark, **left chest**, 3.5in wide. Fonts embedded. |
+| `front-layout-10.5in.pdf` | The whole **front** at true relative scale — string, wordmark, name slot. Fonts embedded. |
 | `mark-3in.svg` | Bulb mark on its own. Not used on this garment — keep for hats and stickers. |
 | `back-lockup-11in.pdf` | Full back lockup — wordmark, descriptor, phone. Fonts embedded, nothing to install. |
 
@@ -30,8 +30,14 @@ embroidery. We expect to reorder, so keep the stitch files on hand.
 
 | Position | Artwork | Size | Placement |
 | --- | --- | --- | --- |
-| Left chest | `chest-lockup-3.5in.pdf` | 3.5in wide | Standard left-chest, ~7in down from shoulder seam |
-| **Right chest** | Wearer's first name | 0.6in caps | Same height as the lockup, mirrored across the centre |
+| Upper chest | Light string | 10.5in wide | Arcs across the chest, ~5in below the collar |
+| Left chest | Wordmark | 4.2in wide | Hangs below the string, 0.78in caps |
+| **Right chest** | Wearer's first name | 0.78in caps | Same baseline as the wordmark, mirrored across the centre |
+
+The front is one composition, not three hits: the string spans the chest and the
+wordmark and the name hang beneath it. Keep the relative positions in
+`front-layout-10.5in.pdf` — pulling the two text elements apart or centring them
+breaks the effect.
 | Back | `back-lockup-11in.pdf` | 11in wide | Centred, ~4in below collar seam |
 
 The back carries a strung-lights graphic above the wordmark. It is what tells a
@@ -95,7 +101,8 @@ worth it: this graphic is what tells a stranger the trade.
    tones, lightest at the upper left, darkest at the lower right. How this is handled is
    the single thing that decides whether the mark looks good — please send a sew-out.
 2. **No puff, no 3D foam, no bevel, no outline** on the mark. Flat fill only.
-3. **The string of lights** is a simple curved run with five bulbs — satin stitch on
+3. **The string of lights** appears on both faces — 10.5in across the chest, 11in
+   across the back. Same five colours, same order. It is a simple curved run with five bulbs — satin stitch on
    the wire, fill on the bulbs. Low stitch count, five thread colours, and it does
    more work than anything else on the garment.
 4. **The back may be better as tackle twill** than embroidery. At 11in the wordmark is a
