@@ -5,7 +5,8 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 | File | What it is |
 | --- | --- |
 | `crewneck-spec-sheet.pdf` | **Start here.** One page: both views, positions, thread colours, digitiser notes. |
-| `mark-3in.svg` | Bulb mark, **left chest**, 3in wide. Vector. |
+| `chest-lockup-3.5in.pdf` | Wordmark, **left chest**, 3.5in wide. Fonts embedded. |
+| `mark-3in.svg` | Bulb mark on its own. Not used on this garment — keep for hats and stickers. |
 | `back-lockup-11in.pdf` | Full back lockup — wordmark, descriptor, phone. Fonts embedded, nothing to install. |
 
 ---
@@ -29,11 +30,36 @@ embroidery. We expect to reorder, so keep the stitch files on hand.
 
 | Position | Artwork | Size | Placement |
 | --- | --- | --- | --- |
-| Left chest | `mark-3in.svg` | 3in wide | Standard left-chest, ~7in down from shoulder seam |
+| Left chest | `chest-lockup-3.5in.pdf` | 3.5in wide | Standard left-chest, ~7in down from shoulder seam |
+| **Right chest** | Wearer's first name | 0.6in caps | Same height as the lockup, mirrored across the centre |
 | Back | `back-lockup-11in.pdf` | 11in wide | Centred, ~4in below collar seam |
 
 The back carries a strung-lights graphic above the wordmark. It is what tells a
 passer-by the trade before they read a word — please don't drop it to save stitches.
+
+---
+
+## Names — one per garment
+
+Each sweatshirt carries the wearer's **first name only**, on the wearer's right
+chest, in Inter Bold, Snow `#F7F9FC`, matched to the height of the lockup opposite.
+
+A homeowner is handing strangers a ladder and their roofline. A first name turns
+"some guy on my roof" into "Kris", and it is the cheapest trust you can buy. It also
+tends to show up in reviews by name, which is free.
+
+Names to stitch — **confirm before the run:**
+
+| Garment | Name |
+| --- | --- |
+| 1 | KRIS |
+| 2 | _(to confirm)_ |
+| 3 | _(to confirm)_ |
+| 4 | _(to confirm)_ |
+| 5 | _(to confirm)_ |
+
+Name drops are usually $5–8 each. Convention is logo on the wearer's left, name on
+the right — please don't swap them.
 
 ---
 
