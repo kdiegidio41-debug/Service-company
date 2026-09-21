@@ -1,10 +1,10 @@
-# Embroidery artwork package — Everglow crew hoodie
+# Embroidery artwork package — Everglow crewneck sweatshirt
 
 Hand this whole folder to the embroiderer. Everything they need is here.
 
 | File | What it is |
 | --- | --- |
-| `hoodie-spec-sheet.pdf` | **Start here.** One page: both views, positions, thread colours, digitiser notes. |
+| `crewneck-spec-sheet.pdf` | **Start here.** One page: both views, positions, thread colours, digitiser notes. |
 | `mark-3in.svg` | Bulb mark, **left chest**, 3in wide. Vector. |
 | `back-lockup-11in.pdf` | Full back lockup — wordmark, descriptor, phone. Fonts embedded, nothing to install. |
 
@@ -12,8 +12,9 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 
 ## Garment
 
-**Carhartt Midweight Hooded Sweatshirt, K121** — 10.5 oz fleece, 50/50 cotton/poly
-(blend varies by colour), triple-stitched main seams, rib-knit cuffs and waistband.
+**Carhartt Midweight Crewneck Sweatshirt, K124** — 10.5 oz fleece, 50/50 cotton/poly
+(Heather Gray is 70/30), crewneck with V-stitch, rib-knit cuffs and waist, Carhartt
+patch above the hem.
 
 **Colour: black.** Closest stock match to our Midnight `#0B1220`.
 
