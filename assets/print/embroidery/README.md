@@ -48,7 +48,18 @@ Match to Madeira / Isacord equivalents — these are the source hexes:
 | Wordmark EVERGL_W | Snow | `#F7F9FC` |
 | CHRISTMAS LIGHT INSTALLATION | Warm white | `#FFE7C2` |
 | Light-string wire | Frost green | `#3E8F6E` |
-| String bulbs | Bulb amber | `#FFC46B` |
+| String bulb 1 | Cranberry | `#C2413C` |
+| String bulb 2 | Bulb amber | `#FFC46B` |
+| String bulb 3 | Frost green | `#3E8F6E` |
+| String bulb 4 | Light blue | `#5B9BD5` |
+| String bulb 5 | Warm white | `#FFE7C2` |
+
+The five string bulbs run **left to right: red, amber, green, blue, warm white.**
+Light blue is the one colour here that is not in the brand palette — it is there
+because a string without a blue does not read as Christmas lights. Keep it.
+
+Five bulb colours means five thread changes. It adds a little to the price and it is
+worth it: this graphic is what tells a stranger the trade.
 | Phone number | Bulb amber | `#FFC46B` |
 
 ## Notes for the digitiser
@@ -58,7 +69,8 @@ Match to Madeira / Isacord equivalents — these are the source hexes:
    the single thing that decides whether the mark looks good — please send a sew-out.
 2. **No puff, no 3D foam, no bevel, no outline** on the mark. Flat fill only.
 3. **The string of lights** is a simple curved run with five bulbs — satin stitch on
-   the wire, fill on the bulbs. Cheap in stitches, and it does the most work.
+   the wire, fill on the bulbs. Low stitch count, five thread colours, and it does
+   more work than anything else on the garment.
 4. **The back may be better as tackle twill** than embroidery. At 11in the wordmark is a
    high stitch count — stiff and expensive. Please quote both ways.
 5. Do not stretch, rotate or arch the wordmark.
