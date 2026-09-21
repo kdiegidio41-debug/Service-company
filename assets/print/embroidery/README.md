@@ -1,0 +1,67 @@
+# Embroidery artwork package — Everglow crew hoodie
+
+Hand this whole folder to the embroiderer. Everything they need is here.
+
+| File | What it is |
+| --- | --- |
+| `mark-3in.svg` | Bulb mark, **left chest**, 3in wide. Vector. |
+| `back-lockup-11in.pdf` | Full back lockup — wordmark, descriptor, phone. Fonts embedded, nothing to install. |
+
+---
+
+## Garment
+
+**Carhartt Midweight Hooded Sweatshirt, K121** — 10.5 oz fleece, 50/50 cotton/poly
+(blend varies by colour), triple-stitched main seams, rib-knit cuffs and waistband.
+
+**Colour: their closest dark green.** Pine `#14513C` is our brand hex, not a stock
+garment colour — take whatever green Carhartt actually offers and match the *thread* to
+the brand. Nobody holds a swatch up to a hoodie.
+
+**Quantity: 12** (six crew, two each). Sizes to confirm.
+
+---
+
+## Positions
+
+| Position | Artwork | Size | Placement |
+| --- | --- | --- | --- |
+| Left chest | `mark-3in.svg` | 3in wide | Standard left-chest, ~7in down from shoulder seam |
+| Back | `back-lockup-11in.pdf` | 11in wide | Centred, ~4in below collar seam |
+
+---
+
+## Thread colours
+
+Match to Madeira / Isacord equivalents — these are the source hexes:
+
+| Element | Colour | Hex |
+| --- | --- | --- |
+| Bulb body | Bulb amber | `#FFC46B` |
+| Bulb highlight | Warm white | `#FFF7E9` |
+| Bulb cap / ferrule | Snow | `#F7F9FC` |
+| Wordmark EVERGL_W | Snow | `#F7F9FC` |
+| PROFESSIONAL HOLIDAY LIGHTING | Snow | `#F7F9FC` |
+| Phone number | Bulb amber | `#FFC46B` |
+
+**The cap is Snow, not green.** On a green garment a green cap disappears and the bulb
+floats with no fitting. This is deliberate — do not "correct" it back to green.
+
+---
+
+## Notes for the digitiser
+
+1. **The bulb has a radial gradient. Thread can't do that.** Render it in 2–3 amber
+   tones, lightest at the upper left, darkest at the lower right. How this is handled is
+   the single thing that decides whether the mark looks good — please send a sew-out.
+2. **No puff, no 3D foam, no bevel, no outline** on the mark. Flat fill only.
+3. **The back may be better as tackle twill** than embroidery. At 11in the wordmark is a
+   high stitch count — stiff and expensive. Please quote both ways.
+4. Do not stretch, rotate or arch the wordmark.
+
+---
+
+## Before the full run
+
+**Send a sew-out** — a test stitch of the left-chest mark on the actual garment fabric,
+not on stabiliser scrap. We'll approve it before you stitch twelve.
