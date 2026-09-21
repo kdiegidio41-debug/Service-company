@@ -4,8 +4,8 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 
 | File | What it is |
 | --- | --- |
-| `crewneck-spec-sheet.pdf` | **Start here.** One page: both views, positions, thread colours, digitiser notes. |
-| `front-layout-10.5in.pdf` | The whole **front** at true relative scale — string, wordmark, name slot. Fonts embedded. |
+| `EVERGLOW-crewneck-FINAL.pdf` | **Send this.** 3 pages: spec, then front and back artwork at true scale. |
+| `front-layout-10.5in.pdf` | Front artwork on its own, if they want it separately. |
 | `mark-3in.svg` | Bulb mark on its own. Not used on this garment — keep for hats and stickers. |
 | `back-lockup-11in.pdf` | Full back lockup — wordmark, descriptor, phone. Fonts embedded, nothing to install. |
 
