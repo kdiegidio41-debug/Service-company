@@ -3,20 +3,17 @@
 Two files in this folder. Everything else in `assets/print/embroidery/` is for a human
 to read — Queensboro's uploader only wants artwork.
 
-| File | Use | Notes |
-| --- | --- | --- |
-| `EVERGLOW-crewneck-LOGOS.pdf` | **Upload this.** | One page, both logos, labelled FRONT and BACK. Vector, 24 KB |
-| `EVERGLOW-front-logo.pdf` | If they want one file per position | Vector, 11 KB |
-| `EVERGLOW-back-logo.pdf` | If they want one file per position | Vector, 18 KB |
-| `EVERGLOW-*-logo.png` | If the uploader refuses a PDF | Transparent, 300dpi |
+| File | Use |
+| --- | --- |
+| `EVERGLOW-LOGOS-12x12.png` | **Upload this first.** 12×12in, 300dpi, transparent — Queensboro's stated spec, exactly. 0.4 MB. |
+| `EVERGLOW-LOGOS-12x12.pdf` | If they'd rather have vector. Same 12×12 canvas, 23 KB. |
+| `EVERGLOW-front-logo.pdf` / `-back-logo.pdf` | If the form wants one file per position. |
 
-**Upload the PDFs.** Queensboro accepts .AI, .PSD, .EPS, .PNG, .JPEG and .PDF under
-15MB, and for embroidery a vector file beats a raster one every time — the digitiser
-gets clean paths instead of pixels to trace. Both PDFs are pure vector with the fonts
-embedded, and they are tiny.
+Queensboro asks for **300dpi, 12×12 inches, transparent background**, and accepts
+.AI, .PSD, .EPS, .PNG, .JPEG and .PDF under 15MB. The 12×12 PNG above is built to
+that spec to the pixel: 3600 × 3600 at 300dpi with a real alpha channel.
 
-The PNGs are there only if their uploader rejects the PDF for any reason. They are
-transparent and 300dpi, which is Queensboro's stated preference for raster.
+Both logos sit on the one canvas, labelled FRONT and BACK.
 
 ---
 
