@@ -3,14 +3,20 @@
 Two files in this folder. Everything else in `assets/print/embroidery/` is for a human
 to read — Queensboro's uploader only wants artwork.
 
-| File | Upload as | Size |
+| File | Upload as | Notes |
 | --- | --- | --- |
-| `EVERGLOW-front-logo.png` | Front / left chest | 10.5 × 3.7in @ 300dpi |
-| `EVERGLOW-back-logo.png` | Full back | 11 × 9.3in @ 300dpi |
+| `EVERGLOW-front-logo.pdf` | Front / left chest | **Use these.** Vector, 11 KB |
+| `EVERGLOW-back-logo.pdf` | Full back | Vector, 18 KB |
+| `EVERGLOW-front-logo.png` | — | Transparent PNG fallback, 300dpi |
+| `EVERGLOW-back-logo.png` | — | Transparent PNG fallback, 300dpi |
 
-Both are transparent PNG, 300dpi, well under their 15MB cap. Queensboro accepts
-.AI, .PSD, .EPS, .PNG, .JPEG and .PDF and asks for 300dpi on a transparent background,
-so these are exactly to spec.
+**Upload the PDFs.** Queensboro accepts .AI, .PSD, .EPS, .PNG, .JPEG and .PDF under
+15MB, and for embroidery a vector file beats a raster one every time — the digitiser
+gets clean paths instead of pixels to trace. Both PDFs are pure vector with the fonts
+embedded, and they are tiny.
+
+The PNGs are there only if their uploader rejects the PDF for any reason. They are
+transparent and 300dpi, which is Queensboro's stated preference for raster.
 
 ---
 
@@ -29,9 +35,16 @@ your crew.
 
 ## ⚠ The preview will look broken. It isn't.
 
-**The wordmark is white, so against Queensboro's white uploader background it will look
-invisible or nearly gone.** That is correct — the garment is black, so the thread has
-to be white. Do not "fix" it by darkening the artwork.
+**The wordmark is white, because the garment is black and the thread has to be white.**
+Do not "fix" it by darkening the artwork.
+
+The PDFs carry a **black background swatch** behind the artwork for exactly this reason
+— it is how a knockout logo is normally supplied to a decorator, and it makes the white
+elements visible. The black is a background, not part of the design; Queensboro will
+drop it.
+
+If you use the transparent PNGs instead, the white wordmark will look invisible against
+their white uploader UI. That is expected, not a broken file.
 
 Two things to do about it:
 1. Set the **garment colour to black first**, before you judge the logo preview.
