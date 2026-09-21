@@ -14,9 +14,7 @@ Hand this whole folder to the embroiderer. Everything they need is here.
 **Carhartt Midweight Hooded Sweatshirt, K121** — 10.5 oz fleece, 50/50 cotton/poly
 (blend varies by colour), triple-stitched main seams, rib-knit cuffs and waistband.
 
-**Colour: their closest dark green.** Pine `#14513C` is our brand hex, not a stock
-garment colour — take whatever green Carhartt actually offers and match the *thread* to
-the brand. Nobody holds a swatch up to a hoodie.
+**Colour: black.** Closest stock match to our Midnight `#0B1220`.
 
 **Quantity: 5.** Sizes to confirm.
 
@@ -42,15 +40,10 @@ Match to Madeira / Isacord equivalents — these are the source hexes:
 | --- | --- | --- |
 | Bulb body | Bulb amber | `#FFC46B` |
 | Bulb highlight | Warm white | `#FFF7E9` |
-| Bulb cap / ferrule | Snow | `#F7F9FC` |
+| Bulb cap / ferrule | Frost green | `#3E8F6E` |
 | Wordmark EVERGL_W | Snow | `#F7F9FC` |
-| PROFESSIONAL HOLIDAY LIGHTING | Snow | `#F7F9FC` |
+| PROFESSIONAL HOLIDAY LIGHTING | Slate | `#93A2B8` |
 | Phone number | Bulb amber | `#FFC46B` |
-
-**The cap is Snow, not green.** On a green garment a green cap disappears and the bulb
-floats with no fitting. This is deliberate — do not "correct" it back to green.
-
----
 
 ## Notes for the digitiser
 

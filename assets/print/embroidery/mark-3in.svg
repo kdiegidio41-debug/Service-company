@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Everglow bulb mark — LEFT CHEST, 3in wide, for embroidery on Pine green.
-     Cap is Snow (not Frost Green) so it does not vanish on a green garment. -->
+<!-- Everglow bulb mark — LEFT CHEST, 3in wide, for embroidery on a BLACK garment. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="3in" height="3in">
   <title>Everglow bulb mark, left chest, 3in</title>
   <defs>
@@ -12,8 +11,8 @@
   </defs>
   <!-- NOTE TO DIGITISER: thread cannot render the gradient above.
        Render the bulb in 2-3 amber tones, lightest at upper left. -->
-  <rect x="26.5" y="7" width="11" height="4" rx="1.6" fill="#F7F9FC"/>
-  <path d="M26 12h12a2 2 0 0 1 2 2v3H24v-3a2 2 0 0 1 2-2z" fill="#F7F9FC"/>
+  <rect x="26.5" y="7" width="11" height="4" rx="1.6" fill="#3E8F6E"/>
+  <path d="M26 12h12a2 2 0 0 1 2 2v3H24v-3a2 2 0 0 1 2-2z" fill="#3E8F6E"/>
   <circle cx="32" cy="35" r="17" fill="url(#bulbFill)"/>
   <ellipse cx="26" cy="29" rx="3.4" ry="4.6" fill="#FFF7E9" opacity=".62" transform="rotate(-24 26 29)"/>
 </svg>
