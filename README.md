@@ -57,8 +57,10 @@ may legally be placed.
 
 ```
 ├── index.html              Homepage — hero, process, services, gallery,
-│                           reviews, service area, FAQ, CTA
+│                           service area, FAQ, CTA
 ├── quote.html              4-step quote request form (the conversion page)
+├── privacy.html            Privacy policy
+├── terms.html              Terms of service — estimates are not quotes
 ├── assets/
 │   ├── css/styles.css      Design system + all homepage components
 │   ├── css/quote.css       Quote form styles
@@ -80,8 +82,10 @@ may legally be placed.
     ├── YARD_SIGN.md        Sign design rationale, print spec, QR setup
     ├── SIGN_PLACEMENT.md   Where signs may legally go in Montgomery County,
     │                       25 ranked corridor targets, permission script
-    └── PROSPECTING.md      Building the lead list legally — why not to cold-text,
-                            direct mail, and the commercial walk-in system
+    ├── PROSPECTING.md      Building the lead list legally — why not to cold-text,
+    │                       direct mail, and the commercial walk-in system
+    └── LEGAL.md            What the site's privacy/terms cover, and the LLC and
+                            insurance steps a website cannot substitute for
 ```
 
 The website has no build step, no dependencies, no framework. Open `index.html` and it runs.
