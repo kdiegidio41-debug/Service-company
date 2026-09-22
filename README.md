@@ -22,15 +22,21 @@ The site is complete and functional, but it ships with **placeholder business de
 | Chestnut Hill, Blue Bell, Ambler, … | **Your** service area | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
 | The 15-mile radius | Your real radius | `index.html` service-area heading |
 | Social links (`href="#"`) | Your Instagram / Facebook / Google profile | `index.html` footer |
+| `[LEGAL BUSINESS NAME]`, `[STATE]`, `[MAILING ADDRESS]`, `[LLC / sole proprietorship]` | Your registered business details | `privacy.html`, `terms.html` |
 
 **Confirm these promises are true before going live.** The page makes them in plain
 language, so they have to hold up:
 
-- Quotes back **within 24 hours**
-- Service calls **within 24 hours**, free, from install to takedown
-- **Clip-only** installs (no nails, staples, adhesive) and ladder stabilizers
-- **Fully insured** crews, and a certificate of insurance on request for commercial jobs
-- Takedown in **early January**, and a **storage option** for next season
+- Quotes back **usually within 24 hours**
+- Service calls for anything you installed are **included** until takedown, and you
+  **aim** to be out within 24 hours, weather permitting
+- **Clip-only** installs (no nails, staples, adhesive), with ladders set so nothing rests on gutters
+- Takedown in **early January**, and a **storage option** quoted up front
+- On `quote.html`: a **50% deposit** books the install week, balance due on install day
+
+The site deliberately **does not claim you're insured.** Once you have a general liability
+policy, you can add "Fully insured" back (and "certificate of insurance on request" for
+commercial). Don't add it a day before the policy is active.
 
 Things that are **deliberately not on the page**, and should stay off until they're real:
 
@@ -41,6 +47,51 @@ Things that are **deliberately not on the page**, and should stay off until they
    penalizes invented ratings. Add one only when you have real reviews to count.
 3. **Fake scarcity.** The "Installation Spots Are Limited" banner says the season fills up.
    It never shows a made-up number like "only 3 spots left." Keep it that way.
+
+---
+
+## Staying out of legal trouble
+
+The site is written to avoid the things that most often get small service businesses
+sued or fined. None of this is legal advice. Have a local attorney review `privacy.html`,
+`terms.html`, and your customer contract before launch; for a small business that's
+usually a short, flat-fee job.
+
+**Already handled on the site**
+
+- **No unprovable claims.** No "best in town," no fake reviews, no invented star ratings, no
+  fake countdowns, no insurance claim until you have a policy. Promises are worded as
+  what you *aim* to do ("usually," "weather permitting"), and actual guarantees are left
+  to your written service agreement.
+- **Texting consent (TCPA).** Both forms require a checkbox that says you may call or text,
+  including automated texts, that consent isn't a condition of purchase, and that they can
+  reply STOP. Unwanted texts can cost $500 to $1,500 *per message* under federal law, so
+  honor every STOP and never text a number that didn't opt in.
+- **Privacy Policy and Terms of Use** (`privacy.html`, `terms.html`), linked in the footer
+  and from both consent boxes. They say estimates aren't binding, renderings are
+  illustrations, and a submitted form doesn't reserve a date.
+- **Images.** The renderings are generated for this site and labeled as illustrations.
+- **Accessibility.** Keyboard-usable, labeled forms, alt text on every image. Websites that
+  don't work with screen readers do get sued; keep writing alt text for new photos.
+
+**What protects you most is off the website**
+
+1. **Form an LLC** and use the legal name in `privacy.html` / `terms.html`. It keeps a
+   lawsuit against the business away from your personal savings.
+2. **General liability insurance** before anyone climbs a ladder. Workers' comp as soon as
+   you have employees. This is the big one for a business that works on roofs.
+3. **A written service agreement for every job** (have a lawyer draft it once): scope,
+   price, deposit and cancellation terms, what "service calls included" covers, how
+   property damage is handled, weather delays, takedown window, and a **photo release**.
+4. **Check Pennsylvania's Home Improvement Consumer Protection Act.** If it applies to your
+   work (the site's service area is in PA), you must register with the Attorney General and
+   your contracts need specific terms, including a 3-day cancellation right.
+5. **Check the name before you print anything.** Search "EverGlow" in the USPTO trademark
+   database and your state's business registry. A name conflict can force a rebrand after
+   you've paid for signs, shirts, and a truck wrap.
+6. **Only use photos you own.** Photos from Google, Pinterest, or another company's website
+   are copyrighted, and using them can bring takedown demands and damages claims. Also
+   ask customers before posting their house, and blur house numbers.
 
 ---
 
@@ -58,8 +109,10 @@ slider carry an "Illustrative rendering" caption, and so does the footer.
   buttons over the snow).
 - `service-*.*` are the five service-card images. `og.jpg` is the link-preview image.
 
-**Replace them with real photos of your own installs as soon as you have them.** A real
-before/after of a real customer's house is the highest-converting asset you'll own. Shoot
+**Replace them with real photos of your own installs as soon as you have them**, meaning
+photos you took (or paid a photographer to take for you) of work you did, with the
+homeowner's permission. A real before/after of a real customer's house is the
+highest-converting asset you'll own. Shoot
 the ~25 minutes after sunset (blue hour), from the same spot, before and after. Keep the
 file names and sizes and nothing else needs to change. Then remove the "Illustrative
 rendering" captions.
@@ -76,6 +129,8 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
 │                           before/after slider, services, why EverGlow, service area,
 │                           FAQ, quote form
 ├── quote.html              Detailed 4-step quote planner with a live ballpark estimate
+├── privacy.html            Privacy Policy (template: fill in placeholders, have it reviewed)
+├── terms.html              Terms of Use (template: fill in placeholders, have it reviewed)
 ├── assets/
 │   ├── css/styles.css      Design system + all landing-page components
 │   ├── css/quote.css       Quote planner styles

@@ -618,6 +618,19 @@ fieldset.field { border: 0; padding: 0; margin: 0 0 1.05rem; min-width: 0; }
 .lead__done p { color: var(--ink-soft); max-width: 38ch; margin-inline: auto; }
 .lead.is-done form { display: none; }
 
+/* --- 13b. Legal pages --------------------------------------------------- */
+.legal { background: var(--cream); padding-block: clamp(7.5rem, 14vh, 9rem) clamp(4rem, 8vw, 6rem); }
+.legal__wrap { max-width: 780px; }
+.legal h1 { font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.3rem); margin-bottom: .6rem; }
+.legal__date { font-size: .88rem; color: var(--ink-soft); margin-bottom: 2rem; }
+.legal .lede { margin-bottom: 2.25rem; }
+.legal h2 { font-size: clamp(1.3rem, 1.15rem + .6vw, 1.65rem); margin: 2.4rem 0 .7rem; }
+.legal p, .legal li { color: var(--ink-soft); }
+.legal strong { color: var(--ink); }
+.legal ul { list-style: disc; padding-left: 1.3rem; margin-bottom: 1.1em; display: grid; gap: .4rem; }
+.legal a, .consent a, .qopt__meta a { color: var(--evergreen-600); font-weight: 600; }
+.legal__contact { font-style: normal; line-height: 1.8; color: var(--ink); }
+
 /* --- 14. Footer ---------------------------------------------------------- */
 .footer { background: var(--evergreen-950); color: var(--muted-on-dark); padding-block: 4rem 2rem; border-top: 1px solid var(--line-dark); }
 .footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.25fr; gap: 2.5rem 2rem; margin-bottom: 3rem; }
