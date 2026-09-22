@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const outDir = path.resolve(process.argv[2] || path.join(root, '../../assets/img/renders'));
-const only = process.argv.slice(3);
+// The site now uses real photos everywhere except the before/after slider, so by
+// default only those two frames are rendered. Name other jobs to render them anyway.
+const only = process.argv.length > 3 ? process.argv.slice(3) : ['before', 'after'];
 fs.mkdirSync(outDir, { recursive: true });
 
 const JOBS = [

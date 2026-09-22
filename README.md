@@ -69,7 +69,8 @@ usually a short, flat-fee job.
 - **Privacy Policy and Terms of Use** (`privacy.html`, `terms.html`), linked in the footer
   and from both consent boxes. They say estimates aren't binding, renderings are
   illustrations, and a submitted form doesn't reserve a date.
-- **Images.** The renderings are generated for this site and labeled as illustrations.
+- **Images.** Stock photos are licensed (Unsplash) and credited, with house numbers and signs
+  blurred; the before/after rendering is labeled as an illustration.
 - **Accessibility.** Keyboard-usable, labeled forms, alt text on every image. Websites that
   don't work with screen readers do get sued; keep writing alt text for new photos.
 
@@ -94,27 +95,29 @@ usually a short, flat-fee job.
 
 ---
 
-## The images are renderings, not photos
+## Images: real photos plus one rendering
 
-Every image in `assets/img/renders/` is a **3D rendering of a fictional house** that was
-generated in code (three.js, rendered in headless Chromium). No stock photos and no
-copyrighted images are used. The page labels them honestly: the hero and the before/after
-slider carry an "Illustrative rendering" caption, and so does the footer.
+The hero and the five service cards use **real photos from Unsplash**, chosen by the owner
+and used under the Unsplash License (free for business use). They're cropped per slot in
+`assets/img/photos/`. The phone hero uses a taller photo with the night sky extended so the
+headline has room. `docs/IMAGE_SOURCES.md` records where each photo came from and what was
+edited; **save a screenshot of each photo's Unsplash page** as your proof of license.
 
-- `before.*` and `after.*` are the **same scene, pixel for pixel**, with the lighting install
-  switched off and on. That's what makes the before/after slider line up.
-- `hero.*` / `hero-md.*` are the wide desktop hero. `hero-portrait.*` is a 9:16 version
-  that phones and other tall screens get, laid out as a poster (headline in the sky,
-  buttons over the snow).
-- `service-*.*` are the five service-card images. `og.jpg` is the link-preview image.
+Two rules keep the stock photos safe to use:
 
-**Replace them with real photos of your own installs as soon as you have them**, meaning
-photos you took (or paid a photographer to take for you) of work you did, with the
-homeowner's permission. A real before/after of a real customer's house is the
-highest-converting asset you'll own. Shoot
-the ~25 minutes after sunset (blue hour), from the same spot, before and after. Keep the
-file names and sizes and nothing else needs to change. Then remove the "Illustrative
-rendering" captions.
+- They show the style of work you offer, **not your installs**. The hero says "Photo:
+  Unsplash" and the footer says the Unsplash photos don't show EverGlow installs. Don't
+  caption them as your work.
+- A neighbor's house number and a restaurant sign in the photos were blurred. Do the same
+  for any new photo.
+
+The **before/after slider** still uses a 3D rendering (`assets/img/renders/before.*`,
+`after.*`), labeled "Illustrative rendering." A before/after only means something when
+it's the same real house, so it stays a rendering until you shoot your own pair. Replace
+the two files, keep the names, and remove the caption.
+
+**Swap in your own photos as soon as you have them.** A real install of a real customer's
+house, with their permission, beats any stock photo.
 
 ### Photo shot list
 
@@ -159,13 +162,15 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
 │   ├── js/main.js          Header, nav, reveals, slider, snowfall, mobile bar, lead form
 │   ├── js/quote.js         Quote planner steps, validation, estimate, submission
 │   └── img/
-│       ├── renders/        Mock-up renderings (WebP + JPEG fallbacks)
+│       ├── photos/         Unsplash photos cropped per slot (WebP + JPEG)
+│       ├── renders/        Before/after renderings (WebP + JPEG)
 │       └── logo.svg, logo-mark.svg, favicon.svg
 ├── tools/render/           Source for the renderings (three.js scene + render script)
 └── docs/
     ├── BRAND_GUIDE.md      Positioning, voice, logo rules, photography
     ├── BUSINESS_PLAN.md    Offer, pricing, unit economics, projections, risks
-    └── LEAD_GENERATION.md  Channel playbook, ad budgets, follow-up scripts
+    ├── LEAD_GENERATION.md  Channel playbook, ad budgets, follow-up scripts
+    └── IMAGE_SOURCES.md    Where every image came from and its license
 ```
 
 No build step, no dependencies, no framework. Open `index.html` and it runs.

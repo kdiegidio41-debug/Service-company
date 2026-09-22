@@ -228,7 +228,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   background: var(--evergreen-950); color: #fff;
 }
 .hero__media { position: absolute; inset: 0; z-index: -3; }
-.hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 15% 60%; }
+.hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 100% 60%; }
 .hero__snow { position: absolute; inset: 0; z-index: -1; pointer-events: none; width: 100%; height: 100%; }
 .hero__scrim {
   position: absolute; inset: 0; z-index: -2; pointer-events: none;

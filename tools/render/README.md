@@ -8,8 +8,8 @@ line up pixel for pixel — that is what makes the before/after slider work.
 ```bash
 cd tools/render
 npm install
-npm run render                 # all images → ../../assets/img/renders
-node render.mjs out hero after # just some of them, into ./out
+npm run render                 # before + after → ../../assets/img/renders
+node render.mjs out hero after # other frames (hero, service-*, og) into ./out
 ```
 
 Chromium is found at `/opt/pw-browsers/chromium` by default; set `CHROMIUM_PATH` to use
