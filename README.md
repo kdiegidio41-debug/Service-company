@@ -19,10 +19,9 @@ The site is complete and functional, but it ships with **placeholder business de
 | `(555) 555-0142` and `+15555550142` | Your real phone | `index.html`, `quote.html` |
 | `hello@everglowlighting.com` | Your real email | `index.html`, `quote.html`, `assets/js/config.js` |
 | `everglowlighting.com` | Your real domain | Both pages (canonical, Open Graph tags, JSON-LD) |
-| Chestnut Hill, Blue Bell, Ambler, … | **Your** service area | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
-| The 15-mile radius | Your real radius | `index.html` service-area heading |
+| Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
 | Social links (`href="#"`) | Your Instagram / Facebook / Google profile | `index.html` footer |
-| `[LEGAL BUSINESS NAME]`, `[STATE]`, `[MAILING ADDRESS]`, `[LLC / sole proprietorship]` | Your registered business details | `privacy.html`, `terms.html` |
+| `[LEGAL BUSINESS NAME]`, `[MAILING ADDRESS]`, `[LLC / sole proprietorship]` | Your registered business details | `privacy.html`, `terms.html` |
 
 **Confirm these promises are true before going live.** The page makes them in plain
 language, so they have to hold up:
@@ -116,6 +115,28 @@ highest-converting asset you'll own. Shoot
 the ~25 minutes after sunset (blue hour), from the same spot, before and after. Keep the
 file names and sizes and nothing else needs to change. Then remove the "Illustrative
 rendering" captions.
+
+### Photo shot list
+
+Every image slot on the site, and the real photo that should replace it. Shoot at blue
+hour (about 20–30 minutes after sunset), on a tripod or propped phone, with every
+interior light on, cars and trash cans out of frame, and house numbers blurred.
+
+| Slot | File | What to shoot |
+| --- | --- | --- |
+| Hero (desktop) | `hero.*`, `hero-md.*` | Your best house, wide and horizontal. Put the house in the **right half** of the frame; the headline sits on the left. |
+| Hero (phones) | `hero-portrait.*` | Same house, vertical. House in the **middle third**, sky above for the headline, lawn below for the buttons. |
+| Before / after | `before.*`, `after.*` | **Same tripod spot, same framing.** "Before" at dusk with no lights, "after" at blue hour with the install on. |
+| Roofline card | `service-roofline.*` | Close on a peak or two and the gutter line, so you can see how straight and even the bulbs are. |
+| Trees & landscape card | `service-landscape.*` | A wrapped tree plus lit shrubs or pathway lights. |
+| Wreaths & garland card | `service-wreaths.*` | The front door and porch: wreath, garland on columns or railings. |
+| Commercial card | `service-commercial.*` | A storefront or office you lit. Keep the rendering until you have one. |
+| Full-service card | `service-full.*` | The whole property from a corner angle, house plus yard. |
+| Link preview | `og.jpg` (1200×630) | Any strong horizontal shot; this is what shows when someone texts your link. |
+
+Licensed stock photos (Unsplash, Pexels, Adobe Stock) are fine for the hero and service
+cards as general mood images, but **never for the before/after** and never captioned as
+your work. That slider only means something with your own photos.
 
 To tweak and re-render the mock-ups (different bulb color, camera angle, image size), see
 `tools/render/README.md`.
