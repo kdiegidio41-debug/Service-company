@@ -1,27 +1,13 @@
 /* =========================================================================
-   Everglow — multi-step quote request form
+   EverGlow — multi-step quote request form
    ========================================================================= */
 (function () {
   'use strict';
 
-  /* -----------------------------------------------------------------------
-     CONFIG — set this before you go live.
-
-     endpoint: the URL your form posts to. Anything that accepts a JSON POST
-               works. Easiest options:
-                 Formspree  → 'https://formspree.io/f/xxxxxxxx'
-                 Netlify    → leave '' and see README for the Netlify variant
-                 Your CRM   → Jobber/Housecall Pro webhook or a Zapier catch hook
-     fallbackEmail: shown if the POST fails, so a lead is never lost.
-
-     While endpoint is '' the form runs in DEMO MODE: it validates and shows
-     the success screen, but nothing is actually sent anywhere.
-     -------------------------------------------------------------------- */
-  var CONFIG = {
-    endpoint: '',
-    fallbackEmail: 'hello@everglowlighting.com',
-    phone: '(555) 555-0142'
-  };
+  /* The endpoint and fallback email live in assets/js/config.js,
+     shared with the homepage form. With no endpoint set the form runs in
+     DEMO MODE: it validates and shows the success screen, but sends nothing. */
+  var CONFIG = window.EVERGLOW || { endpoint: '', fallbackEmail: 'hello@everglowlighting.com' };
 
   var form = document.getElementById('qform');
   if (!form) return;
@@ -209,7 +195,7 @@
 
     estEl.classList.remove('qest--empty');
     estEl.textContent = '$' + low.toLocaleString() + '–$' + high.toLocaleString();
-    estNote.textContent = 'Rough range for a home like yours, everything included — install, all-season service, takedown, and storage. Your real quote comes from actual roofline measurements.';
+    estNote.textContent = 'Rough range for a home like yours, everything included — install, all-season service, and takedown. Your real quote comes from actual roofline measurements.';
   }
 
   /* --- Preselect from ?package= ----------------------------------------- */
@@ -277,7 +263,7 @@
       d.style.maxWidth = '460px';
       d.style.margin = '1.5rem auto 0';
       d.innerHTML = '<strong>Demo mode.</strong> Nothing was actually sent — no form endpoint is configured yet. ' +
-                    'Set <code>CONFIG.endpoint</code> in <code>assets/js/quote.js</code> to start receiving real leads.';
+                    'Set <code>endpoint</code> in <code>assets/js/config.js</code> to start receiving real leads.';
       done.querySelector('.qdone__next').after(d);
     }
   }
@@ -290,7 +276,7 @@
     btnNext.textContent = 'Sending…';
 
     if (!CONFIG.endpoint) {
-      console.warn('[Everglow] DEMO MODE — no CONFIG.endpoint set in assets/js/quote.js. Payload:', data);
+      console.warn('[EverGlow] DEMO MODE: no endpoint set in assets/js/config.js. Payload:', data);
       setTimeout(function () { succeed(data, true); }, 550);
       return;
     }
@@ -305,7 +291,7 @@
         succeed(data, false);
       })
       .catch(function (err) {
-        console.error('[Everglow] Quote submission failed:', err);
+        console.error('[EverGlow] Quote submission failed:', err);
         btnNext.disabled = false;
         btnNext.innerHTML = 'Try again &rarr;';
         fallback.classList.add('is-visible');

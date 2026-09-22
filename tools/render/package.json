@@ -1,0 +1,13 @@
+{
+  "name": "everglow-render",
+  "private": true,
+  "description": "Regenerates the fictional 3D mock-up renders used on the EverGlow site.",
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.56.0",
+    "three": "0.170.0"
+  }
+}
