@@ -13,11 +13,11 @@ before they talk to anyone.
 ## ⚠ Before you launch: the must-change list
 
 The site is complete and functional, but a few **placeholder business details** remain.
-The phone, (267) 853-0058, and email, everglowchristmaslighting25@gmail.com, are already filled in.
+The phone, (267) 853-0058, the email, everglowchristmaslighting25@gmail.com, and the Formspree
+form (`https://formspree.io/f/mqpabygb`, in `assets/js/config.js` and the homepage form's `action`) are already filled in.
 
 | Placeholder | Replace with | Where |
 | --- | --- | --- |
-| `endpoint: ''` (forms are in demo mode until this is set) | Your Formspree form link, e.g. `https://formspree.io/f/abcd1234` | `assets/js/config.js` |
 | `everglowlighting.com` | Your real domain | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
 | Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
 | Social icons (hidden in an HTML comment until the profiles exist) | Your Instagram / Facebook / Google profile links, then remove the comment markers | `index.html` footer |
@@ -214,18 +214,24 @@ accessibility, 100 best practices, 100 SEO; computer 100 across the board.
 
 ## Wiring up the forms
 
-**Both forms are in DEMO MODE right now.** They validate and show the thank-you message,
-but nothing is sent anywhere, and the thank-you message says so.
+**Both forms are live.** They send to the Formspree form `https://formspree.io/f/mqpabygb`,
+which emails every quote to everglowchristmaslighting25@gmail.com and keeps a copy in the
+Formspree dashboard. Reply-to is the customer's email, so hitting Reply in Gmail answers them.
 
-Open `assets/js/config.js` and set the endpoint. Both the homepage form and `quote.html`
-use it:
+The endpoint lives in `assets/js/config.js`, shared by the homepage form and `quote.html`.
+The homepage form's `action` attribute carries the same URL so it still sends if JavaScript
+fails to load. To switch services, change both:
 
 ```js
 window.EVERGLOW = {
-  endpoint: 'https://formspree.io/f/YOUR_ID',   // ← your form endpoint
-  fallbackEmail: 'you@yourdomain.com'
+  endpoint: 'https://formspree.io/f/mqpabygb',   // your form endpoint ('' = demo mode)
+  fallbackEmail: 'everglowchristmaslighting25@gmail.com'
 };
 ```
+
+**After the site is live, send one test quote.** Formspree emails a confirmation link the
+first time a form is used; click it, or nothing gets delivered. Formspree can't be reached
+from the build environment, so this live test is the only end-to-end check.
 
 | Service | Setup |
 | --- | --- |
@@ -294,7 +300,7 @@ no horizontal scroll down to 320px, WebP with JPEG fallbacks.
 3. Get insured. The site promises it.
 4. Claim and fill out your Google Business Profile. For local service searches it outranks
    this website (`docs/LEAD_GENERATION.md` §1).
-5. Set the form endpoint in `assets/js/config.js` and turn on the SMS alert.
+5. Send a test quote from the live site, confirm it in Formspree, and turn on the SMS alert.
 6. Buy light inventory in **June or July**, before the seasonal markup.
 7. Start commercial outreach in **July**. It books before residential and funds the
    inventory buy.

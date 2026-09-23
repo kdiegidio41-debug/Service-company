@@ -265,6 +265,7 @@
       if (!validate()) return;
       var data = collect();
       if (data.company_website) { succeed(data, false, true); return; }   // honeypot: drop silently
+      delete data.company_website;                                        // keep the empty trap out of the lead email
 
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending…';

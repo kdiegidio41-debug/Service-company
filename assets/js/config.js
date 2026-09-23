@@ -12,6 +12,6 @@
                   so a lead is never lost. (Phone numbers live in the HTML.)
    ========================================================================= */
 window.EVERGLOW = {
-  endpoint: '',
+  endpoint: 'https://formspree.io/f/mqpabygb',
   fallbackEmail: 'everglowchristmaslighting25@gmail.com'
 };

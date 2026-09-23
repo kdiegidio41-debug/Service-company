@@ -273,6 +273,7 @@
   function submit() {
     var data = collect();
     if (data.company_website) return;           // honeypot tripped — silently drop
+    delete data.company_website;                // keep the empty trap out of the lead email
 
     btnNext.disabled = true;
     btnNext.textContent = 'Sending…';
