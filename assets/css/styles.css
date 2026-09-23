@@ -258,6 +258,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   position: absolute; right: var(--gutter); bottom: 1.1rem; margin: 0;
   font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 255, 255, .45);
 }
+.hero__caption a { color: inherit; text-underline-offset: 2px; }
+.hero__caption a:hover { color: #fff; }
 .hero__scroll {
   position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   width: 26px; height: 42px; border: 1.5px solid rgba(255, 255, 255, .4); border-radius: 14px;

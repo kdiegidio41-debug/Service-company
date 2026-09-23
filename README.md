@@ -105,8 +105,8 @@ edited; **save a screenshot of each photo's Unsplash page** as your proof of lic
 
 Two rules keep the stock photos safe to use:
 
-- They show the style of work you offer, **not your installs**. The hero says "Photo:
-  Unsplash" and the footer says the Unsplash photos don't show EverGlow installs. Don't
+- They show the style of work you offer, **not your installs**. The hero and footer credit
+  the photographers (Gautam Krishnan, Dmitry Spravko) and say the photos don't show EverGlow installs. Don't
   caption them as your work.
 - A neighbor's house number and a restaurant sign in the photos were blurred. Do the same
   for any new photo.
