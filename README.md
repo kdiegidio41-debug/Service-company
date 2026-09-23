@@ -164,6 +164,7 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
 ├── 404.html                Branded "page not found" page (Netlify / Cloudflare use it automatically)
 ├── robots.txt, sitemap.xml Help search engines find every page
 ├── _headers                Browser caching rules for Netlify / Cloudflare Pages
+├── netlify.toml            Publishes only the website files (docs/ and tools/ stay private)
 ├── privacy.html            Privacy Policy (template: fill in placeholders, have it reviewed)
 ├── terms.html              Terms of Use (template: fill in placeholders, have it reviewed)
 ├── assets/
@@ -202,10 +203,26 @@ python3 -m http.server 8000
 
 ## Deploying
 
-It's a static site, so anything works: Netlify, Vercel, Cloudflare Pages, or GitHub Pages.
-Drag the folder into Netlify and you're live. Point your domain at it and add SSL (free
-everywhere). `tools/` isn't needed on the server, but it does no harm there. Netlify and
-Cloudflare Pages also compress files and apply the caching rules in `_headers` automatically.
+Hosted on **Netlify, connected to this GitHub repo**, so every push to the deploy branch
+updates the live site in about a minute.
+
+`netlify.toml` copies only the website files (the HTML pages, `assets/`, `_headers`,
+`robots.txt`, `sitemap.xml`) into `dist/` and publishes that. `docs/` (business plan and
+pricing), `tools/` and this README stay private. **Don't drag the whole folder into Netlify
+Drop**: that skips the build step and would make `docs/` public.
+
+First-time setup:
+
+1. Sign up at netlify.com with **Sign up with GitHub**.
+2. **Add new project → Import an existing project → GitHub**, allow access, pick `Service-company`.
+3. **Branch to deploy:** `claude/everglow-landing-page-es52gv`. Leave the build settings as
+   they are; `netlify.toml` fills them in.
+4. Name the project (for example `everglow-christmas-lighting`) and click **Deploy**.
+5. Send a test quote from the live site and click Formspree's confirmation email.
+6. Replace `everglowlighting.com` (canonical, Open Graph, JSON-LD, `robots.txt`,
+   `sitemap.xml`) with the live address, then with your own domain once you buy one.
+
+Netlify also compresses files and applies the caching rules in `_headers` automatically.
 
 Last Lighthouse audit (local test server, before hosting compression): phone 90 speed, 100
 accessibility, 100 best practices, 100 SEO; computer 100 across the board.
