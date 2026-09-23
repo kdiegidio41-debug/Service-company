@@ -12,16 +12,17 @@ before they talk to anyone.
 
 ## ⚠ Before you launch: the must-change list
 
-The site is complete and functional, but a few **placeholder business details** remain.
-The phone, (267) 853-0058, the email, everglowchristmaslighting25@gmail.com, and the Formspree
-form (`https://formspree.io/f/mqpabygb`, in `assets/js/config.js` and the homepage form's `action`) are already filled in.
+The site is complete and functional, and it's live at https://everglow-christmas-lighting.netlify.app.
+Already filled in: the phone, (267) 853-0058; the email, everglowchristmaslighting25@gmail.com; the Formspree
+form (`https://formspree.io/f/mqpabygb`, in `assets/js/config.js` and the homepage form's `action`); and the
+live address in every canonical, Open Graph and JSON-LD link, `robots.txt` and `sitemap.xml`.
 
 | Placeholder | Replace with | Where |
 | --- | --- | --- |
-| `everglowlighting.com` | Your real domain | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
+| `everglow-christmas-lighting.netlify.app` | Your own domain, once you buy one | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
 | Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
 | Social icons (hidden in an HTML comment until the profiles exist) | Your Instagram / Facebook / Google profile links, then remove the comment markers | `index.html` footer |
-| `[LEGAL BUSINESS NAME]`, `[MAILING ADDRESS]`, `[LLC / sole proprietorship]` | Your registered business details | `privacy.html`, `terms.html` |
+| "EverGlow Christmas Lighting" (no "LLC" yet) | "EverGlow Christmas Lighting LLC", once the LLC is registered with Pennsylvania | `privacy.html` and `terms.html`: the opening paragraph and the contact block |
 
 **Confirm these promises are true before going live.** The page makes them in plain
 language, so they have to hold up:
@@ -203,24 +204,26 @@ python3 -m http.server 8000
 
 ## Deploying
 
-Hosted on **Netlify, connected to this GitHub repo**, so every push to the deploy branch
-updates the live site in about a minute.
+Live at **https://everglow-christmas-lighting.netlify.app** (Netlify project
+`everglow-christmas-lighting`). It's deployed by **uploading a zip**, not from GitHub, so a push
+doesn't change the live site.
 
-`netlify.toml` copies only the website files (the HTML pages, `assets/`, `_headers`,
-`robots.txt`, `sitemap.xml`) into `dist/` and publishes that. `docs/` (business plan and
-pricing), `tools/` and this README stay private. **Don't drag the whole folder into Netlify
-Drop**: that skips the build step and would make `docs/` public.
+To publish a change:
 
-First-time setup:
+1. Build the upload zip from the repo root:
+   ```bash
+   rm -rf dist everglow-site.zip && mkdir dist \
+     && cp -r index.html quote.html privacy.html terms.html 404.html robots.txt sitemap.xml _headers assets dist/ \
+     && (cd dist && zip -qr -X ../everglow-site.zip .)
+   ```
+   `index.html` sits at the top of the zip. `docs/` (business plan and pricing), `tools/` and this
+   README are left out, so they never become public.
+2. In Netlify, open the project's **Deploys** page and drag `everglow-site.zip` onto the upload area.
+   Each upload replaces the whole site.
 
-1. Sign up at netlify.com with **Sign up with GitHub**.
-2. **Add new project → Import an existing project → GitHub**, allow access, pick `Service-company`.
-3. **Branch to deploy:** `claude/everglow-landing-page-es52gv`. Leave the build settings as
-   they are; `netlify.toml` fills them in.
-4. Name the project (for example `everglow-christmas-lighting`) and click **Deploy**.
-5. Send a test quote from the live site and click Formspree's confirmation email.
-6. Replace `everglowlighting.com` (canonical, Open Graph, JSON-LD, `robots.txt`,
-   `sitemap.xml`) with the live address, then with your own domain once you buy one.
+`netlify.toml` runs the same copy step if the project is ever linked to GitHub instead
+(**Project configuration → Build & deploy → Link repository**); after that, every push to the
+main branch deploys by itself.
 
 Netlify also compresses files and applies the caching rules in `_headers` automatically.
 
