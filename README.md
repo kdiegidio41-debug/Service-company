@@ -33,7 +33,7 @@ language, so they have to hold up:
   **aim** to be out within 24 hours, weather permitting
 - **Clip-only** installs (no nails, staples, adhesive), with ladders set so nothing rests on gutters
 - Takedown in **early January**, and a **storage option** quoted up front
-- On `quote.html`: a **50% deposit** books the install week, balance due on install day
+- Payment: a **50% deposit** books the install date, and an **invoice for the balance** is sent after the job is complete (homepage FAQ and `quote.html`)
 
 The site deliberately **does not claim you're insured.** Once you have a general liability
 policy, you can add "Fully insured" back (and "certificate of insurance on request" for
