@@ -26,6 +26,8 @@ The site is complete and functional, but it ships with **placeholder business de
 **Confirm these promises are true before going live.** The page makes them in plain
 language, so they have to hold up:
 
+- **"Call or text anytime"** (homepage, footer, quote page): people can reach you any time, and
+  the site says replies usually come within 24 hours. Check voicemail and texts every day.
 - Quotes back **usually within 24 hours**
 - Service calls for anything you installed are **included** until takedown, and you
   **aim** to be out within 24 hours, weather permitting
@@ -111,7 +113,12 @@ Two rules keep the stock photos safe to use:
 - A neighbor's house number and a restaurant sign in the photos were blurred. Do the same
   for any new photo.
 
-The **before/after slider** still uses a 3D rendering (`assets/img/renders/before.*`,
+The hero's second button says **"See What We Do"** and jumps to the service cards. It
+said "See Our Work" before, but those cards show Unsplash photos of other people's
+homes, so a "work" label would present them as your jobs. Switch it back to "See Our
+Work" once the cards show your own installs.
+
+The **before/after slider** sits lower on the page (after the service area) and still uses a 3D rendering (`assets/img/renders/before.*`,
 `after.*`), labeled "Illustrative rendering." A before/after only means something when
 it's the same real house, so it stays a rendering until you shoot your own pair. Replace
 the two files, keep the names, and remove the caption.
