@@ -52,7 +52,7 @@ The highest-ROI paper you will ever print. After every install, hang 8–10 door
 
 > **We just lit up your neighbor's house.**
 > We're on your street this week. Rooflines, trees, wreaths — installed, maintained all season, taken down in January, and stored until next year. You never touch a ladder.
-> **Same-street pricing through Friday.** Text a photo of your house to (555) 555-0142 for a quote in 24 hours.
+> **Same-street pricing through Friday.** Text a photo of your house to (267) 853-0058 for a quote in 24 hours.
 > — Everglow Holiday Lighting Co.
 
 Density is the point: two jobs on one street cuts drive time and doubles your visibility.

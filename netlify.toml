@@ -1,0 +1,6 @@
+# Netlify reads this file automatically when the site is connected to GitHub.
+# Only the website itself is published. docs/ (business plan, pricing), tools/ and
+# README.md stay private in the repo and never become public pages.
+[build]
+  command = "rm -rf dist && mkdir dist && cp -r index.html quote.html privacy.html terms.html 404.html robots.txt sitemap.xml _headers assets dist/"
+  publish = "dist"

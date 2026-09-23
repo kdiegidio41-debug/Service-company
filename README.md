@@ -1,65 +1,196 @@
-# Everglow Holiday Lighting Co.
+# EverGlow Christmas Lighting
 
-Brand identity, marketing website, and full business plan for a Christmas light
-**installation and removal** company.
+Marketing website, brand, and business plan for a professional Christmas and holiday
+lighting company: design, installation, maintenance, takedown, and storage.
 
-The strategic idea in one line: **everyone sells the install — we sell the January takedown
-and the free storage**, which is what customers actually worry about and what makes them
-renew every year without being sold to again.
+The homepage is a single lead-generation landing page. Every section pushes toward one
+action, **Get My Free Quote**, which opens a short on-page form. A longer 4-step quote
+planner with a live ballpark estimate lives at `quote.html` for people who want a number
+before they talk to anyone.
 
 ---
 
-## ⚠ Before you launch — the must-change list
+## ⚠ Before you launch: the must-change list
 
-The site is complete and functional, but it ships with **placeholder business details**.
-Find-and-replace these across `index.html` and `quote.html`:
+The site is complete and functional, but a few **placeholder business details** remain.
+The phone, (267) 853-0058, the email, everglowchristmaslighting25@gmail.com, and the Formspree
+form (`https://formspree.io/f/mqpabygb`, in `assets/js/config.js` and the homepage form's `action`) are already filled in.
 
 | Placeholder | Replace with | Where |
 | --- | --- | --- |
-| `(555) 555-0142` and `+15555550142` | Your real phone | Both pages, `quote.js` |
-| `hello@everglowlighting.com` | Your real email | Both pages, `quote.js` |
-| `everglowlighting.com` | Your real domain | Both pages (canonical, OG tags, JSON-LD) |
-| Chestnut Hill, Blue Bell, Ambler, Flourtown, Lafayette Hill, Plymouth Meeting, Glenside, Dresher, Fort Washington, Wyndmoor, Horsham, Erdenheim | **Your** service area | `index.html` — service-area chips, the map SVG labels, and `areaServed` in the JSON-LD |
-| The 15-mile service radius | Your real radius, if different | `index.html` — service-area heading and the map label |
+| `everglowlighting.com` | Your real domain | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
+| Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
+| Social icons (hidden in an HTML comment until the profiles exist) | Your Instagram / Facebook / Google profile links, then remove the comment markers | `index.html` footer |
+| `[LEGAL BUSINESS NAME]`, `[MAILING ADDRESS]`, `[LLC / sole proprietorship]` | Your registered business details | `privacy.html`, `terms.html` |
 
-Two things are **deliberately not fabricated**, and you must not fake them:
+**Confirm these promises are true before going live.** The page makes them in plain
+language, so they have to hold up:
 
-1. **The three testimonials** in `index.html` are marked `SAMPLE` in the markup and read
-   "Sample review" on the page. Replace them with real, verbatim customer reviews, or
-   delete the whole `#reviews` section until you have some.
-2. **There is no `aggregateRating` in the structured data.** Publishing an invented star
-   rating violates Google's structured-data policy and can get your rich results
-   suppressed. Add it only once you have real reviews to count.
+- **"Call or text anytime"** (homepage, footer, quote page): people can reach you any time, and
+  the site says replies usually come within 24 hours. Check voicemail and texts every day.
+- Quotes back **usually within 24 hours**
+- Service calls for anything you installed are **included** until takedown, and you
+  **aim** to be out within 24 hours, weather permitting
+- **Clip-only** installs (no nails, staples, adhesive), with ladders set so nothing rests on gutters
+- Takedown in **early January**, and a **storage option** quoted up front
+- Payment: a **50% deposit** books the install date, and an **invoice for the balance** is sent after the job is complete (homepage FAQ and `quote.html`)
 
-Also confirm before going live: you actually carry the **$2M general liability and workers'
-comp** the site advertises, and you can genuinely honor the **24-hour fix** and the
-**January 15 takedown**. Those three claims are the entire brand — the site is built to sell
-them, so they have to be true.
+The site deliberately **does not claim you're insured.** Once you have a general liability
+policy, you can add "Fully insured" back (and "certificate of insurance on request" for
+commercial). Don't add it a day before the policy is active.
+
+Things that are **deliberately not on the page**, and should stay off until they're real:
+
+1. **Testimonials.** There's no reviews section, because inventing reviews is deceptive and
+   against FTC rules. Once you have real, verbatim customer reviews, add them between the
+   "Why EverGlow" and "Service area" sections.
+2. **Star ratings in structured data.** There's no `aggregateRating` in the JSON-LD. Google
+   penalizes invented ratings. Add one only when you have real reviews to count.
+3. **Fake scarcity.** The "Installation Spots Are Limited" banner says the season fills up.
+   It never shows a made-up number like "only 3 spots left." Keep it that way.
+
+---
+
+## Staying out of legal trouble
+
+The site is written to avoid the things that most often get small service businesses
+sued or fined. None of this is legal advice. Have a local attorney review `privacy.html`,
+`terms.html`, and your customer contract before launch; for a small business that's
+usually a short, flat-fee job.
+
+**Already handled on the site**
+
+- **No unprovable claims.** No "best in town," no fake reviews, no invented star ratings, no
+  fake countdowns, no insurance claim until you have a policy. Promises are worded as
+  what you *aim* to do ("usually," "weather permitting"), and actual guarantees are left
+  to your written service agreement.
+- **Texting consent (TCPA).** Both forms require a checkbox that says you may call or text,
+  including automated texts, that consent isn't a condition of purchase, and that they can
+  reply STOP. Unwanted texts can cost $500 to $1,500 *per message* under federal law, so
+  honor every STOP and never text a number that didn't opt in.
+- **Privacy Policy and Terms of Use** (`privacy.html`, `terms.html`), linked in the footer
+  and from both consent boxes. They say estimates aren't binding, renderings are
+  illustrations, and a submitted form doesn't reserve a date.
+- **Images.** Stock photos are licensed (Unsplash) and credited, with house numbers and signs
+  blurred; the before/after rendering is labeled as an illustration.
+- **Accessibility.** Keyboard-usable, labeled forms, alt text on every image, and an
+  accessibility statement in `terms.html` telling people to call, text, or email for help.
+  Websites that don't work with screen readers do get sued; keep writing alt text for new photos.
+
+**What protects you most is off the website**
+
+1. **Form an LLC** and use the legal name in `privacy.html` / `terms.html`. It keeps a
+   lawsuit against the business away from your personal savings.
+2. **General liability insurance** before anyone climbs a ladder. Workers' comp as soon as
+   you have employees. This is the big one for a business that works on roofs.
+3. **A written service agreement for every job** (have a lawyer draft it once): scope,
+   price, deposit and cancellation terms, what "service calls included" covers, how
+   property damage is handled, weather delays, takedown window, and a **photo release**.
+4. **Check Pennsylvania's Home Improvement Consumer Protection Act.** If it applies to your
+   work (the site's service area is in PA), you must register with the Attorney General and
+   your contracts need specific terms, including a 3-day cancellation right.
+5. **Check the name before you print anything.** Search "EverGlow" in the USPTO trademark
+   database and your state's business registry. A name conflict can force a rebrand after
+   you've paid for signs, shirts, and a truck wrap.
+6. **Only use photos you own.** Photos from Google, Pinterest, or another company's website
+   are copyrighted, and using them can bring takedown demands and damages claims. Also
+   ask customers before posting their house, and blur house numbers.
+
+---
+
+## Images: real photos plus one rendering
+
+The hero and the five service cards use **real photos from Unsplash**, chosen by the owner
+and used under the Unsplash License (free for business use). They're cropped per slot in
+`assets/img/photos/`. The phone hero uses a taller photo with the night sky extended so the
+headline has room. `docs/IMAGE_SOURCES.md` records where each photo came from and what was
+edited; **save a screenshot of each photo's Unsplash page** as your proof of license.
+
+Two rules keep the stock photos safe to use:
+
+- They show the style of work you offer, **not your installs**. The hero and footer credit
+  the photographers (Gautam Krishnan, Dmitry Spravko) and say the photos don't show EverGlow installs. Don't
+  caption them as your work.
+- A neighbor's house number and a restaurant sign in the photos were blurred. Do the same
+  for any new photo.
+
+The hero's second button says **"See What We Do"** and jumps to the service cards. It
+said "See Our Work" before, but those cards show Unsplash photos of other people's
+homes, so a "work" label would present them as your jobs. Switch it back to "See Our
+Work" once the cards show your own installs.
+
+The **before/after slider** sits lower on the page (after the service area) and still uses a 3D rendering (`assets/img/renders/before.*`,
+`after.*`), labeled "Illustrative rendering." A before/after only means something when
+it's the same real house, so it stays a rendering until you shoot your own pair. Replace
+the two files, keep the names, and remove the caption.
+
+**Swap in your own photos as soon as you have them.** A real install of a real customer's
+house, with their permission, beats any stock photo.
+
+### Photo shot list
+
+Every image slot on the site, and the real photo that should replace it. Shoot at blue
+hour (about 20–30 minutes after sunset), on a tripod or propped phone, with every
+interior light on, cars and trash cans out of frame, and house numbers blurred.
+
+| Slot | File | What to shoot |
+| --- | --- | --- |
+| Hero (desktop) | `hero.*`, `hero-md.*` | Your best house, wide and horizontal. Put the house in the **right half** of the frame; the headline sits on the left. |
+| Hero (phones) | `hero-portrait.*` | Same house, vertical. House in the **middle third**, sky above for the headline, lawn below for the buttons. |
+| Before / after | `before.*`, `after.*` | **Same tripod spot, same framing.** "Before" at dusk with no lights, "after" at blue hour with the install on. |
+| Roofline card | `service-roofline.*` | Close on a peak or two and the gutter line, so you can see how straight and even the bulbs are. |
+| Trees & landscape card | `service-landscape.*` | A wrapped tree plus lit shrubs or pathway lights. |
+| Wreaths & garland card | `service-wreaths.*` | The front door and porch: wreath, garland on columns or railings. |
+| Commercial card | `service-commercial.*` | A storefront or office you lit. Keep the rendering until you have one. |
+| Full-service card | `service-full.*` | The whole property from a corner angle, house plus yard. |
+| Link preview | `og.jpg` (1200×630) | Any strong horizontal shot; this is what shows when someone texts your link. |
+
+Licensed stock photos (Unsplash, Pexels, Adobe Stock) are fine for the hero and service
+cards as general mood images, but **never for the before/after** and never captioned as
+your work. That slider only means something with your own photos.
+
+To tweak and re-render the mock-ups (different bulb color, camera angle, image size), see
+`tools/render/README.md`.
 
 ---
 
 ## What's in here
 
 ```
-├── index.html              Homepage — hero, process, services, gallery,
-│                           reviews, service area, FAQ, CTA
-├── quote.html              4-step quote request form (the conversion page)
+├── index.html              Landing page: hero, availability banner, 5-step process,
+│                           before/after slider, services, why EverGlow, service area,
+│                           FAQ, quote form
+├── quote.html              Detailed 4-step quote planner with a live ballpark estimate
+├── 404.html                Branded "page not found" page (Netlify / Cloudflare use it automatically)
+├── robots.txt, sitemap.xml Help search engines find every page
+├── _headers                Browser caching rules for Netlify / Cloudflare Pages
+├── netlify.toml            Publishes only the website files (docs/ and tools/ stay private)
+├── privacy.html            Privacy Policy (template: fill in placeholders, have it reviewed)
+├── terms.html              Terms of Use (template: fill in placeholders, have it reviewed)
 ├── assets/
-│   ├── css/styles.css      Design system + all homepage components
-│   ├── css/quote.css       Quote form styles
-│   ├── js/main.js          Nav, sticky header, scroll reveal, FAQ accordion
-│   ├── js/quote.js         Step logic, validation, live estimate, submission
-│   └── img/                logo.svg, logo-mark.svg, favicon.svg
+│   ├── css/styles.css      Design system + all landing-page components
+│   ├── css/quote.css       Quote planner styles
+│   ├── js/config.js        Form endpoint + fallback email (edit this one)
+│   ├── js/main.js          Header, nav, reveals, slider, snowfall, mobile bar, lead form
+│   ├── js/quote.js         Quote planner steps, validation, estimate, submission
+│   ├── fonts/              Fraunces + Inter, self-hosted (SIL Open Font License files included)
+│   └── img/
+│       ├── photos/         Unsplash photos cropped per slot (WebP + JPEG)
+│       ├── renders/        Before/after renderings (WebP + JPEG)
+│       └── logo.svg, logo-mark.svg, favicon.svg
+├── tools/render/           Source for the renderings (three.js scene + render script)
 └── docs/
-    ├── BRAND_GUIDE.md      Name rationale, positioning, voice, color, type,
-    │                       logo rules, photography, physical touchpoints
-    ├── BUSINESS_PLAN.md    Offer, market, pricing, unit economics, 3-season
-    │                       projection, startup capital, ops calendar, risks
-    └── LEAD_GENERATION.md  Ranked channel playbook, ad budgets, commercial
-                            outreach, follow-up scripts, renewal campaign
+    ├── BRAND_GUIDE.md      Positioning, voice, logo rules, photography
+    ├── BUSINESS_PLAN.md    Offer, pricing, unit economics, projections, risks
+    ├── LEAD_GENERATION.md  Channel playbook, ad budgets, follow-up scripts
+    └── IMAGE_SOURCES.md    Where every image came from and its license
 ```
 
 No build step, no dependencies, no framework. Open `index.html` and it runs.
+
+> The docs in `docs/` were written for the earlier "Everglow Holiday Lighting Co." name and
+> midnight-blue palette. The strategy in them still applies; the site's name and colors are
+> now the ones below.
 
 ---
 
@@ -72,64 +203,85 @@ python3 -m http.server 8000
 
 ## Deploying
 
-It's a static site, so anything works — Netlify, Vercel, Cloudflare Pages, or GitHub Pages.
-Drag the folder into Netlify and you're live. Point your domain at it and add SSL (free
-everywhere). Total hosting cost should be $0.
+Hosted on **Netlify, connected to this GitHub repo**, so every push to the deploy branch
+updates the live site in about a minute.
+
+`netlify.toml` copies only the website files (the HTML pages, `assets/`, `_headers`,
+`robots.txt`, `sitemap.xml`) into `dist/` and publishes that. `docs/` (business plan and
+pricing), `tools/` and this README stay private. **Don't drag the whole folder into Netlify
+Drop**: that skips the build step and would make `docs/` public.
+
+First-time setup:
+
+1. Sign up at netlify.com with **Sign up with GitHub**.
+2. **Add new project → Import an existing project → GitHub**, allow access, pick `Service-company`.
+3. **Branch to deploy:** `claude/everglow-landing-page-es52gv`. Leave the build settings as
+   they are; `netlify.toml` fills them in.
+4. Name the project (for example `everglow-christmas-lighting`) and click **Deploy**.
+5. Send a test quote from the live site and click Formspree's confirmation email.
+6. Replace `everglowlighting.com` (canonical, Open Graph, JSON-LD, `robots.txt`,
+   `sitemap.xml`) with the live address, then with your own domain once you buy one.
+
+Netlify also compresses files and applies the caching rules in `_headers` automatically.
+
+Last Lighthouse audit (local test server, before hosting compression): phone 90 speed, 100
+accessibility, 100 best practices, 100 SEO; computer 100 across the board.
 
 ---
 
-## Wiring up the quote form
+## Wiring up the forms
 
-**The form is in DEMO MODE right now.** It validates and shows the success screen, but
-nothing is actually sent anywhere, and the success screen says so.
+**Both forms are live.** They send to the Formspree form `https://formspree.io/f/mqpabygb`,
+which emails every quote to everglowchristmaslighting25@gmail.com and keeps a copy in the
+Formspree dashboard. Reply-to is the customer's email, so hitting Reply in Gmail answers them.
 
-Open `assets/js/quote.js` and set the endpoint at the top:
+The endpoint lives in `assets/js/config.js`, shared by the homepage form and `quote.html`.
+The homepage form's `action` attribute carries the same URL so it still sends if JavaScript
+fails to load. To switch services, change both:
 
 ```js
-var CONFIG = {
-  endpoint: 'https://formspree.io/f/YOUR_ID',   // ← your form endpoint
-  fallbackEmail: 'you@yourdomain.com',
-  phone: '(555) 555-0142'
+window.EVERGLOW = {
+  endpoint: 'https://formspree.io/f/mqpabygb',   // your form endpoint ('' = demo mode)
+  fallbackEmail: 'everglowchristmaslighting25@gmail.com'
 };
 ```
 
-Options, easiest first:
+**After the site is live, send one test quote.** Formspree emails a confirmation link the
+first time a form is used; click it, or nothing gets delivered. Formspree can't be reached
+from the build environment, so this live test is the only end-to-end check.
 
 | Service | Setup |
 | --- | --- |
-| **Formspree** | Free tier, 60s setup. Create a form, paste the URL above. |
-| **Netlify Forms** | Add `netlify` and `name="quote"` to the `<form>` tag; Netlify captures it automatically. |
-| **Zapier / Make webhook** | Paste the catch-hook URL. Lets you push straight into Jobber, Housecall Pro, a Google Sheet, and an SMS alert at once. |
+| **Formspree** | Free tier, 60-second setup. Create a form and paste its URL above. |
+| **Zapier / Make webhook** | Paste the catch-hook URL. Lets you push into Jobber, Housecall Pro, a Google Sheet, and an SMS alert at once. |
 | **Your CRM directly** | Jobber and Housecall Pro both accept inbound webhooks. |
 
-The form posts JSON with every answer plus `estimateShown`, `submittedAt`, and `source`.
+Each form POSTs JSON, including a `_subject` ("New quote request: name, address") that
+Formspree uses as the email subject. The homepage form sends `name`, `phone`, `email`, `address`,
+`services`, `timing`, `notes`, `consent`, plus `form: "homepage"`, `submittedAt`, `page`,
+and `referrer`. The quote planner sends every answer plus `estimateShown`.
 
-**Set up an SMS alert on new submissions.** The business plan's single most important
-metric is a **response within 15 minutes** — the first company to reply wins about half
-the time. An email you check at night will not do that.
+**Set up an SMS alert on new submissions.** Reply speed wins jobs: the first company to
+respond gets the job about half the time.
 
-### Form features worth knowing about
+What the forms already handle:
 
-- **4 steps** with a progress bar; validation blocks you from advancing past an incomplete step.
-- **Live ballpark estimate** in the sidebar, updating as answers change. Commercial always
-  returns "Custom quote."
-- **Package deep links** — `quote.html?package=roofline|signature|estate` pre-checks that
-  package's scope items. The homepage no longer publishes prices, but these links still work
-  from an ad, an email, or a QR code.
-- **Honeypot field** catches spam bots without a CAPTCHA.
-- **Failure fallback** — if the POST fails, the lead is never lost: the page shows your
-  phone number and a pre-filled mailto containing all their answers.
+- **Validation** with inline messages (10-digit phone, real-looking email, consent).
+- **Honeypot field** that catches spam bots without a CAPTCHA.
+- **Failure fallback.** If the POST fails, the lead isn't lost: the form shows your phone
+  number and a pre-filled email with everything they typed.
+- **Conversion tracking.** A successful homepage submission pushes
+  `{ event: 'generate_lead' }` to `window.dataLayer`, so Google Tag Manager / GA4 / Google
+  Ads can count it as a conversion with no extra code.
+- **"Check Availability"** in the banner jumps to the form and highlights the
+  installation-window field.
 
-### Tuning the estimate
+### Tuning the planner's estimate
 
-The ranges come from `STORY_MULT` and the `data-price` attributes on the scope checkboxes in
-`quote.html`. **Recalibrate these after your first ten real quotes** so the number people see
-matches what you actually charge. A ballpark that reads low and then jumps at quote time
-costs you the job.
-
-Note that the homepage does not publish prices — this sidebar estimate on the quote page is
-the only number a customer sees before you send a real quote. If you'd rather show no number
-at all, delete the `.qsummary` block from `quote.html`.
+The ranges on `quote.html` come from `STORY_MULT` in `quote.js` and the `data-price`
+attributes on the scope checkboxes in `quote.html`. **Recalibrate them after your first ten
+real quotes** so the number people see matches what you actually charge. If you'd rather
+show no number at all, delete the `.qsummary` block from `quote.html`.
 
 ---
 
@@ -137,40 +289,35 @@ at all, delete the `.qsummary` block from `quote.html`.
 
 | Token | Value | Use |
 | --- | --- | --- |
-| Midnight | `#0B1220` | Primary background |
-| Bulb | `#FFC46B` | The glow — one call to action per screen |
-| Pine | `#14513C` | Evergreen support, form accents |
-| Cranberry | `#C2413C` | Errors and urgency only, sparingly |
-| Snow | `#F7F9FC` | Light sections — pricing, FAQ, forms |
-| Display type | Fraunces 600 | Headlines |
-| Body type | Inter 400/500/600 | Everything else |
+| Evergreen 900 | `#0A1D16` | Dark sections, header, footer |
+| Evergreen 600 | `#1C4633` | Icons, form accents, dark buttons |
+| Gold 500 | `#D6A548` | The primary call to action, everywhere |
+| Gold 300 | `#F2D796` | Highlights on dark ("Glow" in the headline) |
+| Red 600 | `#A5242C` | Accent only: the availability button, a few bulbs |
+| Cream | `#FBF8F1` | Light sections |
+| White | `#FFFFFF` | Cards, services section, forms |
+| Display type | Fraunces 500 (self-hosted in `assets/fonts/`) | Headlines |
+| Body type | Inter 400–700 | Everything else |
 
-The site is dark-first on purpose: dark ground sells the glow, light sections sell trust
-(pricing, FAQ, the form). Full rationale in `docs/BRAND_GUIDE.md`.
+The page alternates dark evergreen sections (they sell the glow) with cream and white ones
+(they sell trust). Gold is reserved for the quote button, so the eye always knows where
+to click.
 
-**Illustrations, not photos.** Every visual is hand-built inline SVG — the hero house, the
-five gallery scenes, the service-area map. That's deliberate: stock photos of Christmas
-lights look fake and undercut the trust argument. **Replace the five gallery SVGs with real
-blue-hour photos of your own work as soon as you have them** — that's the highest-converting
-asset you will ever own. Shoot the ~25 minutes after sunset, never full dark.
+Accessibility and browser support: semantic HTML, keyboard-operable before/after slider,
+visible focus rings, `prefers-reduced-motion` respected (no snowfall, no reveal animations),
+no horizontal scroll down to 320px, WebP with JPEG fallbacks.
 
 ---
 
 ## Where to start (first 30 days)
 
 1. Read `docs/BUSINESS_PLAN.md` §4 (pricing) and §5 (unit economics). Those two sections
-   decide whether you make money — the plan still carries the full pricing model even though
-   the website no longer publishes it.
-2. Check the name against USPTO and your state registry, then buy the domain and handles
-   (`docs/BRAND_GUIDE.md` §1 has the checklist and five backup names).
-3. Get insured. Everything else on this site is a lie without it.
-4. Claim and fill out your Google Business Profile — for local service searches it outranks
+   decide whether you make money.
+2. Check the name against USPTO and your state registry, then buy the domain and handles.
+3. Get insured. The site promises it.
+4. Claim and fill out your Google Business Profile. For local service searches it outranks
    this website (`docs/LEAD_GENERATION.md` §1).
-5. Wire up the form endpoint and the SMS alert.
+5. Send a test quote from the live site, confirm it in Formspree, and turn on the SMS alert.
 6. Buy light inventory in **June or July**, before the seasonal markup.
-7. Start commercial outreach in **July**; it books before residential and funds the
+7. Start commercial outreach in **July**. It books before residential and funds the
    inventory buy.
-
-Accessibility and browser support: semantic HTML, keyboard-navigable, visible focus rings,
-`prefers-reduced-motion` respected, no horizontal scroll down to 320px. Works in all current
-browsers with graceful degradation (scroll reveals fall back to always-visible).
