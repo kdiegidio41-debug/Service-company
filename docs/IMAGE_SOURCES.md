@@ -13,7 +13,7 @@ a competing photo site, and it gives no rights to trademarks or people shown in 
 | Photo | Used as | Edits made | Photographer / Unsplash page |
 | --- | --- | --- | --- |
 | Shingle-style home with roofline C9s, garland on the fence and balcony, lit trees, hedge net lights | `photos/hero*` (desktop), `og.jpg`, `service-landscape`, `service-wreaths`, `service-full` | Cropped and resized; a neighbor's house number on a pergola was blurred | _add name + link_ |
-| Victorian building (a restaurant) outlined in warm white bulbs | `photos/hero-portrait` (phones), `service-roofline`, `service-commercial` | Cropped and resized; the restaurant's sign was blurred; night sky extended upward for the phone layout | _add name + link_ |
+| Victorian building (a restaurant) outlined in warm white bulbs ("House adorned with lights at dusk") | `photos/hero-portrait` (phones), `service-roofline`, `service-commercial` | Cropped and resized; the restaurant's sign was blurred; night sky extended upward for the phone layout | Dmitry Spravko, [unsplash.com/photos/house-adorned-with-lights-at-dusk-gPpmLi8uJmM](https://unsplash.com/photos/house-adorned-with-lights-at-dusk-gPpmLi8uJmM). Page shows the free **Download free** button (not Unsplash+); owner saving a PDF of the page on 2026-09-23. |
 
 **To do (owner):** for each photo, save a screenshot of its Unsplash page showing the
 photographer's name and the "Free to use under the Unsplash License" label, with the date
