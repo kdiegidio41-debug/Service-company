@@ -18,9 +18,9 @@ The site is complete and functional, but it ships with **placeholder business de
 | --- | --- | --- |
 | `(555) 555-0142` and `+15555550142` | Your real phone | `index.html`, `quote.html` |
 | `hello@everglowlighting.com` | Your real email | `index.html`, `quote.html`, `assets/js/config.js` |
-| `everglowlighting.com` | Your real domain | Both pages (canonical, Open Graph tags, JSON-LD) |
+| `everglowlighting.com` | Your real domain | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
 | Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
-| Social links (`href="#"`) | Your Instagram / Facebook / Google profile | `index.html` footer |
+| Social icons (hidden in an HTML comment until the profiles exist) | Your Instagram / Facebook / Google profile links, then remove the comment markers | `index.html` footer |
 | `[LEGAL BUSINESS NAME]`, `[MAILING ADDRESS]`, `[LLC / sole proprietorship]` | Your registered business details | `privacy.html`, `terms.html` |
 
 **Confirm these promises are true before going live.** The page makes them in plain
@@ -153,6 +153,9 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
 │                           before/after slider, services, why EverGlow, service area,
 │                           FAQ, quote form
 ├── quote.html              Detailed 4-step quote planner with a live ballpark estimate
+├── 404.html                Branded "page not found" page (Netlify / Cloudflare use it automatically)
+├── robots.txt, sitemap.xml Help search engines find every page
+├── _headers                Browser caching rules for Netlify / Cloudflare Pages
 ├── privacy.html            Privacy Policy (template: fill in placeholders, have it reviewed)
 ├── terms.html              Terms of Use (template: fill in placeholders, have it reviewed)
 ├── assets/
@@ -161,6 +164,7 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
 │   ├── js/config.js        Form endpoint + fallback email (edit this one)
 │   ├── js/main.js          Header, nav, reveals, slider, snowfall, mobile bar, lead form
 │   ├── js/quote.js         Quote planner steps, validation, estimate, submission
+│   ├── fonts/              Fraunces + Inter, self-hosted (SIL Open Font License files included)
 │   └── img/
 │       ├── photos/         Unsplash photos cropped per slot (WebP + JPEG)
 │       ├── renders/        Before/after renderings (WebP + JPEG)
@@ -192,7 +196,11 @@ python3 -m http.server 8000
 
 It's a static site, so anything works: Netlify, Vercel, Cloudflare Pages, or GitHub Pages.
 Drag the folder into Netlify and you're live. Point your domain at it and add SSL (free
-everywhere). `tools/` isn't needed on the server, but it does no harm there.
+everywhere). `tools/` isn't needed on the server, but it does no harm there. Netlify and
+Cloudflare Pages also compress files and apply the caching rules in `_headers` automatically.
+
+Last Lighthouse audit (local test server, before hosting compression): phone 90 speed, 100
+accessibility, 100 best practices, 100 SEO; computer 100 across the board.
 
 ---
 
@@ -256,7 +264,7 @@ show no number at all, delete the `.qsummary` block from `quote.html`.
 | Red 600 | `#A5242C` | Accent only: the availability button, a few bulbs |
 | Cream | `#FBF8F1` | Light sections |
 | White | `#FFFFFF` | Cards, services section, forms |
-| Display type | Fraunces 500 | Headlines |
+| Display type | Fraunces 500 (self-hosted in `assets/fonts/`) | Headlines |
 | Body type | Inter 400–700 | Everything else |
 
 The page alternates dark evergreen sections (they sell the glow) with cream and white ones

@@ -147,12 +147,17 @@
       if (on && !running) { running = true; last = 0; requestAnimationFrame(frame); }
       if (!on) running = false;
     };
-    resize();
-    window.addEventListener('resize', resize);
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (e) { play(e[0].isIntersecting && !document.hidden); }).observe(canvas);
-    } else { play(true); }
-    document.addEventListener('visibilitychange', function () { play(!document.hidden && canvas.getBoundingClientRect().bottom > 0); });
+    // start after the page has loaded, so the animation never competes with the first paint
+    var startSnow = function () {
+      resize();
+      window.addEventListener('resize', resize);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (e) { play(e[0].isIntersecting && !document.hidden); }).observe(canvas);
+      } else { play(true); }
+      document.addEventListener('visibilitychange', function () { play(!document.hidden && canvas.getBoundingClientRect().bottom > 0); });
+    };
+    if (document.readyState === 'complete') setTimeout(startSnow, 300);
+    else window.addEventListener('load', function () { setTimeout(startSnow, 300); });
   }
 
   /* --- Mobile action bar ------------------------------------------------ */

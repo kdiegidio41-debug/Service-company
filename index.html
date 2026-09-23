@@ -20,9 +20,8 @@
 <meta property="og:url" content="https://everglowlighting.com/">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/styles.css">
 <script>document.documentElement.classList.add('js');</script>
 
@@ -152,8 +151,8 @@
 <!-- ============================= HERO ============================= -->
 <section class="hero" id="top">
   <picture class="hero__media">
-    <source media="(max-aspect-ratio: 5/6)" srcset="assets/img/photos/hero-portrait.webp" type="image/webp">
-    <source media="(max-aspect-ratio: 5/6)" srcset="assets/img/photos/hero-portrait.jpg" type="image/jpeg">
+    <source media="(max-aspect-ratio: 5/6)" srcset="assets/img/photos/hero-portrait-760.webp 760w, assets/img/photos/hero-portrait.webp 1080w" sizes="100vw" type="image/webp">
+    <source media="(max-aspect-ratio: 5/6)" srcset="assets/img/photos/hero-portrait-760.jpg 760w, assets/img/photos/hero-portrait.jpg 1080w" sizes="100vw" type="image/jpeg">
     <source srcset="assets/img/photos/hero-md.webp 1400w, assets/img/photos/hero.webp 2400w" sizes="100vw" type="image/webp">
     <img src="assets/img/photos/hero-md.jpg" srcset="assets/img/photos/hero-md.jpg 1400w, assets/img/photos/hero.jpg 2400w" sizes="100vw"
          alt="A two-story shingle home at night with warm white bulbs along every roofline, lit garland on the balcony and picket fence, glowing Christmas trees, wrapped porch columns, and net lights on the hedges"
@@ -629,11 +628,14 @@
           </span>
         </a>
         <p>Professional Christmas and holiday lighting, designed, installed, maintained, and taken down for you.</p>
+        <!-- Social icons: hidden until the profiles exist. Put the real links in each href and
+             remove these comment markers to show them.
         <div class="socials">
           <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
           <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h3l1-3h-4v-2c0-.6.4-1 1-1z"/></svg></a>
           <a href="#" aria-label="Google Business Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></a>
         </div>
+        -->
       </div>
       <div>
         <h4>Services</h4>
