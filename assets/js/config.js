@@ -13,5 +13,5 @@
    ========================================================================= */
 window.EVERGLOW = {
   endpoint: '',
-  fallbackEmail: 'hello@everglowlighting.com'
+  fallbackEmail: 'everglowchristmaslighting25@gmail.com'
 };

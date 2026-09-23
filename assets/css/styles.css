@@ -143,6 +143,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   transition: transform .2s var(--ease), box-shadow .3s var(--ease), background-color .2s, color .2s, border-color .2s;
   white-space: nowrap;
 }
+a[href^="mailto:"] { overflow-wrap: anywhere; }
 .btn svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform .25s var(--ease); }
 .btn:hover { transform: translateY(-2px); }
 .btn:hover svg { transform: translateX(3px); }
@@ -715,7 +716,7 @@ fieldset.field { border: 0; padding: 0; margin: 0 0 1.05rem; min-width: 0; }
   .svc, .svc--wide { grid-column: span 1; }
   .svc--wide:last-child { grid-column: span 2; }
   .why { grid-template-columns: repeat(2, 1fr); }
-  .area, .ctaq__grid { grid-template-columns: 1fr; }
+  .area, .ctaq__grid { grid-template-columns: minmax(0, 1fr); }
   .never { grid-template-columns: 1fr; }
   .mobilebar { display: flex; }
   .footer { padding-bottom: calc(2rem + 76px + env(safe-area-inset-bottom)); }
@@ -740,6 +741,11 @@ fieldset.field { border: 0; padding: 0; margin: 0 0 1.05rem; min-width: 0; }
   .hero__actions .btn { flex: 1 1 100%; }
   .brand__sub { letter-spacing: .2em; }
   .faq__answer { padding-right: 0; }
+}
+/* Very small phones: long button labels wrap instead of pushing the page sideways */
+@media (max-width: 380px) {
+  .btn { white-space: normal; text-align: center; line-height: 1.3; }
+  .btn--lg { padding-inline: 1.4rem; }
 }
 /* Tall viewports: poster layout on the portrait render — headline in the sky, buttons on the snow */
 @media (max-aspect-ratio: 5/6) {

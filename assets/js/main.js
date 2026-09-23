@@ -6,7 +6,7 @@
   'use strict';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CONFIG = window.EVERGLOW || { endpoint: '', fallbackEmail: 'hello@everglowlighting.com' };
+  var CONFIG = window.EVERGLOW || { endpoint: '', fallbackEmail: 'everglowchristmaslighting25@gmail.com' };
 
   /* --- Sticky header ---------------------------------------------------- */
   var header = document.getElementById('header');

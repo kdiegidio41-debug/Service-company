@@ -7,7 +7,7 @@
   /* The endpoint and fallback email live in assets/js/config.js,
      shared with the homepage form. With no endpoint set the form runs in
      DEMO MODE: it validates and shows the success screen, but sends nothing. */
-  var CONFIG = window.EVERGLOW || { endpoint: '', fallbackEmail: 'hello@everglowlighting.com' };
+  var CONFIG = window.EVERGLOW || { endpoint: '', fallbackEmail: 'everglowchristmaslighting25@gmail.com' };
 
   var form = document.getElementById('qform');
   if (!form) return;

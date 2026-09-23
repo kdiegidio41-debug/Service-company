@@ -12,12 +12,12 @@ before they talk to anyone.
 
 ## ⚠ Before you launch: the must-change list
 
-The site is complete and functional, but it ships with **placeholder business details**.
+The site is complete and functional, but a few **placeholder business details** remain.
+The phone, (267) 853-0058, and email, everglowchristmaslighting25@gmail.com, are already filled in.
 
 | Placeholder | Replace with | Where |
 | --- | --- | --- |
-| `(555) 555-0142` and `+15555550142` | Your real phone | `index.html`, `quote.html` |
-| `hello@everglowlighting.com` | Your real email | `index.html`, `quote.html`, `assets/js/config.js` |
+| `endpoint: ''` (forms are in demo mode until this is set) | Your Formspree form link, e.g. `https://formspree.io/f/abcd1234` | `assets/js/config.js` |
 | `everglowlighting.com` | Your real domain | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
 | Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
 | Social icons (hidden in an HTML comment until the profiles exist) | Your Instagram / Facebook / Google profile links, then remove the comment markers | `index.html` footer |
