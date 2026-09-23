@@ -73,8 +73,9 @@ usually a short, flat-fee job.
   illustrations, and a submitted form doesn't reserve a date.
 - **Images.** Stock photos are licensed (Unsplash) and credited, with house numbers and signs
   blurred; the before/after rendering is labeled as an illustration.
-- **Accessibility.** Keyboard-usable, labeled forms, alt text on every image. Websites that
-  don't work with screen readers do get sued; keep writing alt text for new photos.
+- **Accessibility.** Keyboard-usable, labeled forms, alt text on every image, and an
+  accessibility statement in `terms.html` telling people to call, text, or email for help.
+  Websites that don't work with screen readers do get sued; keep writing alt text for new photos.
 
 **What protects you most is off the website**
 
@@ -232,7 +233,8 @@ window.EVERGLOW = {
 | **Zapier / Make webhook** | Paste the catch-hook URL. Lets you push into Jobber, Housecall Pro, a Google Sheet, and an SMS alert at once. |
 | **Your CRM directly** | Jobber and Housecall Pro both accept inbound webhooks. |
 
-Each form POSTs JSON. The homepage form sends `name`, `phone`, `email`, `address`,
+Each form POSTs JSON, including a `_subject` ("New quote request: name, address") that
+Formspree uses as the email subject. The homepage form sends `name`, `phone`, `email`, `address`,
 `services`, `timing`, `notes`, `consent`, plus `form: "homepage"`, `submittedAt`, `page`,
 and `referrer`. The quote planner sends every answer plus `estimateShown`.
 

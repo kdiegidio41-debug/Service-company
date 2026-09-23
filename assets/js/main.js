@@ -232,6 +232,8 @@
       });
       if (Array.isArray(data.services)) data.services = data.services.join(', ');
       data.form = 'homepage';
+      // shown as the email subject by Formspree (and most form services)
+      data._subject = 'New quote request: ' + String(data.name || '').trim() + (data.address ? ', ' + String(data.address).trim() : '');
       data.submittedAt = new Date().toISOString();
       data.page = window.location.href;
       data.referrer = document.referrer || 'direct';

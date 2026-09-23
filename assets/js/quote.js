@@ -229,6 +229,8 @@
     });
     if (Array.isArray(data.scope)) data.scope = data.scope.join(', ');
     data.estimateShown = estEl.textContent;
+    // shown as the email subject by Formspree (and most form services)
+    data._subject = 'Quote planner request: ' + [data.firstName, data.lastName].filter(Boolean).join(' ') + (data.address ? ', ' + data.address : '');
     data.submittedAt = new Date().toISOString();
     data.source = document.referrer || 'direct';
     return data;
