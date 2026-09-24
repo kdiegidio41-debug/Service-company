@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://everglow-christmas-lighting.netlify.app/sitemap.xml
+Sitemap: https://everglowchristmaslightspa.com/sitemap.xml
