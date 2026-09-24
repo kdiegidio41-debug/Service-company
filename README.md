@@ -12,14 +12,15 @@ before they talk to anyone.
 
 ## ⚠ Before you launch: the must-change list
 
-The site is complete and functional, and it's live at https://everglow-christmas-lighting.netlify.app.
+The site is complete and functional, and it's live at https://everglowchristmaslightspa.com (bought through Netlify; the old
+`everglow-christmas-lighting.netlify.app` address redirects there). Write the domain as
+`EverglowChristmasLightsPA.com` on signs and print so it doesn't read as "lights spa".
 Already filled in: the phone, (267) 853-0058; the email, everglowchristmaslighting25@gmail.com; the Formspree
 form (`https://formspree.io/f/mqpabygb`, in `assets/js/config.js` and the homepage form's `action`); and the
-live address in every canonical, Open Graph and JSON-LD link, `robots.txt` and `sitemap.xml`.
+live domain in every canonical, Open Graph and JSON-LD link, `robots.txt` and `sitemap.xml`.
 
 | Placeholder | Replace with | Where |
 | --- | --- | --- |
-| `everglow-christmas-lighting.netlify.app` | Your own domain, once you buy one | `index.html`, `quote.html`, `privacy.html`, `terms.html` (canonical, Open Graph tags, JSON-LD), `robots.txt`, `sitemap.xml` |
 | Service-area towns (Jamison + Bucks County, and Chestnut Hill → Plymouth Meeting in Montgomery County) | Remove any town you won't actually serve | `index.html`: the service-area chips and `areaServed` in the JSON-LD |
 | Social icons (hidden in an HTML comment until the profiles exist) | Your Instagram / Facebook / Google profile links, then remove the comment markers | `index.html` footer |
 | "EverGlow Christmas Lighting" (no "LLC" yet) | "EverGlow Christmas Lighting LLC", once the LLC is registered with Pennsylvania | `privacy.html` and `terms.html`: the opening paragraph and the contact block |
@@ -204,7 +205,7 @@ python3 -m http.server 8000
 
 ## Deploying
 
-Live at **https://everglow-christmas-lighting.netlify.app** (Netlify project
+Live at **https://everglowchristmaslightspa.com** (Netlify project
 `everglow-christmas-lighting`). It's deployed by **uploading a zip**, not from GitHub, so a push
 doesn't change the live site.
 
