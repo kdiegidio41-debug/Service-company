@@ -10,5 +10,9 @@ Not part of the website upload (the zip only includes the site files).
 | `everglow-logo-wide-transparent.png` | 1092 × 353, transparent | White or light backgrounds: invoices, quotes, flyers, yard signs |
 | `everglow-icon-transparent.png` | 768 × 768, transparent | The bulb on its own: stickers, small spaces, app icons |
 
+Each file except the icon also has a **`-festive`** version with a strand of C9 Christmas lights
+(gold, warm white and red) across the top and a few gold sparkles. Use those for the holiday
+season: the Google profile, social posts, flyers and yard signs.
+
 For printing large items (yard signs, truck wraps), give the printer `assets/img/logo.svg`,
 which scales to any size. Ask them to convert the text to outlines.
