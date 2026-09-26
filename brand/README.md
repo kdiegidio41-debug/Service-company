@@ -14,5 +14,9 @@ Each file except the icon also has a **`-festive`** version with a strand of C9 
 (gold, warm white and red) across the top and a few gold sparkles. Use those for the holiday
 season: the Google profile, social posts, flyers and yard signs.
 
+The **`-white-festive`** files are the festive logo on a solid white background:
+`everglow-logo-square-white-festive.png` (1080 × 1080) is the Google Business Profile logo, and
+`everglow-logo-wide-white-festive.png` is the wide version.
+
 For printing large items (yard signs, truck wraps), give the printer `assets/img/logo.svg`,
 which scales to any size. Ask them to convert the text to outlines.
