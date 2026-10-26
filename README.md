@@ -66,10 +66,11 @@ usually a short, flat-fee job.
   fake countdowns, no insurance claim until you have a policy. Promises are worded as
   what you *aim* to do ("usually," "weather permitting"), and actual guarantees are left
   to your written service agreement.
-- **Texting consent (TCPA).** Both forms require a checkbox that says you may call or text,
+- **Texting consent (TCPA).** Both forms have an optional, unticked checkbox (carriers reject
+  10DLC registration if both phone and consent are required) that says you may call or text,
   including automated texts, that consent isn't a condition of purchase, and that they can
   reply STOP. Unwanted texts can cost $500 to $1,500 *per message* under federal law, so
-  honor every STOP and never text a number that didn't opt in.
+  honor every STOP and never send automated texts to a lead who left the box unticked.
 - **Privacy Policy and Terms of Use** (`privacy.html`, `terms.html`), linked in the footer
   and from both consent boxes. They say estimates aren't binding, renderings are
   illustrations, and a submitted form doesn't reserve a date.
