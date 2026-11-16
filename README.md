@@ -186,6 +186,7 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
     ├── BRAND_GUIDE.md      Positioning, voice, logo rules, photography
     ├── BUSINESS_PLAN.md    Offer, pricing, unit economics, projections, risks
     ├── LEAD_GENERATION.md  Channel playbook, ad budgets, follow-up scripts
+    ├── CRM_BLUEPRINT.md    Build-vs-buy for replacing Flyra, feature map, MVP plan
     └── IMAGE_SOURCES.md    Where every image came from and its license
 ```
 
