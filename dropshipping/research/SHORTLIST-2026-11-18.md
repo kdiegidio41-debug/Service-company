@@ -361,3 +361,85 @@ for about $250-300, leaving a $129-149 gap with premium details.
 | --- | --- |
 | Women's weighted vest | The leader sells about 30,000 a month, but the top 10 average about $22 ([ASINSIGHT](https://www.asinsight.com/report/US/adjustable-weighted-vest-for-women)). No room for premium. |
 | Portable CarPlay screen | It fits premium and big seller, but it's electric, which the owner kept excluded. |
+
+---
+
+# Round 6: more premium big sellers (same rules as round 5)
+
+## 4. Dog crate that looks like furniture (end-table or nightstand style)
+
+**Demand:** ASINSIGHT shows proven Amazon sales:
+
+| Search term | Top 10 average | Top 10 average price | Leader |
+| --- | --- | --- | --- |
+| [Medium dog crate furniture](https://www.asinsight.com/report/US/medium-dog-crate-furniture) | about 1,830 a month | $79.87 | about 7,000 a month |
+| [Corner dog crate furniture](https://www.asinsight.com/report/US/corner-dog-crate-furniture) | about 1,880 a month | $69.67 | about 5,000 a month |
+
+**Fit:**
+- **Premium room:** a nicer wood version at $149-199.
+- **Trend:** it rides the same "aesthetic pet furniture" trend as the cat tree.
+- **Market:** dog owners are a bigger group than cat owners.
+
+**Video:** an ugly wire crate, then the same corner with a crate that looks like a nightstand.
+
+**Risks:**
+- **Size choice:** customers pick a size by their dog's measurements, so a clear size guide cuts returns.
+- **Chewing:** some dogs chew the wood.
+- **Assembly.**
+- **Heavy shipping:** use GIGA-US.
+
+## 5. Giant foam bean bag (Lovesac-style)
+
+**Demand:** Walmart sells several at $130-230: Ultimate Sack 4000 at $129.99, Ultimate Sack 6000 at $179.99, Big Joe Fuf XL at $199.99, and Majestic at $158.99 ([Walmart](https://www.walmart.com/ip/Ultimate-Sack-6000-6-ft-Bean-Bag-Chair-multiple-colors-Giant-Foam-Filled-Furniture-Machine-Washable-Covers-Double-Stitched-Seams-Durable-Inner-Liner/1575453825)). Lovesac costs $500-1,500, which makes "the Lovesac feel for a fraction" a strong angle ([Hip2Save](https://hip2save.com/?p=10450078)).
+
+Monthly sales volume is **unverified**.
+
+**Video:** it ships vacuum-compressed and puffs up when opened, a proven satisfying unboxing.
+
+**Risks:**
+- New-foam smell.
+- Expansion takes 24-72 hours.
+- The cover's quality decides how premium it feels.
+
+## 6. Adjustable dumbbells (launch for January)
+
+**Demand:** ASINSIGHT shows proven Amazon sales:
+
+| Search term | Top 10 average | Top 10 average price |
+| --- | --- | --- |
+| [Set of 2](https://www.asinsight.com/report/US/adjustable-dumbbells-set-of-2) | about 2,600 a month | $77.08 |
+| [Dumbbell adjustable weights](https://www.asinsight.com/report/US/dumbbell-adjustable-weights) | about 3,900 a month | $93.24 |
+| [Core home fitness set](https://www.asinsight.com/report/US/core-home-fitness-adjustable-dumbbell-set) | about 4,200 a month | $102.40 |
+
+**Fit:**
+- **Premium room:** a dial-select pair at $149-249, below Bowflex.
+- **Timing:** New Year fitness demand peaks in January.
+
+**Video:** turn the dial, click, and lift a different weight.
+
+**Risks:**
+- **Injury liability:** a lock that fails and drops plates can hurt someone, so the sample has to be tested hard.
+- **Shipping:** about 50 lb per pair.
+- **Returns:** expensive.
+
+## 7. Bouclé swivel barrel chair
+
+**Demand:** sold at $159-182 (HomePerch, Mainstays), $249-299 (CHITA), and up to $599 (Tov)
+([roundup](https://www.talkofthehouse.com/best-swivel-accent-chairs/)). It suits "designer look
+for less" content.
+
+Monthly sales volume is **unverified**.
+
+**Risks:**
+- Wayfair, Amazon and Walmart all sell these.
+- Heavy shipping.
+- Fabric quality varies.
+
+## Rejected this round
+
+| Product | Why |
+| --- | --- |
+| Orthopedic dog bed | The top 10 average about $30 ([ASINSIGHT](https://www.asinsight.com/report/US/orthopedic-dog-beds-for-large-dogs)). No room for premium. |
+| Washable rug | The top 10 average about $23 ([ASINSIGHT](https://www.asinsight.com/report/US/washable-rug)). No room for premium. |
+| Faux olive tree | The related categories average $13-31. No room for premium. |
+| Kids' play couch (Nugget-style) | It's a children's product, which means federal CPSIA testing and a Children's Product Certificate. Too much compliance for a first store. |
