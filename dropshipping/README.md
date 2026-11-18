@@ -26,6 +26,33 @@ instructions live in `.claude/agents/`.
 6. **Read the numbers** with `ads-strategist` and make the cut, keep, or scale call on
    the rules from step 4.
 
+## Hands-off fulfillment
+
+The store's buy button sends the customer to Shopify checkout. From there:
+
+```
+Customer pays on Shopify
+  -> the order syncs to the supplier's Shopify app (CJdropshipping, or DSers for AliExpress)
+  -> you pay the supplier for that order (product + shipping + duty), batched once a day
+  -> the supplier packs and ships it; the tracking number flows back to Shopify
+  -> Shopify emails the customer their tracking link
+```
+
+The customer pays you before you pay the supplier.
+
+| Stage | Setup | Upfront cost | Delivery |
+| --- | --- | --- | --- |
+| **Testing a product** | Post the Alibaba or 1688 link as a *sourcing request* in CJdropshipping. CJ buys from that factory and ships each order. No minimum order for most products. Custom packaging is a paid add-on. | A sample, about $20-60 | 7-15 days from China. Faster if you pay CJ to stock a few units in its US warehouse. |
+| **Once it sells every day** | Buy 200-500 units on Alibaba (pay through Trade Assurance), ship by sea DDP to a US fulfillment warehouse (ShipBob, ShipMonk, or Amazon FBA with Multi-Channel Fulfillment). The warehouse ships each Shopify order automatically. | Units + freight + about 30-37.5% duty + warehouse fees | 2-5 days |
+
+Since the US ended the $800 duty-free exemption in 2025, every package from China pays
+import duty. Use DDP ("delivered duty paid") shipping so the customer is never charged at
+the door, and include duty in landed cost.
+
+Even with hands-off shipping, these stay with you: customer emails ("where's my
+order?"), refunds and returns, payment disputes, the ads, and checking a sample before
+you sell anything.
+
 ## What you need that the agents can't do for you
 
 - **An adult account holder.** Shopify, Stripe, PayPal, Meta and TikTok ad accounts all
