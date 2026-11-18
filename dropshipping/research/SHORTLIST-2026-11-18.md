@@ -222,3 +222,71 @@ touches your food," is a different offer, and a big retailer has already proven 
   - Don't call silicone plastic-free without saying it's silicone.
 - **Brand path:** start with the one hero kit, then add a plastic-free coffee kit and a
   steel-lid bottle. That's the "store around it" idea, in a big market.
+
+---
+
+# Round 4: products for women (light, non-electric, no clothing sizes, nothing applied to skin)
+
+## Best option: a "host a charm bar at home" party kit
+
+Everything needed for 6-8 guests to build their own bag charms or necklaces:
+- 60-80 charms
+- chains, clasps and jump rings
+- two pairs of pliers
+- a display tray
+
+**Demand**
+- Exploding Topics shows "bag charms" at about 246,000 searches a month (+358%) and
+  "charm bar" at 22,200 (+510%) ([fashion topics](https://explodingtopics.com/fashion-topics)).
+- In-store charm bars draw lines and sell out
+  ([JCK](https://www.jckonline.com/editorial-article/charm-jewelry-trend/)).
+- Brands run charm bars as event activations
+  ([Event Marketer](https://www.eventmarketer.com/article/experiential-marketing-trend-of-the-week-charm-bars/)).
+- They've gone viral for bachelorette parties
+  ([Axios](https://www.axios.com/local/charlotte/2024/10/07/charm-necklace-bracelet-holst-lee-jewelry-charlotte)).
+
+**The gap:** today an at-home charm bar means booking a mobile service, at about $25 per person,
+or a $150 setup fee plus about $20 per person
+([Batch listings](https://letsbatch.com/experiences/9679a57b-1239-4229-85d8-6c2b2cf8de2c)).
+The kits on sale are bead kits, not charm bars: BaubleBar ($35-58), MoMA ($48), and
+Mack & Rex bracelet kits ($44.99 each). No self-serve charm-bar party kit was found.
+That's from one search, so check Amazon, Etsy and TikTok Shop for "charm bar kit."
+
+**Economics (estimate, not verified)**
+- Charms cost about $0.10-1.00 each wholesale
+  ([Alibaba](https://www.alibaba.com/product-introduction/Enamel-Flower-Charms-Bulk-Spring-Charm_1601101632964.html)).
+- The kit costs about $10-20 from the factory. Add about 35% duty and DDP shipping for 1-1.5 lb,
+  for a landed cost of about $20-35.
+- Sold at $89, that leaves about $50-65 gross profit and a break-even ROAS of about 1.4-1.8.
+- Refill packs of 30-40 charms at about $29 bring buyers back.
+
+**Who buys and when**
+- Bachelorette parties and bridal showers
+- Birthdays and girls' nights
+- Galentine's Day (Feb 13)
+- Holiday gifting
+
+**Risks**
+- **The trend can peak.** Move fast.
+- **Gold plating on brass tarnishes within weeks.** That's the main complaint risk. Use
+  stainless steel findings and tarnish-resistant plating, and describe the materials truthfully.
+- **Metal safety.** Get lead and cadmium test reports from the supplier. Market it to adults and
+  teens, never to children under 12; children's jewelry has strict federal rules.
+- **Character charms.** No Sanrio, Disney or Labubu-style charms. They're common in 1688 catalogs
+  and are trademark infringement.
+
+## Also aimed at women
+
+The plastic-free kitchen kit from round 3 reaches the people who do most household buying
+and drive most of the worry about microplastics.
+
+## Checked and rejected
+
+| Product | Why |
+| --- | --- |
+| Single bag charms | 246,000 searches a month, but flooded with cheap sellers |
+| Toe spacers | The cheap ones sell as "bunion straighteners," a medical claim. Correct Toes holds the premium end at $65-69 |
+| Junk journal kits | Small: about 570 core Amazon searches a week, and Etsy is crowded with $13-35 kits |
+| Book totes and bookmarks | Up 148% and 49% on Faire, but cheap and crowded |
+| Pilates grip socks | $12, with listings selling 5,000+ |
+| Kindle page-turner remote | The strongest BookTok demand ("Kindle accessories": 7.9B TikTok views), but it's electronic |
