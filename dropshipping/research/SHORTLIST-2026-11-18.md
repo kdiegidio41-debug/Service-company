@@ -112,3 +112,67 @@ magnifier, and a backpack. Positioned as a modern "weekend prospector" kit.
 - Allow these hosts in the environment's network settings so the scouts can read primary
   data: `reddit.com`, `aliexpress.com`, `cjdropshipping.com`, `explodingtopics.com`.
 - A free CJdropshipping account, to get real landed-cost quotes.
+
+---
+
+# Round 2: mass-market products (same day)
+
+The owner ruled out niche hobbies and asked for products with mass appeal. I checked the
+broadest demand signals available: Google's 2026 Holiday 100, Exploding Topics' November
+2026 product list, and Amazon sales estimates. **Every broad product with strong demand
+already has a cheap seller dominating it.** That's the trade-off with mass appeal.
+
+| Product | Demand signal | Why it fails or struggles |
+| --- | --- | --- |
+| Mini rice cooker | Searches up 438% to 33,100 a month ([Exploding Topics](https://explodingtopics.com/topic/mini-rice-cooker)) | Dash Mini sells for $24.99 with about 47,000 reviews ([ASINSIGHT](https://www.asinsight.com/report/US/dash-mini-rice-cooker)). It's also a heated electrical appliance that needs UL/ETL certification. |
+| Magnetic fridge/washer shelf | Up 983% on Exploding Topics ([product topics](https://explodingtopics.com/product-topics)) | The top Amazon spice rack sells about 10,000 a month at a $24 average ([ASINSIGHT](https://www.asinsight.com/report/US/magnetic-spice-rack-for-refrigerator)), and some sell for $5. |
+| Portable laptop monitor | Up 838% on Exploding Topics | Amazon's top 10 average about $66-73 ([ASINSIGHT](https://www.asinsight.com/report/US/portable-computer-monitor-for-laptop)), which leaves no margin. |
+| Lymphatic face brush | Up 400% on Google's Holiday 100 | Sells for $7-20, and selling it means implying "drainage" and "sculpting" health claims. |
+| Sunrise alarm clock | No rising data found | Hatch, Philips and Echo hold Amazon. |
+
+## The two broad products worth considering
+
+### A. Portable wireless CarPlay / Android Auto screen
+
+A dash-mounted touchscreen that gives a car without CarPlay or Android Auto maps,
+music and calls from the phone.
+
+- **Demand:** the "CarPlay screen for car" category averaged about 14,500 units and $1.2M
+  a month across its top 50 Amazon listings in the year to July 2026
+  ([ASINSIGHT](https://www.asinsight.com/market-analysis/US/carplay-screen-for-car)).
+  Many TikTok Shop sellers carry it.
+- **Competition:** heavy. The top portable unit sells about 10,000 a month, and the top 10
+  average $64.49 ([ASINSIGHT, May 2026](https://www.asinsight.com/report/US/portable-carplay)).
+  You'd win on ads and offer, not on being first.
+- **Economics (estimate, not verified):**
+  - Sell at $89-99, with a landed cost of about $30-40.
+  - That leaves about $48 gross profit per order at $89, and a break-even ROAS of about 1.85.
+- **Video:** an old car's dash with a phone stuck in a vent mount, then the same car with
+  a big touchscreen showing maps. Easy to understand in two seconds.
+- **Risks:**
+  - "CarPlay" is Apple's trademark. Say "works with Apple CarPlay," never use Apple's
+    logo, and note that most generic units aren't Apple-licensed.
+  - Electronics defects and returns.
+  - Reviews complain about mounts that won't stick and laggy navigation.
+
+### B. Japanese floor mattress (tri-fold or roll-up)
+
+- **Demand:** the fastest-growing broad trend in the data. Searches rose from 3,837 to
+  22,200 a month ([Exploding Topics](https://explodingtopics.com/product-topics)). It's used
+  for small apartments, guest beds, kids' rooms, dorms and the minimalist-room look.
+- **Competition:** no dominant listing found.
+  - Walmart sells it for $51-68, and MAXYOYO sells for about $67.
+  - FULI sells about 100 a month at $299 ([ASINSIGHT](https://www.asinsight.com/report/US/japanese-mattress)).
+  - There's room for a mid-tier version at $129-169.
+- **The problem is size.** A single tri-fold weighs about 8 kg and folds to about
+  140 x 66 x 30 cm ([Superdelivery](https://www.superdelivery.com/en/r/pd_p/13143858)).
+  - Shipping that from China wipes out the margin.
+  - It only works with a supplier that holds stock in a US warehouse.
+  - Returns are close to impossible, so expect to refund without taking the item back.
+
+## Recommendation
+
+Test before building. For a mass-market product, the store with the best video wins, not
+the store that found the product first. Order one CarPlay screen sample, film 3-5 short
+videos, and post them organically on TikTok and Reels. Build the store and fund ads only
+if a video gets real traction, such as comments asking where to buy.
