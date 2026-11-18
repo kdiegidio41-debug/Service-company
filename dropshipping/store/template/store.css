@@ -115,6 +115,15 @@ legend span { font-weight: 400; color: var(--muted); }
 .swatch input:checked + .swatch__dot { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--ink); }
 .swatch input:focus-visible + .swatch__dot { outline: 2px solid var(--accent); outline-offset: 6px; }
 
+.opt legend { width: 100%; }
+.opt__guide { float: right; font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+.opt__row--pills { gap: 10px; }
+.pill { position: relative; display: grid; gap: 2px; min-width: 96px; padding: 11px 16px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+.pill input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.pill:has(input:checked) { border-color: var(--ink); background: var(--tint); }
+.pill:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+.pill__text { font-weight: 600; }
+.pill__note { font-size: 0.8rem; color: var(--muted); }
 .bundles { display: grid; gap: 10px; }
 .bundle { position: relative; display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 12px; padding: 15px 16px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
 .bundle:has(input:checked) { border-color: var(--ink); background: var(--tint); }
@@ -170,6 +179,12 @@ legend span { font-weight: 400; color: var(--muted); }
 .compare svg { width: 13px; height: 13px; }
 .compare + .fine { margin-top: 14px; text-align: center; }
 
+.table-scroll { margin-top: 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); }
+.table-scroll .compare { margin-top: 0; min-width: 520px; }
+.sizes td { color: var(--ink); }
+.sizes tbody th { width: auto; white-space: nowrap; }
+.measure + .fine { margin-top: 18px; }
+.measure { margin: 24px 0 0; padding-left: 1.3em; display: grid; gap: 8px; color: color-mix(in srgb, var(--ink) 82%, var(--bg)); }
 .specs { display: grid; gap: 32px; }
 .spec-list { margin: 24px 0 0; }
 .spec-list > div { display: grid; grid-template-columns: 38% 1fr; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }

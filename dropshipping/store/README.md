@@ -18,7 +18,7 @@ cp -r products/_template products/<slug>
 Every build prints a preflight report:
 
 - **Blockers** stop you taking real orders: checkout in demo mode, placeholder business
-  details, missing photos.
+  details, missing photos, any field still marked `TODO`, and any line left in `verify`.
 - **Warnings** won't break anything but cost money: no ad pixel, delivery over 14 days, a
   crossed-out "compare at" price.
 - **Notes** are optional extras.
@@ -31,7 +31,7 @@ that shows the shot to take, so the page can be reviewed before any photos exist
 - Buy box: gallery, price, bullets, color or style options, bundle pricing with the
   saving worked out, a dated delivery estimate, and trust icons
 - Sections you choose and order in `page.sections`: `problem`, `features`, `steps`,
-  `compare`, `specs`, `reviews`, `guarantee`, `faq`, `cta`
+  `compare`, `sizes`, `specs`, `reviews`, `guarantee`, `faq`, `cta`
 - A sticky buy bar on phones once the main button scrolls off screen
 - Product, shipping, return-policy and FAQ structured data for Google
 - Meta, TikTok and Google Analytics events (ViewContent, AddToCart, InitiateCheckout),
@@ -81,16 +81,17 @@ banned, or both:
 | `product.name`, `shortName`, `eyebrow`, `tagline`, `sku`, `cta` | Product heading, the sticky-bar name, the small line above the heading, the main promise, SKU for pixels, button text |
 | `product.gallery[]` | `file` in `img/`, `w`, `h`, `alt`, and `shot` (what to photograph, shown on the placeholder) |
 | `product.bullets[]` | Three to five outcomes. `*text*` becomes emphasis. |
-| `product.options` | Optional. `label` plus `values[]` of `name`, `swatch` color, and `galleryIndex` (the photo to show when picked) |
+| `product.options` | Optional. One option group, or a list of groups (for example Size, then Finish). Each group has a `label` and `values[]`. Set `"style": "pills"` for text buttons, or leave it out for color swatches. Set `guideHref` (for example `"#sizes"`) to add a size-guide link. Each value has a `name`, an optional `swatch` color, an optional `galleryIndex` (the photo to show when picked), an optional `note`, and an optional `priceDelta` (added to the price of each unit, for example `30` for the Large size) |
 | `product.bundles[]` | `qty`, `label`, `price`, optional `note`, `badge`, `default`. The first bundle must be qty 1. |
 | `product.compareAt` | Crossed-out price. Leave `null` unless it's true. |
 | `shipping` | `price` (0 = free), `processingDays` and `transitDays` as `[min, max]`, `region`, `origin` |
 | `returns` | `days`, `defectDays`, `condition`, `returnShippingPaidBy` (`"customer"` or `"store"`) |
-| `checkout` | See "Connecting checkout" above |
+| `checkout` | See "Connecting checkout" above. With several option groups, variant names are joined Shopify-style: `"Medium / Walnut"`. |
 | `tracking` | `metaPixelId`, `tiktokPixelId`, `ga4Id` |
 | `reviews[]` | Real reviews only: `name`, `rating` (1 to 5), `text`, `verified` |
 | `page.announcement`, `headerCta`, `nav[]` | Top bar text, header button, section links |
-| `page.sections[]` | The page below the buy box, in order. See `products/_template/product.json` for every section's fields. |
+| `page.sections[]` | The page below the buy box, in order. See `products/_template/product.json` for every section's fields. The `sizes` section (a size table plus measuring steps) is shown in `products/denly-den-table/product.json`. |
+| `verify[]` | Claims in the copy you still have to confirm against the exact supplier product or your sample. Each line is a launch blocker until you delete it. |
 
 ## Hosting
 

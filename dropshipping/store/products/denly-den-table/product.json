@@ -1,0 +1,243 @@
+{
+  "brand": {
+    "name": "Denly",
+    "wordmark": "Denly",
+    "blurb": "Dog crates that look like furniture, so your dog's spot can live in the room you actually use.",
+    "colors": {
+      "bg": "#f6f2ec",
+      "surface": "#ffffff",
+      "tint": "#eee6db",
+      "ink": "#2b221c",
+      "muted": "#6f645a",
+      "accent": "#8b5a36",
+      "accentInk": "#ffffff",
+      "line": "#e2d8cb"
+    }
+  },
+  "business": {
+    "legalName": "TODO Legal Business Name LLC",
+    "email": "hello@example.com",
+    "address": "TODO street, city, state ZIP",
+    "phone": "",
+    "replyTime": "one business day",
+    "governingLaw": "the Commonwealth of Pennsylvania"
+  },
+  "site": {
+    "url": "https://your-store.example.com",
+    "title": "Denly | The dog crate that looks like furniture",
+    "description": "The Den Table is a dog crate that doubles as an end table, in walnut, black or white. Two sizes, free US shipping and 30-day returns.",
+    "ogImage": "hero-walnut.jpg"
+  },
+  "verify": [
+    "Material: the copy says \"wood-look panels\". Confirm what the panels are, and never say \"solid wood\" unless it is",
+    "Finishes: confirm the supplier stocks walnut, black and white in both sizes",
+    "Delivery: confirm the supplier's real US-warehouse handling and transit days (shipping.processingDays and transitDays)",
+    "Prices: Medium $159 and Large $189. Confirm the margin after the supplier's price and shipping, using the table in research/PRODUCT_BRIEF.md",
+    "Photos: use your own sample photos, or supplier photos only if the supplier allows it"
+  ],
+  "product": {
+    "name": "The Den Table",
+    "shortName": "The Den Table",
+    "eyebrow": "Dog crate + end table",
+    "tagline": "A dog crate that looks like furniture, so you can stop hiding it.",
+    "sku": "DENLY-DEN-TABLE",
+    "currency": "USD",
+    "cta": "Buy now",
+    "compareAt": null,
+    "gallery": [
+      { "file": "hero-walnut.jpg", "w": 1200, "h": 1200, "alt": "Walnut Den Table beside a sofa with a lamp on top and a dog resting inside", "shot": "Hero: walnut crate table beside a sofa, lamp and plant on top, dog resting inside with the door open" },
+      { "file": "before-after.jpg", "w": 1200, "h": 1200, "alt": "The same living room corner with a wire crate on the left and the Den Table on the right", "shot": "Before and after: same corner, same framing. Wire crate on the left, Den Table on the right" },
+      { "file": "finish-black.jpg", "w": 1200, "h": 1200, "alt": "Black Den Table used as a nightstand in a bedroom", "shot": "Black finish styled as a nightstand in a bedroom" },
+      { "file": "finish-white.jpg", "w": 1200, "h": 1200, "alt": "White Den Table in a bright entryway", "shot": "White finish in a bright entryway or living room" },
+      { "file": "detail-door.jpg", "w": 1200, "h": 1200, "alt": "Close-up of the Den Table door, latch and finish", "shot": "Detail: close-up of the door, latch and finish" },
+      { "file": "sizes.jpg", "w": 1200, "h": 1200, "alt": "Medium and Large Den Tables side by side, each with a dog inside for scale", "shot": "Scale: Medium and Large side by side with a dog in each" }
+    ],
+    "bullets": [
+      "Looks like an end table, works like a crate",
+      "A real tabletop for a lamp, a plant or your coffee",
+      "Medium and Large, with a size guide so you get the right fit",
+      "Free shipping from our US warehouse, plus 30-day returns"
+    ],
+    "options": [
+      {
+        "label": "Size",
+        "style": "pills",
+        "guideHref": "#sizes",
+        "values": [
+          { "name": "Medium" },
+          { "name": "Large", "priceDelta": 30 }
+        ]
+      },
+      {
+        "label": "Finish",
+        "values": [
+          { "name": "Walnut", "swatch": "#6b4a33", "galleryIndex": 0 },
+          { "name": "Black", "swatch": "#26221f", "galleryIndex": 2 },
+          { "name": "White", "swatch": "#ece7e0", "galleryIndex": 3 }
+        ]
+      }
+    ],
+    "bundles": [
+      { "qty": 1, "label": "One crate", "price": 159 }
+    ]
+  },
+  "shipping": {
+    "price": 0,
+    "processingDays": [1, 2],
+    "transitDays": [3, 7],
+    "region": "the contiguous United States",
+    "origin": "Every order ships flat-packed from a US warehouse, so there are no customs delays or import fees."
+  },
+  "returns": {
+    "days": 30,
+    "defectDays": 30,
+    "condition": "unused and in the original packaging",
+    "returnShippingPaidBy": "customer"
+  },
+  "checkout": {
+    "mode": "demo",
+    "shopifyDomain": "your-store.myshopify.com",
+    "variantIds": {
+      "Medium / Walnut": "",
+      "Medium / Black": "",
+      "Medium / White": "",
+      "Large / Walnut": "",
+      "Large / Black": "",
+      "Large / White": ""
+    },
+    "discountCodes": {},
+    "links": {}
+  },
+  "tracking": { "metaPixelId": "", "tiktokPixelId": "", "ga4Id": "" },
+  "reviews": [],
+  "page": {
+    "announcement": "Free shipping from our US warehouse *·* 30-day returns",
+    "headerCta": "Shop now",
+    "nav": [
+      { "label": "Why Denly", "href": "#why" },
+      { "label": "Features", "href": "#features" },
+      { "label": "Size guide", "href": "#sizes" },
+      { "label": "FAQ", "href": "#faq" }
+    ],
+    "sections": [
+      {
+        "type": "problem",
+        "eyebrow": "The problem",
+        "headline": "Wire crates were made for kennels, not *living rooms*",
+        "body": [
+          "Your dog needs a spot of their own. Your living room doesn't need a metal cage in the corner.",
+          "So the crate gets a blanket thrown over it, or it ends up in a spare room, away from where you spend your time."
+        ],
+        "points": [
+          { "title": "It's the first thing guests see", "text": "However you arrange the room, a wire crate still looks like a wire crate." },
+          { "title": "Covers never stay put", "text": "Blankets slide off, get pulled inside, and end up in the wash every week." },
+          { "title": "It takes a corner and gives nothing back", "text": "No surface, no storage. Just floor space you can't use." }
+        ]
+      },
+      {
+        "type": "features",
+        "eyebrow": "The fix",
+        "headline": "A crate that earns its spot",
+        "items": [
+          {
+            "title": "It looks like furniture",
+            "text": ["Wood-look panels and a clean finish read as an end table or nightstand. Pick walnut, black or white to match your room."],
+            "image": { "file": "feature-room.jpg", "w": 1200, "h": 900, "alt": "The Den Table in a styled living room next to an armchair", "shot": "Styled living room: the Den Table next to an armchair, nothing that says 'crate'" }
+          },
+          {
+            "title": "The top is a real table",
+            "text": ["Use it for a lamp, a plant, books or your coffee. The space the crate takes up starts working for you again."],
+            "image": { "file": "feature-top.jpg", "w": 1200, "h": 900, "alt": "A lamp, books and a mug on top of the Den Table", "shot": "Tabletop in use: lamp, a stack of books and a coffee mug" }
+          },
+          {
+            "title": "Their spot, right next to you",
+            "text": ["Because it looks good, it can live in the room where you actually are, so your dog can rest close by instead of down the hall."],
+            "image": { "file": "feature-door.jpg", "w": 1200, "h": 900, "alt": "A dog walking into the Den Table through the open door", "shot": "Dog walking in through the open door, owner on the sofa in the background" }
+          }
+        ]
+      },
+      {
+        "type": "steps",
+        "eyebrow": "How it works",
+        "headline": "From box to den in three steps",
+        "items": [
+          { "title": "Pick your size", "text": "Measure your dog standing up, then match them to the size guide below." },
+          { "title": "Put it together", "text": "It arrives flat-packed with the tools and step-by-step instructions." },
+          { "title": "Let them explore", "text": "Leave the door open, add their bed and a treat, and let your dog check it out at their own pace." }
+        ]
+      },
+      {
+        "type": "compare",
+        "headline": "The Den Table vs. a wire crate",
+        "columns": ["Den Table", "Wire crate"],
+        "rows": [
+          ["Looks like", "An end table or nightstand", "A metal cage"],
+          ["Top surface", "Holds a lamp, plant or books", "None, unless you add a cover"],
+          ["Where it can go", "Living room, bedroom, office", "Usually tucked out of sight"],
+          ["Needs a cover", "No", "Often, to look better"]
+        ],
+        "note": "To be fair to wire crates: they fold flat for travel and cost less. If your dog is a heavy chewer or you travel with the crate, a wire crate may suit you better."
+      },
+      {
+        "type": "sizes",
+        "eyebrow": "Size guide",
+        "headline": "Find the right size",
+        "lede": "Your dog should be able to stand up, turn around and lie down comfortably inside.",
+        "columns": ["Size", "Best for dogs", "Inside (W × D × H)", "Outside (W × D × H)"],
+        "rows": [
+          ["Medium", "Up to TODO lb", "TODO in", "TODO in"],
+          ["Large", "Up to TODO lb", "TODO in", "TODO in"]
+        ],
+        "steps": [
+          "*Length:* with your dog standing, measure from the nose to the base of the tail. Add 2 to 4 inches.",
+          "*Height:* measure from the floor to the top of the head, or the ear tips if they stand up. Add 2 to 4 inches.",
+          "*Pick* the size whose inside measurements beat both numbers. Between sizes? Go up."
+        ],
+        "note": "Puppy still growing? Size for their adult weight. Not sure? Email us your dog's measurements and we'll help you choose."
+      },
+      {
+        "type": "specs",
+        "eyebrow": "Details",
+        "headline": "The specifics",
+        "specs": [
+          ["Finishes", "Walnut, black or white"],
+          ["Material", "TODO (exactly as the supplier lists it)"],
+          ["Tabletop holds", "Up to TODO lb"],
+          ["Doors", "TODO (single or double, and the latch type)"],
+          ["Assembly", "Required, about TODO minutes. Tools included."],
+          ["Ships from", "A US warehouse, flat-packed"]
+        ],
+        "box": ["The Den Table, flat-packed", "Assembly hardware and tools", "Step-by-step instructions"],
+        "boxNote": "Dog bed and decor in the photos are for styling and aren't included."
+      },
+      { "type": "reviews", "eyebrow": "Reviews", "headline": "What dog owners say" },
+      {
+        "type": "guarantee",
+        "headline": "30 days to make sure it suits your home",
+        "text": [
+          "If it isn't right, contact us within 30 days of delivery to return it.",
+          "If it arrives damaged, send us a photo and we'll replace the damaged part or the whole crate at no cost to you."
+        ]
+      },
+      {
+        "type": "faq",
+        "headline": "Questions, answered",
+        "items": [
+          { "q": "How long does delivery take?", "a": ["It ships from a US warehouse, and most orders arrive 4 to 9 days after you order. You'll get a tracking link by email."] },
+          { "q": "Which size should I get?", "a": ["Use the size guide: measure your dog standing, add 2 to 4 inches, and pick the size with room to spare. If you're unsure, email us your dog's measurements and we'll help."] },
+          { "q": "Is it chew-proof?", "a": ["No crate is completely chew-proof, and this one is built to look like furniture. If your dog is a heavy chewer or still learning to settle in a crate, supervise them at first, or start with a wire crate."] },
+          { "q": "Can I put a lamp or a TV on top?", "a": ["A lamp, a plant or books, yes. The top holds up to TODO lb. Please don't use it as a step or a seat."] },
+          { "q": "Is it hard to put together?", "a": ["It arrives flat-packed with tools and step-by-step instructions. Most people finish in about TODO minutes."] },
+          { "q": "What if it arrives damaged?", "a": ["Email us a photo within 30 days of delivery and we'll send a replacement part or a new crate at no cost to you."] },
+          { "q": "Can I return it?", "a": ["Yes, within 30 days of delivery, if it's unused and in its original packaging. Because it's a large box, return shipping costs more than a typical package. Email us first and we'll tell you the cost before you send anything."] }
+        ]
+      },
+      {
+        "type": "cta",
+        "headline": "Give your dog a spot you'll *both* like",
+        "text": "Free shipping from our US warehouse. 30-day returns.",
+        "button": "Get the Den Table"
+      }
+    ]
+  }
+}

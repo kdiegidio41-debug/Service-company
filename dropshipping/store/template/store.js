@@ -78,22 +78,44 @@
 
   /* --- Options and bundles ---------------------------------------------- */
   var form = $('[data-buy-form]');
-  var optionName = $('[data-option-name]');
   var stickyDetail = $('[data-sticky-detail]');
+  var groups = S.options || [];
+  /* The variant name ("Medium / Walnut") is what checkout.variantIds and
+     checkout.links are keyed by. An option's priceDelta is added per unit. */
   function selection() {
-    var opt = $('input[name="option"]:checked', form);
+    var names = [];
+    var delta = 0;
+    groups.forEach(function (g, gi) {
+      var el = $('input[name="option-' + gi + '"]:checked', form);
+      var name = el ? el.value : g.values[0].name;
+      names.push(name);
+      g.values.forEach(function (v) { if (v.name === name) delta += v.delta; });
+    });
     var bun = $('input[name="bundle"]:checked', form);
     var qty = bun ? Number(bun.value) : S.bundles[0].qty;
     var bundle = S.bundles.filter(function (b) { return b.qty === qty; })[0] || S.bundles[0];
-    return { option: opt ? opt.value : 'default', hasOption: !!opt, bundle: bundle };
+    return {
+      names: names,
+      variant: names.length ? names.join(' / ') : 'default',
+      bundle: bundle,
+      unit: S.bundles[0].price + delta,
+      price: Math.round((bundle.price + delta * qty) * 100) / 100
+    };
+  }
+  function describe(sel) {
+    return sel.names.concat(S.bundles.length > 1 ? [sel.bundle.label] : []).join(' · ') || sel.bundle.label;
   }
   function refresh() {
     var sel = selection();
-    $$('[data-buy-price]').forEach(function (el) { el.textContent = money(sel.bundle.price); });
-    if (optionName && sel.hasOption) optionName.textContent = sel.option;
-    if (stickyDetail) stickyDetail.textContent = (sel.hasOption ? sel.option + ' · ' : '') + sel.bundle.label;
+    $$('[data-buy-price]').forEach(function (el) { el.textContent = money(sel.price); });
+    $$('[data-price]').forEach(function (el) { el.textContent = money(sel.unit); });
+    sel.names.forEach(function (n, gi) {
+      var el = $('[data-option-name="' + gi + '"]');
+      if (el) el.textContent = n;
+    });
+    if (stickyDetail) stickyDetail.textContent = describe(sel);
   }
-  $$('input[name="option"]', form).forEach(function (el) {
+  $$('input[name^="option-"]', form).forEach(function (el) {
     el.addEventListener('change', function () {
       if (el.dataset.gallery !== undefined) showSlide(Number(el.dataset.gallery));
       refresh();
@@ -117,14 +139,14 @@
   function checkoutUrl(sel) {
     var c = S.checkout || {};
     if (c.mode === 'shopify') {
-      var id = (c.variantIds || {})[sel.option];
+      var id = (c.variantIds || {})[sel.variant];
       if (!id || !c.shopifyDomain) return null;
       var url = 'https://' + c.shopifyDomain + '/cart/' + id + ':' + sel.bundle.qty;
       var code = (c.discountCodes || {})[String(sel.bundle.qty)];
       return passThrough(url + (code ? '?discount=' + encodeURIComponent(code) : ''));
     }
     if (c.mode === 'links') {
-      var link = (c.links || {})[sel.option + '|' + sel.bundle.qty];
+      var link = (c.links || {})[sel.variant + '|' + sel.bundle.qty];
       return link ? passThrough(link) : null;
     }
     return null;
@@ -132,14 +154,14 @@
   var notice = $('[data-demo-notice]');
   function buy() {
     var sel = selection();
-    track('AddToCart', 'AddToCart', 'add_to_cart', sel.bundle.price, sel.bundle.qty);
+    track('AddToCart', 'AddToCart', 'add_to_cart', sel.price, sel.bundle.qty);
     var url = checkoutUrl(sel);
     if (!url) {
-      $('[data-demo-summary]').textContent = (sel.hasOption ? sel.option + ', ' : '') + sel.bundle.label + ', ' + money(sel.bundle.price);
+      $('[data-demo-summary]').textContent = describe(sel) + ', ' + money(sel.price);
       if (notice.showModal) notice.showModal(); else notice.setAttribute('open', '');
       return;
     }
-    track('InitiateCheckout', 'InitiateCheckout', 'begin_checkout', sel.bundle.price, sel.bundle.qty);
+    track('InitiateCheckout', 'InitiateCheckout', 'begin_checkout', sel.price, sel.bundle.qty);
     $$('[data-buy-label]').forEach(function (el) { el.textContent = 'Opening checkout…'; });
     /* A short pause lets the pixel events send before the page unloads. */
     window.setTimeout(function () { window.location.href = url; }, 250);

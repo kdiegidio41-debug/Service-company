@@ -184,8 +184,23 @@ const footer = () => `<footer class="site-footer">
 </footer>`;
 
 /* --- Buy box ------------------------------------------------------------- */
-const options = product.options;
-const hasOptions = options && options.values && options.values.length > 0;
+/* product.options is one option group or a list of groups (for example Size and
+   Finish). A value can carry priceDelta, added to the price of each unit. */
+const optionGroups = (Array.isArray(product.options) ? product.options : product.options ? [product.options] : []).filter(
+  (g) => g && g.values && g.values.length
+);
+const hasOptions = optionGroups.length > 0;
+const defaultBundle = product.bundles.find((b) => b.default) || single;
+const defaultDelta = optionGroups.reduce((s, g) => s + (g.values[0].priceDelta || 0), 0);
+const startUnit = single.price + defaultDelta;
+const startPrice = defaultBundle.price + defaultDelta * defaultBundle.qty;
+const lowUnit = single.price + optionGroups.reduce((s, g) => s + Math.min(...g.values.map((v) => v.priceDelta || 0)), 0);
+/* Variant names match Shopify's style: "Medium / Walnut". */
+const variantNames = hasOptions
+  ? optionGroups.reduce((acc, g) => acc.flatMap((a) => g.values.map((v) => (a ? `${a} / ${v.name}` : v.name))), [''])
+  : ['default'];
+const startDetail =
+  [...optionGroups.map((g) => g.values[0].name), ...(product.bundles.length > 1 ? [defaultBundle.label] : [])].join(' · ') || single.label;
 
 function buyBox() {
   const gallery = product.gallery;
@@ -201,19 +216,26 @@ function buyBox() {
       </div>`
       : '';
 
-  const optionHtml = hasOptions
-    ? `<fieldset class="opt">
-        <legend>${esc(options.label)}: <span data-option-name>${esc(options.values[0].name)}</span></legend>
-        <div class="opt__row">
-          ${options.values
-            .map(
-              (v, i) =>
-                `<label class="swatch" title="${esc(v.name)}"><input type="radio" name="option" value="${esc(v.name)}"${i === 0 ? ' checked' : ''}${Number.isInteger(v.galleryIndex) ? ` data-gallery="${v.galleryIndex}"` : ''}><span class="swatch__dot" style="background:${esc(v.swatch)}"></span><span class="sr">${esc(v.name)}</span></label>`
-            )
-            .join('\n          ')}
+  const optionHtml = optionGroups
+    .map((g, gi) => {
+      const pills = g.style === 'pills';
+      const guide = g.guideHref ? `<a class="opt__guide" href="${esc(g.guideHref)}">${esc(g.guideLabel || 'Size guide')}</a>` : '';
+      const values = g.values
+        .map((v, i) => {
+          const attrs = `type="radio" name="option-${gi}" value="${esc(v.name)}"${i === 0 ? ' checked' : ''}${Number.isInteger(v.galleryIndex) ? ` data-gallery="${v.galleryIndex}"` : ''}`;
+          if (pills)
+            return `<label class="pill"><input ${attrs}><span class="pill__text">${esc(v.name)}</span>${v.note ? `<span class="pill__note">${esc(v.note)}</span>` : ''}</label>`;
+          return `<label class="swatch" title="${esc(v.name)}"><input ${attrs}><span class="swatch__dot" style="background:${esc(v.swatch)}"></span><span class="sr">${esc(v.name)}</span></label>`;
+        })
+        .join('\n          ');
+      return `<fieldset class="opt">
+        <legend>${esc(g.label)}: <span data-option-name="${gi}">${esc(g.values[0].name)}</span>${guide}</legend>
+        <div class="opt__row${pills ? ' opt__row--pills' : ''}">
+          ${values}
         </div>
-      </fieldset>`
-    : '';
+      </fieldset>`;
+    })
+    .join('\n        ');
 
   const bundleHtml =
     product.bundles.length > 1
@@ -257,14 +279,14 @@ function buyBox() {
       <h1 id="product-name">${rich(product.name)}</h1>
       ${ratingHtml}
       <p class="buy__tagline">${rich(product.tagline)}</p>
-      <p class="price"><span class="price__now" data-price>${money(single.price)}</span>${compare}<span class="price__ship">${shipping.price === 0 ? 'Free US shipping' : `+ ${money(shipping.price)} shipping`}</span></p>
+      <p class="price"><span class="price__now" data-price>${money(startUnit)}</span>${compare}<span class="price__ship">${shipping.price === 0 ? 'Free US shipping' : `+ ${money(shipping.price)} shipping`}</span></p>
       <ul class="ticks">
         ${product.bullets.map((b) => `<li>${icon.check}<span>${rich(b)}</span></li>`).join('\n        ')}
       </ul>
       <form class="buy__form" data-buy-form>
         ${optionHtml}
         ${bundleHtml}
-        <button class="btn btn--buy" type="submit" data-buy><span data-buy-label>${esc(product.cta || 'Buy now')}</span><span class="btn__price" data-buy-price>${money((product.bundles.find((b) => b.default) || single).price)}</span></button>
+        <button class="btn btn--buy" type="submit" data-buy><span data-buy-label>${esc(product.cta || 'Buy now')}</span><span class="btn__price" data-buy-price>${money(startPrice)}</span></button>
       </form>
       <p class="eta">${icon.truck}<span>Order today, arrives <strong data-eta>in ${shipping.processingDays[0] + shipping.transitDays[0]} to ${shipping.processingDays[1] + shipping.transitDays[1]} days</strong></span></p>
       <ul class="trust">
@@ -353,6 +375,22 @@ const sections = {
   </div>
 </section>`,
 
+  sizes: (s) => `<section class="sec" id="sizes">
+  <div class="wrap narrow">
+    <div class="center">${sectionHead(s)}</div>
+    <div class="table-scroll">
+      <table class="compare sizes">
+        <thead><tr>${s.columns.map((h) => `<th scope="col">${esc(h)}</th>`).join('')}</tr></thead>
+        <tbody>
+          ${s.rows.map((r) => `<tr><th scope="row">${rich(r[0])}</th>${r.slice(1).map((c) => `<td>${rich(c)}</td>`).join('')}</tr>`).join('\n          ')}
+        </tbody>
+      </table>
+    </div>
+    ${s.steps ? `<ol class="measure">${s.steps.map((t) => `<li>${rich(t)}</li>`).join('')}</ol>` : ''}
+    ${s.note ? `<p class="fine">${rich(s.note)}</p>` : ''}
+  </div>
+</section>`,
+
   /* Renders only when real reviews are supplied in product.json. */
   reviews: (s) => {
     const reviews = cfg.reviews || [];
@@ -392,7 +430,7 @@ const sections = {
   <div class="wrap narrow center">
     <h2>${rich(s.headline)}</h2>
     ${s.text ? `<p class="lede">${rich(s.text)}</p>` : ''}
-    <a class="btn btn--buy btn--inline" href="#buy">${esc(s.button || product.cta || 'Buy now')}<span class="btn__price" data-buy-price>${money((product.bundles.find((b) => b.default) || single).price)}</span></a>
+    <a class="btn btn--buy btn--inline" href="#buy">${esc(s.button || product.cta || 'Buy now')}<span class="btn__price" data-buy-price>${money(startPrice)}</span></a>
     <p class="fine">${returns.days}-day returns &middot; ${shipping.price === 0 ? 'Free tracked US shipping' : 'Tracked US shipping'}</p>
   </div>
 </section>`
@@ -413,7 +451,7 @@ function jsonLd() {
       '@type': 'Offer',
       url: siteUrl + '/',
       priceCurrency: product.currency || 'USD',
-      price: single.price.toFixed(2),
+      price: lowUnit.toFixed(2),
       availability: 'https://schema.org/InStock',
       itemCondition: 'https://schema.org/NewCondition',
       shippingDetails: {
@@ -467,6 +505,7 @@ const clientConfig = {
   currency: product.currency || 'USD',
   cta: product.cta || 'Buy now',
   bundles: product.bundles.map((b) => ({ qty: b.qty, price: b.price, label: b.label })),
+  options: optionGroups.map((g) => ({ values: g.values.map((v) => ({ name: v.name, delta: v.priceDelta || 0 })) })),
   shipping: { processingDays: shipping.processingDays, transitDays: shipping.transitDays },
   checkout: cfg.checkout,
   tracking: cfg.tracking || {}
@@ -504,8 +543,8 @@ ${body}
 ${footer()}
 
 <div class="sticky-buy" data-sticky hidden>
-  <div class="sticky-buy__text"><strong>${esc(product.shortName || product.name.replace(/\*/g, ''))}</strong><span data-sticky-detail>${esc(single.label)}</span></div>
-  <button class="btn btn--buy" type="button" data-sticky-buy><span data-buy-label>${esc(product.cta || 'Buy now')}</span><span class="btn__price" data-buy-price>${money((product.bundles.find((b) => b.default) || single).price)}</span></button>
+  <div class="sticky-buy__text"><strong>${esc(product.shortName || product.name.replace(/\*/g, ''))}</strong><span data-sticky-detail>${esc(startDetail)}</span></div>
+  <button class="btn btn--buy" type="button" data-sticky-buy><span data-buy-label>${esc(product.cta || 'Buy now')}</span><span class="btn__price" data-buy-price>${money(startPrice)}</span></button>
 </div>
 
 <dialog class="notice" data-demo-notice aria-labelledby="demo-title">
@@ -677,16 +716,31 @@ const co = cfg.checkout;
 if (co.mode === 'demo') flag('blocker', 'Checkout is in demo mode: the buy button shows a preview notice and takes no orders.');
 if (co.mode === 'shopify') {
   if (isPlaceholder(co.shopifyDomain)) flag('blocker', 'checkout.shopifyDomain is not set.');
-  const names = hasOptions ? options.values.map((v) => v.name) : ['default'];
-  for (const n of names) if (!co.variantIds || !co.variantIds[n]) flag('blocker', `checkout.variantIds is missing an entry for "${n}".`);
+  for (const n of variantNames) if (!co.variantIds || !co.variantIds[n]) flag('blocker', `checkout.variantIds is missing an entry for "${n}".`);
 }
 if (co.mode === 'links') {
-  const names = hasOptions ? options.values.map((v) => v.name) : ['default'];
-  for (const n of names)
+  for (const n of variantNames)
     for (const b of product.bundles) if (!co.links || !co.links[`${n}|${b.qty}`]) flag('blocker', `checkout.links is missing "${n}|${b.qty}".`);
 }
 for (const [k, v] of Object.entries({ 'business.legalName': biz.legalName, 'business.email': biz.email, 'business.address': biz.address, 'site.url': cfg.site.url }))
   if (isPlaceholder(v)) flag('blocker', `${k} is still a placeholder. The policy pages print it.`);
+/* Anything still marked TODO (a spec, a size, a claim to confirm with the supplier)
+   blocks launch. Business details and the site address have their own checks above. */
+const todos = [];
+(function scan(value, where) {
+  if (typeof value === 'string') {
+    if (/\bTODO\b/.test(value)) todos.push(where);
+  } else if (Array.isArray(value)) value.forEach((v, i) => scan(v, `${where}[${i}]`));
+  else if (value && typeof value === 'object')
+    for (const [k, v] of Object.entries(value)) if (!['business', 'checkout'].includes(k) || where) scan(v, where ? `${where}.${k}` : k);
+})(cfg, '');
+const todoList = todos.filter((p) => p !== 'site.url' && !p.startsWith('verify'));
+/* verify: claims written into the copy that must be checked against the exact
+   supplier product before launch. Delete each line once it's confirmed. */
+if (Array.isArray(cfg.verify) && cfg.verify.length)
+  flag('blocker', `Confirm against the supplier's listing or your sample, then delete from "verify" (${cfg.verify.length}):\n      * ${cfg.verify.join('\n      * ')}`);
+if (todoList.length)
+  flag('blocker', `${todoList.length} field${todoList.length === 1 ? '' : 's'} still say TODO (fill them from the supplier's spec sheet): ${todoList.join(', ')}`);
 const t = cfg.tracking || {};
 if (!t.metaPixelId && !t.tiktokPixelId) flag('warning', 'No ad pixel ID is set. Ads can run, but the platform cannot learn who buys.');
 if (!t.ga4Id) flag('info', 'No Google Analytics ID is set (optional).');
