@@ -176,3 +176,49 @@ Test before building. For a mass-market product, the store with the best video w
 the store that found the product first. Order one CarPlay screen sample, film 3-5 short
 videos, and post them organically on TikTok and Reels. Build the store and fund ads only
 if a video gets real traction, such as comments asking where to buy.
+
+---
+
+# Round 3: big market, light (under ~2 lb), not electric, available through CJ
+
+**No single product passed every filter.** Light, non-electric products that CJ can
+source are exactly what every dropshipper sells, so in a big market they're always
+crowded. Checked and rejected:
+
+| Product | Why |
+| --- | --- |
+| Plastic-free water bottle (steel lid) | Klean Kanteen, Black + Blum and others already sell it |
+| Stainless food storage containers | Many brands |
+| Glass and steel cold brew maker | Ovalware, KitchenAid, OXO, County Line |
+| Titanium cutting board | Flooded with sketchy brands, press-release "reviews" and fraud complaints |
+| Modern cat wall shelves | Amazon multi-piece sets, CatastrophiCreations, Tuft + Paw; also over 2 lb |
+| Glass air fryer, plastic-free kettle | Electric, and Ninja, Cuisinart, Cosori and Fellow already sell them |
+
+## Best option: a plastic-free kitchen starter kit (compete on the offer, not the product)
+
+Each piece on its own is a commodity. A curated kit, sold as "swap the plastic that
+touches your food," is a different offer, and a big retailer has already proven it.
+
+- **Demand:**
+  - Microplastics gets about 90,000 searches a month ([Exploding Topics](https://explodingtopics.com/topic/microplastics)).
+  - "Plastic-free coffee maker" searches rose 5,000% in 2026 ([Tom's Guide](https://www.tomsguide.com/home/coffee-makers/sugar-creamer-and-microplastics-the-inside-story-on-the-plastic-free-coffee-revolution)).
+  - Mainstream food outlets ran plastic-free kitchen pieces in June 2026, and the US government funded a $144M microplastics program in April 2026.
+- **Competition:**
+  - Grove Collaborative sells a 12-piece "Kitchen Swap Set" at $125.90, shown out of stock ([Grove](https://www.grove.co/products/highest-impact-kitchen-swap-set-everyday-food-contact-essentials)).
+  - Elephant Box in the UK shows its kit sold out. Seed & Sprout covers Australia and New Zealand.
+  - No US brand running ads for a plastic-free kit was found. That's unverified: check the Meta Ad Library.
+- **Kit (target 2 lb or under):** nesting stainless containers with stainless lids, a
+  reusable stainless coffee filter, wooden utensils, plus one or two more food-contact
+  swaps.
+- **Economics (estimate, not verified):**
+  - Factory cost is about $12-20.
+  - Add about 35% duty and roughly $7-12 for DDP shipping, for a landed cost of about $23-39.
+  - At $69, that leaves about $28-44 gross profit, and a break-even ROAS of about 1.6-2.5.
+  - Margin is the weak spot, so get real CJ quotes first. It improves when the kit moves to bulk stock in a US warehouse.
+- **Claims:**
+  - Say what's factually true: "no plastic touches your food: stainless steel, wood and
+    silicone seals."
+  - Don't claim health benefits.
+  - Don't call silicone plastic-free without saying it's silicone.
+- **Brand path:** start with the one hero kit, then add a plastic-free coffee kit and a
+  steel-lid bottle. That's the "store around it" idea, in a big market.
