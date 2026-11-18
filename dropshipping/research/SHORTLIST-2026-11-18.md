@@ -290,3 +290,74 @@ and drive most of the worry about microplastics.
 | Book totes and bookmarks | Up 148% and 49% on Faire, but cheap and crowded |
 | Pilates grip socks | $12, with listings selling 5,000+ |
 | Kindle page-turner remote | The strongest BookTok demand ("Kindle accessories": 7.9B TikTok views), but it's electronic |
+
+---
+
+# Round 5: premium, proven big sellers
+
+The owner wants products that sell at $100-250, already sell in volume, may be heavier, and
+can face competition. Still nothing electric. The budget is under $300.
+
+**Budget reality:** $300 covers a sample plus about 2-4 sales' worth of ads on a $150 product.
+That's too few to read the result. Test with free TikTok and Reels videos of the sample
+first, then spend on ads only for a product that gets a clear response.
+
+**Heavy items with no inventory:** GIGA-US (GigaCloud) is a Shopify app for big and bulky
+products. It has 30+ US warehouses, flat-rate shipping and automatic order sync, and is for
+US-based Shopify merchants only ([Shopify app](https://apps.shopify.com/giga)). CJ's US
+warehouse is mostly small items.
+
+## 1. Modern, furniture-style cat tree (top pick)
+
+**Demand**
+- The top 10 Amazon "modern cat tree" listings each sell about 1,750 a month at an average of
+  $68.39. The leader sells about 5,000 a month. Searches run about 4,200 a week (July 2026)
+  ([ASINSIGHT](https://www.asinsight.com/report/US/modern-cat-tree)).
+- Google's Holiday 100 has "aesthetic cat furniture" searches up 160% (November 2026).
+
+**Room to be premium:** Amazon averages $68 and Tuft + Paw is $300+. A $149-179 tree that looks
+like real furniture sits in between.
+
+**Why it's first:** cat videos are some of the easiest content to make go viral, and cat
+owners skew female.
+
+**Risks**
+- Assembly complaints.
+- Damage in transit.
+- Tip-over stability. Never claim it's "safe for all cats" without testing.
+- Returns of bulky items usually end as a refund without taking the item back.
+
+**Economics:** unverified. Get GIGA and CJ quotes.
+
+## 2. Japanese floor mattress (fastest-growing)
+
+**Demand:** searches rose from 3,837 to 22,200 a month
+([Exploding Topics](https://explodingtopics.com/product-topics)).
+
+**Price room:** Walmart and MAXYOYO sell for $51-67, and FULI for $299. A premium version fits
+at $129-169.
+
+**Risks**
+- It has to ship from a US warehouse.
+- Returns are close to impossible.
+- Buyers have firmness expectations.
+
+## 3. Premium hardside carry-on suitcase
+
+**Demand:** Amazon's top 10 hardside carry-ons each sell about 1,870 a month at about $87
+([ASINSIGHT](https://www.asinsight.com/report/US/monos-carry-on)). Away and Monos sell
+for about $250-300, leaving a $129-149 gap with premium details.
+
+**Video:** durability tests and packing videos.
+
+**Risks**
+- Wheel and zipper quality. The sample decides this one.
+- Don't copy Rimowa's ribbed aluminum look or a brand's distinctive design; that's trade
+  dress and design-patent risk.
+
+## Rejected this round
+
+| Product | Why |
+| --- | --- |
+| Women's weighted vest | The leader sells about 30,000 a month, but the top 10 average about $22 ([ASINSIGHT](https://www.asinsight.com/report/US/adjustable-weighted-vest-for-women)). No room for premium. |
+| Portable CarPlay screen | It fits premium and big seller, but it's electric, which the owner kept excluded. |
