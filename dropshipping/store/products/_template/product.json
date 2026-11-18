@@ -1,0 +1,169 @@
+{
+  "brand": {
+    "name": "Brand Name",
+    "wordmark": "Brand",
+    "blurb": "One sentence on what the brand makes and who it is for.",
+    "colors": {
+      "bg": "#faf7f2",
+      "surface": "#ffffff",
+      "tint": "#f1ece4",
+      "ink": "#1c1a17",
+      "muted": "#6a655d",
+      "accent": "#9a4a23",
+      "accentInk": "#ffffff",
+      "line": "#e4ddd2"
+    }
+  },
+  "business": {
+    "legalName": "TODO Legal Business Name LLC",
+    "email": "hello@example.com",
+    "address": "TODO street, city, state ZIP",
+    "phone": "",
+    "replyTime": "one business day",
+    "governingLaw": "the Commonwealth of Pennsylvania"
+  },
+  "site": {
+    "url": "https://your-store.example.com",
+    "title": "Product Name | The main promise in a few words",
+    "description": "What it is, who it is for, and the main benefit. Keep it under 160 characters so search results show all of it.",
+    "ogImage": "gallery-1.jpg"
+  },
+  "product": {
+    "name": "Product Name",
+    "shortName": "Product Name",
+    "eyebrow": "Who it is for",
+    "tagline": "The main promise, in the same words the ads use.",
+    "sku": "SKU-001",
+    "currency": "USD",
+    "cta": "Buy now",
+    "compareAt": null,
+    "gallery": [
+      { "file": "gallery-1.jpg", "w": 1200, "h": 1200, "alt": "Describe the photo for someone who cannot see it", "shot": "Hero: the product alone on a clean background, three-quarter angle" },
+      { "file": "gallery-2.jpg", "w": 1200, "h": 1200, "alt": "Describe the photo", "shot": "In use: a person using the product in the setting buyers will use it" },
+      { "file": "gallery-3.jpg", "w": 1200, "h": 1200, "alt": "Describe the photo", "shot": "Detail: a close-up of the material or key feature" },
+      { "file": "gallery-4.jpg", "w": 1200, "h": 1200, "alt": "Describe the photo", "shot": "Scale: the product in a hand or next to a common object" }
+    ],
+    "bullets": [
+      "The top outcome the buyer gets",
+      "The second outcome, with a *specific* number or detail",
+      "What removes the risk of buying"
+    ],
+    "options": {
+      "label": "Color",
+      "values": [
+        { "name": "Black", "swatch": "#1c1a17", "galleryIndex": 0 },
+        { "name": "Sand", "swatch": "#d8c7a8", "galleryIndex": 1 }
+      ]
+    },
+    "bundleLabel": "Choose your set",
+    "bundles": [
+      { "qty": 1, "label": "One", "price": 59 },
+      { "qty": 2, "label": "Two", "note": "One for you, one to give", "price": 99, "badge": "Most popular", "default": true },
+      { "qty": 3, "label": "Three", "price": 135 }
+    ]
+  },
+  "shipping": {
+    "price": 0,
+    "processingDays": [1, 3],
+    "transitDays": [5, 9],
+    "region": "the contiguous United States",
+    "origin": "Orders ship from our fulfillment partner's warehouse."
+  },
+  "returns": {
+    "days": 30,
+    "defectDays": 30,
+    "condition": "unused and in the original packaging",
+    "returnShippingPaidBy": "customer"
+  },
+  "checkout": {
+    "mode": "demo",
+    "shopifyDomain": "your-store.myshopify.com",
+    "variantIds": { "Black": "", "Sand": "" },
+    "discountCodes": {},
+    "links": {}
+  },
+  "tracking": { "metaPixelId": "", "tiktokPixelId": "", "ga4Id": "" },
+  "reviews": [],
+  "page": {
+    "announcement": "Free tracked US shipping *·* 30-day returns",
+    "headerCta": "Shop now",
+    "nav": [
+      { "label": "Why", "href": "#why" },
+      { "label": "Features", "href": "#features" },
+      { "label": "How it works", "href": "#how" },
+      { "label": "FAQ", "href": "#faq" }
+    ],
+    "sections": [
+      {
+        "type": "problem",
+        "eyebrow": "The problem",
+        "headline": "Name the problem the way the buyer *feels* it",
+        "body": [
+          "Describe the moment the problem shows up. Use the buyer's own words from forums and reviews.",
+          "Say why the usual fixes fall short."
+        ],
+        "points": [
+          { "title": "Pain point one", "text": "One sentence." },
+          { "title": "Pain point two", "text": "One sentence." },
+          { "title": "Pain point three", "text": "One sentence." }
+        ]
+      },
+      {
+        "type": "features",
+        "eyebrow": "The fix",
+        "headline": "How the product solves it",
+        "items": [
+          { "title": "Feature as an outcome", "text": ["What it does and why that matters."], "image": { "file": "feature-1.jpg", "w": 1200, "h": 900, "alt": "Describe the photo", "shot": "The product doing its main job" } },
+          { "title": "Second feature", "text": ["What it does and why that matters."], "image": { "file": "feature-2.jpg", "w": 1200, "h": 900, "alt": "Describe the photo", "shot": "Close-up of the detail this feature describes" } }
+        ]
+      },
+      {
+        "type": "steps",
+        "eyebrow": "How it works",
+        "headline": "Set up in three steps",
+        "items": [
+          { "title": "Step one", "text": "One sentence." },
+          { "title": "Step two", "text": "One sentence." },
+          { "title": "Step three", "text": "One sentence." }
+        ]
+      },
+      {
+        "type": "compare",
+        "headline": "How it compares",
+        "columns": ["Brand", "The usual way"],
+        "rows": [
+          ["What buyers care about", "How we do it", "How the alternative does it"],
+          ["Second thing", "How we do it", "How the alternative does it"]
+        ],
+        "note": ""
+      },
+      {
+        "type": "specs",
+        "eyebrow": "Details",
+        "headline": "The specifics",
+        "specs": [
+          ["Size", "0 x 0 x 0 in"],
+          ["Weight", "0 oz"],
+          ["Material", "What it is made of"]
+        ],
+        "box": ["1 x the product", "Anything else included"],
+        "boxNote": ""
+      },
+      { "type": "reviews", "eyebrow": "Reviews", "headline": "What buyers say" },
+      {
+        "type": "guarantee",
+        "headline": "Try it for 30 days",
+        "text": ["If it is not right, send it back within 30 days of delivery for a refund."]
+      },
+      {
+        "type": "faq",
+        "headline": "Questions, answered",
+        "items": [
+          { "q": "How long does shipping take?", "a": ["Give the real range and say you send tracking."] },
+          { "q": "What if I don't like it?", "a": ["Restate the return policy in one or two sentences."] }
+        ]
+      },
+      { "type": "cta", "headline": "Restate the main promise", "text": "One line that removes the last doubt.", "button": "Buy now" }
+    ]
+  }
+}
