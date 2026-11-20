@@ -1,0 +1,28 @@
+{
+  "title": "How a septic tank works",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 30.0,
+  "caption": "Where it ALL goes when you're not on a sewer 🚽 #howitworks #septic #homeowner #howitsbuilt #learnontiktok",
+  "lines": [
+    { "beat": "hook",     "text": "If your house isn't on a city sewer, every time you *flush*, it goes into your backyard." },
+    { "beat": "pit",      "text": "You could just pipe it into a hole." },
+    { "beat": "poison",   "text": "But raw sewage soaks into the ground and poisons the *well* water." },
+    { "beat": "tank",     "text": "So you bury a big concrete *tank* instead." },
+    { "beat": "still",    "text": "Everything from the house flows in and sits still." },
+    { "beat": "sludge",   "text": "Heavy solids sink to the bottom and turn into *sludge*." },
+    { "beat": "scum",     "text": "Grease floats to the top as *scum*." },
+    { "beat": "middle",   "text": "And in the middle is mostly clear liquid." },
+    { "beat": "bacteria", "text": "Bacteria in the tank slowly eat away at the solids." },
+    { "beat": "full",     "text": "But a family fills a tank like this in just a few days." },
+    { "beat": "outlet",   "text": "So you add an outlet pipe in the middle layer, with a *baffle* so the scum can't escape." },
+    { "beat": "field",    "text": "That liquid flows out to a *drain field*: pipes full of holes, laid in trenches of gravel." },
+    { "beat": "soil",     "text": "It trickles down through the soil, and the soil filters out the germs before it reaches the groundwater." },
+    { "beat": "greener",  "text": "Which is why the grass over a drain field often grows the greenest in the yard." },
+    { "beat": "never",    "text": "But the sludge never fully goes away." },
+    { "beat": "pumpout",  "text": "So every three to five years, a truck shows up and pumps it all out." },
+    { "beat": "end",      "text": "Congratulations, you just built a *septic system*." }
+  ]
+}

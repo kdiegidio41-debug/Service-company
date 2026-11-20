@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Stage</title>
+<link rel="stylesheet" href="../node_modules/@fontsource/fredoka/700.css">
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; }
+  canvas { display: block; }
+  #vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 58%, rgba(0,0,0,0.26) 100%); }
+  #cap { position: absolute; left: 0; right: 0; top: 44%; text-align: center; }
+  #cap span { display: inline-block; font-family: 'Fredoka', sans-serif; font-weight: 700; color: #fff;
+    paint-order: stroke fill; letter-spacing: 0.01em; transform-origin: 50% 60%;
+    text-shadow: 0 0.06em 0.12em rgba(0,0,0,0.45); }
+  #cap span.hl { color: #ffd23f; }
+</style>
+<script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js" } }</script>
+</head>
+<body>
+<div id="stage"><canvas id="c"></canvas><div id="vignette"></div><div id="cap"><span></span></div></div>
+<script type="module">
+import { createStage } from './engine.js';
+try {
+  const q = new URLSearchParams(location.search);
+  const id = q.get('video'), W = +q.get('w') || 720, H = +q.get('h') || 1280;
+  const stageEl = document.getElementById('stage');
+  stageEl.style.width = W + 'px'; stageEl.style.height = H + 'px';
+  const canvas = document.getElementById('c');
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const span = document.querySelector('#cap span');
+  span.style.fontSize = Math.round(H * 0.054) + 'px';
+  span.style.webkitTextStroke = `${Math.round(H * 0.0085)}px #141414`;
+  await document.fonts.load(`700 ${Math.round(H * 0.054)}px Fredoka`);
+
+  const timeline = await (await fetch(`../out/${id}/timeline.json`)).json();
+  const sceneModule = await import(`../videos/${id}/scene.js`);
+  const ctx = createStage({ canvas, width: W, height: H, timeline, captionEl: document.getElementById('cap') });
+  const update = await sceneModule.build(ctx);
+  window.duration = timeline.duration;
+  window.renderAt = t => ctx.frame(t, update);
+  window.renderAt(0);
+  window.ready = true;
+} catch (e) {
+  window.failed = String(e && e.stack || e);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "title": "How a basement stays dry",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 40.0,
+  "caption": "Why your basement isn't a swimming pool 🌧️ #howitworks #basement #homeowner #howitsbuilt #learnontiktok",
+  "lines": [
+    { "beat": "hook",     "text": "If you dig a *basement*, it fills with water." },
+    { "beat": "why",      "text": "Because the ground is full of groundwater, and water always flows to the lowest spot." },
+    { "beat": "walls",    "text": "So you pour thick concrete walls and a concrete floor." },
+    { "beat": "sponge",   "text": "But concrete is like a hard sponge, and wet soil pushes moisture right through it." },
+    { "beat": "membrane", "text": "So you coat the outside of the walls with a waterproof *membrane*." },
+    { "beat": "pressure", "text": "But water piles up against the wall and pushes harder and harder until it finds a crack." },
+    { "beat": "drain",    "text": "So you lay a pipe full of holes around the bottom of the walls, buried in gravel." },
+    { "beat": "catch",    "text": "It catches the water before it can build up." },
+    { "beat": "nowhere",  "text": "But that pipe is underground, so the water has nowhere to go." },
+    { "beat": "sump",     "text": "So you run it into a pit dug into the basement floor, called a *sump*." },
+    { "beat": "pump",     "text": "When the pit fills, a float rises and switches on a *pump*, which shoves the water up and out of the house, far away from the walls." },
+    { "beat": "power",    "text": "But big storms knock out the power, right when you need the pump the most." },
+    { "beat": "battery",  "text": "So you add a backup pump that runs on a *battery*." },
+    { "beat": "roof",     "text": "And every drop off the roof pours down right next to the walls." },
+    { "beat": "spouts",   "text": "So you extend the downspouts to carry it several feet away." },
+    { "beat": "end",      "text": "Congratulations, you just built a *dry basement*." }
+  ]
+}

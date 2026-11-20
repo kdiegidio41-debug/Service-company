@@ -1,0 +1,31 @@
+{
+  "title": "How a pool is built",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 58.0,
+  "caption": "You just built a pool 🏊 Every layer has a job. #howitsbuilt #pool #construction #howitworks #learnontiktok",
+  "lines": [
+    { "beat": "dig",        "text": "If you want a *pool* in your backyard, you dig a hole." },
+    { "beat": "cavein",     "text": "But the dirt walls cave in the second they get wet." },
+    { "beat": "rebar",      "text": "So you line the hole with a cage of steel *rebar*." },
+    { "beat": "spray",      "text": "Then you blast concrete onto it at high speed." },
+    { "beat": "gunite",     "text": "That's called *gunite*, and it hardens into one solid shell." },
+    { "beat": "seep",       "text": "But concrete is full of tiny holes, so the water slowly leaks out." },
+    { "beat": "plaster",    "text": "So you coat it in *plaster*, which seals it smooth." },
+    { "beat": "coping",     "text": "Then you cap the edges with stone, so nobody scrapes their feet." },
+    { "beat": "fill",       "text": "Now you fill it up." },
+    { "beat": "green",      "text": "But still water turns *green* within days, because algae starts growing in it." },
+    { "beat": "pipes",      "text": "So you put a drain at the bottom and a *skimmer* at the top, and pipe them both to a *pump*." },
+    { "beat": "filter",     "text": "The pump pushes the water through a *filter* that traps leaves and dirt, then sends it back through jets in the walls." },
+    { "beat": "nokill",     "text": "But a filter can't kill algae." },
+    { "beat": "chlorine",   "text": "So you add *chlorine*." },
+    { "beat": "sun",        "text": "But sunlight breaks chlorine down in just a few hours." },
+    { "beat": "stabilizer", "text": "So you add *stabilizer*, which shields it from the sun." },
+    { "beat": "cold",       "text": "And the water is freezing." },
+    { "beat": "heater",     "text": "So you add a *heater*." },
+    { "beat": "light",      "text": "And at night you can't see the bottom, so you add a *light*." },
+    { "beat": "end",        "text": "Congratulations, you just built a *pool*." }
+  ]
+}
