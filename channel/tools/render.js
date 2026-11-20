@@ -2,7 +2,7 @@
 // Renders a video's frames in headless Chromium.
 //   node tools/render.js <id>                    every frame -> out/<id>/frames
 //   node tools/render.js <id> --times 1,5.5,20   just those moments -> out/<id>/stills (for checking)
-// Options: --w 720 --h 1280 --fps 30 --workers 3
+// Options: --w 720 --h 1280 --fps 30 --workers 3 --resume 1 (keep frames already rendered; only use if the scene hasn't changed)
 const { chromium } = require('playwright');
 const http = require('http');
 const fs = require('fs');
@@ -26,7 +26,7 @@ function serve() {
 
 function parseArgs() {
   const a = process.argv.slice(2);
-  const opt = { id: a[0], w: 720, h: 1280, fps: 30, workers: 3, times: null };
+  const opt = { id: a[0], w: 720, h: 1280, fps: 30, workers: 3, times: null, resume: 0 };
   for (let i = 1; i < a.length; i += 2) {
     const k = a[i].replace(/^--/, ''), v = a[i + 1];
     if (k === 'times') opt.times = v.split(',').map(Number); else opt[k] = Number(v);
@@ -73,7 +73,13 @@ async function worker(port, opt, frames, dir, k) {
     const total = Math.ceil(timeline.duration * opt.fps);
     frames = Array.from({ length: total }, (_, i) => ({ t: i / opt.fps, name: `f${String(i).padStart(5, '0')}.jpg` }));
   }
-  fs.rmSync(dir, { recursive: true, force: true });
+  if (opt.resume && !opt.times && fs.existsSync(dir)) {
+    const before = frames.length;
+    frames = frames.filter(f => { const p = path.join(dir, f.name); return !(fs.existsSync(p) && fs.statSync(p).size > 0); });
+    console.log(`  resuming: ${before - frames.length} frames already done, ${frames.length} to go`);
+  } else {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
   fs.mkdirSync(dir, { recursive: true });
   const srv = await serve();
   const port = srv.address().port;
