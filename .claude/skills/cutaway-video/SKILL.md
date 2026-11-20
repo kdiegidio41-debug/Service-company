@@ -95,11 +95,12 @@ Check the result: `ffprobe` says over 61 s, 1080×1920 and 30 fps, plus a contac
 
 ## 4. Post and log
 
-Post any videos `log.md` lists as "built, not posted" first, oldest first. Their files are in
-`channel/out/<id>/final.mp4` if this machine still has them; if not, re-run `bash channel/make.sh <id>`.
+Post any videos `log.md` lists as "built, not posted" first, oldest first, using the hosted file URL in the log.
 
-1. Upload `channel/out/<id>/final.mp4` to Higgsfield: `media_upload` with `filename: final.mp4` and `video/mp4`,
-   `curl -X PUT --upload-file` to the returned URL, then `media_confirm` (type `video`). Keep the hosted URL.
+1. Upload `channel/out/<id>/final.mp4` to Higgsfield: `media_upload` with `filename: <id>-final.mp4` and `video/mp4`,
+   then `bash channel/tools/upload.sh channel/out/<id>/final.mp4 '<upload_url>'` (it sends the `If-None-Match: *`
+   header the signed URL needs), then `media_confirm` (type `video`). Put the hosted URL in `log.md`. It's the
+   permanent copy, since `out/` disappears with the machine.
 2. **TikTok:** `tiktok_accounts`. If there's an active account, `tiktok_prepare_publish` with `mode: DIRECT_POST`,
    `media_type: VIDEO`, the hosted `video_url`, the script's `caption` as the description and `is_aigc: true`. The owner
    confirms in the form it opens; don't try to post without them. If there's no account, skip this and say so.
