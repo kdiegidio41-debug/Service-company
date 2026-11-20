@@ -418,6 +418,34 @@ export function makePipe(ctx, pts, { r = 0.075, color = '#62bdf5', opacity = 0.8
   return pipe;
 }
 
+// ---------- floating text label (counters, measurements) ----------
+export function makeLabel(ctx, { height = 0.8, color = '#ffffff', bg = 'rgba(18,18,18,0.82)' } = {}) {
+  const W = 640, H = 200;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, fog: false }));
+  sprite.scale.set(height * W / H, height, 1); sprite.renderOrder = 10;
+  ctx.scene.add(sprite);
+  let cur = null;
+  return {
+    sprite,
+    set(text) {
+      if (text === cur) return;
+      cur = text;
+      g.clearRect(0, 0, W, H);
+      if (text) {
+        g.font = "700 120px Fredoka, sans-serif";
+        const w = Math.min(W - 8, g.measureText(text).width + 80);
+        g.fillStyle = bg; g.beginPath(); g.roundRect((W - w) / 2, 22, w, H - 44, 48); g.fill();
+        g.fillStyle = color; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, W / 2, H / 2 + 6);
+      }
+      tex.needsUpdate = true;
+      sprite.visible = !!text;
+    },
+  };
+}
+
 // ---------- the mascot: a rubber duck in a hard hat ----------
 export function makeDuck(ctx) {
   const g = new THREE.Group();
