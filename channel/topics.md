@@ -12,7 +12,7 @@ Rules for picking a topic:
 ## Next up
 
 - [x] 001-pool: how a pool is built (built; see log.md)
-- [ ] 002-septic: how a septic tank works (script written: `videos/002-septic/script.json`)
+- [x] 002-septic: how a septic tank works (built; see log.md)
 - [ ] 003-basement: how a basement stays dry (script written: `videos/003-basement/script.json`)
 - [ ] 004-driveway: how an asphalt driveway is built (base gravel, compaction, binder, top coat, sealing, cracks from freeze-thaw)
 - [ ] 005-foundation: how a house foundation is built (footings, frost line, rebar, forms, anchor bolts, sill plate)
