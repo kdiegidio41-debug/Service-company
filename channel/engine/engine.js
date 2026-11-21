@@ -12,7 +12,7 @@ export const smooth = (a, b, x) => {
   const k = clamp01((x - a) / (b - a));
   return k * k * (3 - 2 * k);
 };
-export const easeOutBack = k => { const c = 1.70158; return 1 + (c + 1) * (k - 1) ** 3 + c * (k - 1) ** 2; };
+export const easeOutBack = k => { if (k <= 0) return 0; if (k >= 1) return 1; const c = 1.70158; return 1 + (c + 1) * (k - 1) ** 3 + c * (k - 1) ** 2; };
 export const easeOutBounce = k => {
   const n = 7.5625, d = 2.75;
   if (k < 1 / d) return n * k * k;
