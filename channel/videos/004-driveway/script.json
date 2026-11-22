@@ -1,0 +1,27 @@
+{
+  "title": "How an asphalt driveway is built",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 62.0,
+  "caption": "Your driveway is rocks glued together with crude oil 🛣️ #howitsbuilt #driveway #asphalt #homeowner #howitworks",
+  "lines": [
+    { "beat": "hook",     "text": "If you drive on your lawn every day, you get two deep, muddy ruts." },
+    { "beat": "topsoil",  "text": "So you dig out the soft topsoil, because it squishes and settles." },
+    { "beat": "weak",     "text": "But the dirt underneath still turns to mud every time it rains." },
+    { "beat": "stone",    "text": "So you spread a thick layer of crushed *stone*, and a roller packs it down tight." },
+    { "beat": "gravel",   "text": "Now you have a gravel driveway." },
+    { "beat": "kicked",   "text": "But tires kick the gravel around, and every storm washes it into ruts." },
+    { "beat": "asphalt",  "text": "So you pave it with *asphalt*: rocks and sand glued together with *bitumen*, a sticky black goo made from crude oil." },
+    { "beat": "layers",   "text": "You lay it in two layers: a rough bottom coat, then a smoother top coat." },
+    { "beat": "hot",      "text": "It comes out of the truck at about *three hundred degrees*, and gets rolled flat while it's still hot." },
+    { "beat": "flat",     "text": "But if it's dead flat, rain just sits on top of it." },
+    { "beat": "tilt",     "text": "So you tilt it slightly, and the water runs off into the grass." },
+    { "beat": "sun",      "text": "But the sun slowly bakes the goo until it turns gray and brittle." },
+    { "beat": "winter",   "text": "And in winter, water seeps into tiny cracks, freezes, and expands." },
+    { "beat": "pries",    "text": "Every freeze pries the cracks a little wider, until chunks break loose." },
+    { "beat": "sealcoat", "text": "So every few years you fill the cracks and paint on a *sealcoat*, which keeps out the sun and the water." },
+    { "beat": "end",      "text": "Congratulations, you just built a *driveway*." }
+  ]
+}
