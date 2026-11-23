@@ -503,6 +503,7 @@ export function createStage({ canvas, width, height, timeline, captionEl }) {
   const ctx = {
     THREE, scene, camera, renderer, lib, tl, width, height,
     lights: { hemi, sun, fill },
+    shake: 0,            // camera shake amplitude; a scene sets it each frame (earthquakes, impacts)
     yard: null,
     buildYard(opts) { ctx.yard = buildYard(ctx, opts); return ctx.yard; },
     // camera keyframes: [{ at: 'beat' | seconds, offset, pos: [x,y,z], look: [x,y,z], fov, blend, push }]
@@ -526,6 +527,7 @@ export function createStage({ canvas, width, height, timeline, captionEl }) {
           }
         }
         pos.x += 0.05 * Math.sin(t * 0.61); pos.y += 0.035 * Math.sin(t * 0.47 + 1.3);
+        if (ctx.shake) { pos.x += ctx.shake * Math.sin(t * 53); pos.y += ctx.shake * 0.7 * Math.sin(t * 61 + 1); look.x += ctx.shake * 0.5 * Math.sin(t * 47 + 2); }
         camera.position.copy(pos); camera.fov = fov; camera.updateProjectionMatrix(); camera.lookAt(look);
       };
     },
