@@ -15,7 +15,7 @@ Rules for picking a topic:
 - [x] 002-septic: how a septic tank works (built; see log.md)
 - [x] 003-basement: how a basement stays dry (built; see log.md)
 - [x] 004-driveway: how an asphalt driveway is built (built; see log.md)
-- [ ] 005-foundation: how a house foundation is built (footings, frost line, rebar, forms, anchor bolts, sill plate)
+- [x] 005-foundation: how a house foundation is built (built; see log.md)
 - [ ] 006-toilet: how a toilet flushes (siphon, trap, float valve, flapper, vent pipe)
 - [ ] 007-pond: how a backyard pond is built (liner, underlayment, pump, filter, waterfall, fish, plants)
 - [ ] 008-roof: how a roof keeps water out (decking, underlayment, drip edge, shingles overlapping, flashing, ridge vent)
