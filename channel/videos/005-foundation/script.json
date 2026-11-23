@@ -1,0 +1,26 @@
+{
+  "title": "How a house foundation is built",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 64.0,
+  "caption": "What's actually holding your house up 🏠 #howitsbuilt #foundation #construction #homeowner #howitworks",
+  "lines": [
+    { "beat": "hook",      "text": "If you build a house straight on the dirt, it sinks unevenly and cracks." },
+    { "beat": "footing",   "text": "So you dig a trench and pour a wide concrete *footing*, which spreads the weight across more ground." },
+    { "beat": "frost",     "text": "But in winter, wet ground freezes, swells, and lifts anything sitting on it." },
+    { "beat": "frostline", "text": "So you dig the footing deeper, below the *frost line*, where the ground doesn't freeze." },
+    { "beat": "bend",      "text": "But concrete is strong when you squeeze it, and weak when you stretch it, so it cracks." },
+    { "beat": "rebar",     "text": "So you run steel *rebar* through it, to hold it together when it pulls apart." },
+    { "beat": "forms",     "text": "Then you build wooden *forms* on top, and pour the foundation walls." },
+    { "beat": "wick",      "text": "But concrete soaks up water from the ground, and wood sitting on it would rot." },
+    { "beat": "sill",      "text": "So the first board, the *sill plate*, is pressure-treated, and sits on a foam strip that seals the gap." },
+    { "beat": "frame",     "text": "Now you can build the house." },
+    { "beat": "quake",     "text": "But an earthquake can shake a house sideways, right off its foundation." },
+    { "beat": "bolts",     "text": "So *anchor bolts* set in the concrete reach up through the sill plate, and lock the house down." },
+    { "beat": "termites",  "text": "But in warm places, termites tunnel up out of the soil to eat the wood." },
+    { "beat": "shield",    "text": "So you treat the soil, and keep the wood well up off the dirt." },
+    { "beat": "end",       "text": "Congratulations, you just built a *foundation*." }
+  ]
+}
