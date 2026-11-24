@@ -321,7 +321,7 @@ export function build(ctx) {
     else if (!tl.on('vent')) {
       const pop = easeOutBack(tl.lin('float', 0.0, 0.15));
       dk.visible = pop > 0; dk.scale.setScalar(0.24 * Math.max(0.001, pop));
-      dk.position.set(-0.92, cupY + 0.065 + tankGroup.position.y, -0.1); dk.rotation.set(0, -0.6, 0.08 * Math.sin(t * 3));
+      dk.position.set(-0.92, cupY + 0.065 + tankGroup.position.y, 0.1); dk.rotation.set(0, -0.6, 0.08 * Math.sin(t * 3));
     } else if (!tl.on('roof') || tl.p('roof', 0.45, 0.5) === 0) dk.visible = false;
     else {
       const up = easeOutBack(tl.lin('roof', 0.45, 0.75));

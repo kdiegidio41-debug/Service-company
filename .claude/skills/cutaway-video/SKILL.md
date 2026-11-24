@@ -86,7 +86,11 @@ look at every frame. Fix anything on this list before rendering it all:
   middle. A low, straight-on camera leaves the bottom half as empty dirt.
 - **Nothing shows up before it exists** (that's how the pool light ended up on bare dirt in v1),
   and nothing important sits under the caption at 44% height or in TikTok's right-hand button column.
-- **The duck has one small gag per video** (falls in, gets dirty, shivers, floats).
+- **The duck has one small gag per video** (falls in, gets dirty, shivers, floats). In a flat 2D cutaway
+  (shapes drawn on the z = 0 cut), keep the duck at z > 0, or the flat panels hide it (that happened in 006).
+- **Indoor topics don't need `buildYard`.** 006-toilet shows how to build a room, flat cutaway shapes, ribbons
+  along curves (`stripGeo`, grown with drawRange), and water levels done with clipping planes.
+- **To fix part of a finished render**, delete those frames from `out/<id>/frames` and re-run with `--resume 1`.
 - Text stays readable, and nothing flickers or pops between neighboring stills.
 
 Then render it all: `bash channel/make.sh <id>` (or `node channel/tools/render.js <id> --workers 4` then
