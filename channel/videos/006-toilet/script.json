@@ -1,0 +1,26 @@
+{
+  "title": "How a toilet flushes",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 25.0,
+  "caption": "Your toilet is a siphon machine 🚽 #howitworks #toilet #plumbing #howitsbuilt #learnontiktok",
+  "lines": [
+    { "beat": "hook",       "text": "If a toilet were just a bowl with a hole in it, your bathroom would smell like a sewer." },
+    { "beat": "trap",       "text": "So the pipe bends up and back down, and that bend always holds a little water, which blocks the gas." },
+    { "beat": "stuck",      "text": "But now everything just sits there in the bowl." },
+    { "beat": "rush",       "text": "So you dump in a big rush of water, all at once." },
+    { "beat": "siphon",     "text": "It fills the bend so fast that it starts a *siphon*, which sucks everything down the pipe." },
+    { "beat": "refill",     "text": "Then it gurgles, and the bend refills with clean water." },
+    { "beat": "tank",       "text": "But the pipe in the wall can't deliver that much water that fast, so you store it in a *tank*." },
+    { "beat": "flapper",    "text": "A rubber *flapper* plugs the bottom, and when you push the handle, a chain yanks it open." },
+    { "beat": "empty",      "text": "But then the tank is empty." },
+    { "beat": "float",      "text": "So a *float* rides on the water. When it drops, it opens the fill valve, and when it rises, it shuts it off." },
+    { "beat": "stuckvalve", "text": "But if that valve ever sticks open, the tank overflows onto your floor." },
+    { "beat": "overflow",   "text": "So an *overflow tube* sends the extra water into the bowl instead." },
+    { "beat": "vent",       "text": "And every flush pulls on the pipes so hard it could suck the water out of your sink drains." },
+    { "beat": "roof",       "text": "So a *vent pipe* runs up through the roof and lets air in." },
+    { "beat": "end",        "text": "Congratulations, you just built a *toilet*." }
+  ]
+}
