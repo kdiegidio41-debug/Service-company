@@ -381,6 +381,9 @@ export function instanced(ctx, geo, mat, n) {
   m.frustumCulled = false;
   ctx.scene.add(m);
   const d = new THREE.Object3D();
+  // start with every instance hidden, so slots a scene never sets don't sit at the origin
+  d.position.set(0, -500, 0); d.scale.set(1e-4, 1e-4, 1e-4); d.updateMatrix();
+  for (let i = 0; i < n; i++) m.setMatrixAt(i, d.matrix);
   return {
     mesh: m, n,
     set(i, x, y, z, s = 1, rx = 0, ry = 0, rz = 0, sy = s, sz = s) {
