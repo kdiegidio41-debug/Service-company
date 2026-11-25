@@ -1,0 +1,8 @@
+{
+  "name": "everglow-outreach",
+  "private": true,
+  "description": "Tests for the Google Apps Script in Outreach.gs. Nothing here is deployed; the script is pasted into Apps Script.",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

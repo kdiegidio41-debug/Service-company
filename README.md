@@ -182,6 +182,8 @@ To tweak and re-render the mock-ups (different bulb color, camera angle, image s
 │       ├── renders/        Before/after renderings (WebP + JPEG)
 │       └── logo.svg, logo-mark.svg, favicon.svg
 ├── tools/render/           Source for the renderings (three.js scene + render script)
+├── tools/outreach/         Cold email to business owners that books calls (Google Sheet +
+│                           Apps Script; setup in its README)
 └── docs/
     ├── BRAND_GUIDE.md      Positioning, voice, logo rules, photography
     ├── BUSINESS_PLAN.md    Offer, pricing, unit economics, projections, risks
