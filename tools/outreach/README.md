@@ -1,259 +1,268 @@
-# EverGlow Outreach
+# Outreach
 
-Cold email to business owners that books calls. It runs inside a Google Sheet:
+A client-getting machine for a marketing agency that sells monthly retainers (Google Ads, Meta ads, local SEO,
+reviews) to local service businesses. It runs inside one Google Sheet, on Google's servers, every 10 minutes.
+Your computer doesn't need to be on.
 
-1. You put businesses in the **Contacts** sheet: email, first name, business, and optionally one personal line.
-2. Every 10 minutes, Google runs the script. During your sending hours it sends a short, plain email asking for
-   a 10-minute call, then up to two follow-ups in the same thread (day 3 and day 7). It stops the moment
-   someone replies.
-3. Each reply is read by Claude and sorted: **wants a call**, question, referral, not interested, unsubscribe,
-   out of office.
-4. When someone wants a call (or asks something only you can answer), you get an **alert email and a phone
-   push**. The alert has their phone number, the time they suggested, and an **Add to calendar** button that
-   opens Google Calendar with the event already filled in. A draft reply waits in Gmail for you to check and send.
-5. You book the call. The script never replies to anyone on its own.
+| Piece | What it does |
+| --- | --- |
+| **Finder** | You type searches like `plumbers in Austin, TX` into the **Searches** tab. It pulls up to 60 businesses per search from Google (rating, review count, phone, website), skips closed ones and ones you already have, then visits each website. It finds an email address and writes down what their marketing is missing: no Google Ads tag, no Meta pixel, no online booking, no form, not set up for phones, a footer that says © 2019. |
+| **Writer** | Claude writes one true, specific opening line per business from those findings (*"Saw you have 212 Google reviews at 4.8 stars, but I couldn't find a way to book online."*), picks out the owner's first name when their About page says it, and flags franchises so you don't waste emails on them. **Write my emails with Claude** also drafts your whole 3-email sequence from your Settings. |
+| **Sender** | Emails each owner from your Gmail asking for a 15-minute call, then follows up twice in the same thread (day 3 and day 7). It stops the moment they reply, and stays under a daily limit spread across your sending hours. |
+| **Sorter** | Claude reads every reply: wants a call, question, referral, not interested, unsubscribe, out of office. |
+| **Alert** | When someone wants a call, you get an email and a phone push with their number, the time they suggested, what the finder saw on their site, and an **Add to calendar** button with the event already filled in. A draft reply waits in Gmail. You book the call. Nothing is ever sent to a prospect without a template you approved. |
 
-Unsubscribes go on a permanent Do Not Contact list, bounces are marked, and out-of-office replies don't stop the
-sequence.
+Businesses with no email address are kept as **No Email** with their phone number, a call list for days you'd
+rather dial.
 
 ---
 
 ## Read this before you send a single email
 
-The software is the easy part. These decide whether cold email books calls or gets your business flagged as spam.
+You asked me not to just tell you what you want to hear. The software is the easy part. These decide whether
+this works.
 
-**1. Don't send from your main address.** Not `everglowchristmaslighting25@gmail.com`, and not an address on
-`everglowchristmaslightspa.com`. Cold email draws spam reports. If that address's reputation drops, your quote
-replies to homeowners start landing in spam too. Buy a second domain (for example `everglowlightspa.com`,
-about $12 a year) and put one Google Workspace mailbox on it (about $7 to $8 a month). Workspace walks you through
-SPF, DKIM and DMARC. Do all three: Gmail and Yahoo require them for mail to be delivered reliably.
+**1. "Marketing for service businesses" is too broad to get replies.** Owners of plumbing and HVAC companies
+get several agency emails a week, and they all say "SEO, ads, social". Pick **one trade** (say HVAC, or roofing)
+and **one thing you lead with** (say "Google Ads and Local Services Ads that book jobs"). You still sell the
+whole retainer once they're a client. A narrow pitch also makes you better faster: you learn one trade's
+seasons, prices and jargon, and every client becomes a case study the next prospect cares about. Put that
+choice in **Who you target** and **What you offer** in Settings; the writer uses both.
 
-**2. Warm the new inbox up.** A brand-new address that suddenly sends 30 emails a day to strangers looks like a
-spammer. For two to three weeks, use it like a person: email friends, family and vendors, and get replies. The
-Settings sheet also ramps you up: 5 a day in week 1, 10 in week 2, and so on, up to 30.
+**2. You don't have proof yet, and you can't fake it.** No case studies, no testimonials, no "we've helped 50
+businesses". Don't invent any of it. The FTC's rule on fake reviews and testimonials (in force since late 2024)
+carries civil penalties of tens of thousands of dollars per violation. The usual honest path: sign your first 2
+or 3 clients at a steep discount, or free for 60 to 90 days, in exchange for permission to use their real
+numbers and a written testimonial. Once you have one real result, put it in **Results you can point to**. Until
+then that box stays blank and Claude is told never to claim results.
 
-**3. Volume doesn't book calls. Relevance does.** 30 emails a day from one inbox is the ceiling. For more, add a
-second inbox; don't raise the number. A list of 200 businesses you actually looked at beats 5,000 scraped
-addresses. Write a **Personal Line** for the best prospects ("Your patio on State Street would look great lit
-up"). It's the most effective column in the sheet.
+**3. A retainer only lasts if you deliver.** Clients who don't see more calls in 60 to 90 days cancel. Before
+you sell Google Ads to a stranger, run one campaign start to finish, for a discount client or a friend's
+business. Prospects ask sharp questions on the call ("what's my cost per lead going to be?"), and the call is
+where you win or lose them.
 
-**4. Check addresses before you import them.** Keep bounces under about 3%. Run the list through a verifier
-(NeverBounce, ZeroBounce, or the one built into Apollo) and never buy a list. Each bounce counts against the
-inbox.
+**4. Don't send from your main email.** Use a separate domain (for example `getnorthpoint.com` if your agency
+is `northpoint.com`, about $12 a year) with its own Google Workspace inbox (about $7 to $8 a month). Set up SPF,
+DKIM and DMARC (Workspace walks you through it; Gmail and Yahoo require them for reliable delivery). Then use it
+like a person for two to three weeks before cold emailing. Cold email draws spam reports, and you don't want
+them landing on the address your clients use. The Settings ramp starts at 5 emails a day and climbs to 30.
+That's the ceiling per inbox: for more volume, add a second inbox on a second domain; don't raise the number.
 
-**5. Timing.** Your own playbook (`docs/LEAD_GENERATION.md`, Tier 3) says commercial accounts book in **July
-to September**, while property managers set budgets. Emails in late November reach businesses that already
-decided. Use the winter and spring to build the list, warm up the inbox in June, and start sending in July.
+**5. Look at the leads before they go out.** **New leads wait for my OK** is on by default. Skim the Review rows
+each day: is the opening line true, is the email right, is it a business you want? Approve the good ones. Once
+you trust it, you can turn approval off.
 
-**6. The law (CAN-SPAM).** Cold B2B email is legal in the US if you follow the rules. Fines run tens of
-thousands of dollars per email, so take them seriously. This is not legal advice.
+**6. The law (CAN-SPAM).** Cold B2B email is legal in the US if you follow the rules, and fines run tens of
+thousands of dollars per email. Not legal advice.
 
 | Rule | Who handles it |
 | --- | --- |
-| A real postal address in every email | You enter it once in Settings. **Nothing sends until you do.** A P.O. box or virtual mailbox works if you don't want your home address in it. |
-| A clear way to opt out | The script adds "reply 'no thanks' and I won't email you again" to every email, plus a hidden unsubscribe header that Gmail and other inboxes can show as an Unsubscribe button. |
-| Honor opt-outs within 10 business days, forever | Automatic. Unsubscribes and "remove me" replies go on Do Not Contact, which is checked before every email, including if you re-import them later. |
-| No misleading From line or subject | The From line is "Kris at EverGlow Christmas Lighting". Keep subjects honest when you edit them. |
-| No false claims | The starter emails only promise what the website already promises. **Don't add "fully insured"** until the policy is active (the main README explains why). |
+| A real postal address in every email | You enter it once in Settings. **Nothing sends until you do.** A P.O. box or virtual mailbox is fine. |
+| A clear way to opt out | Added to every email ("reply 'no thanks' and I won't email you again"), plus a hidden unsubscribe header inboxes can show as a button. |
+| Honor opt-outs within 10 business days, forever | Automatic. Unsubscribes go on Do Not Contact, which is checked before every email, including if you re-import them later. |
+| No misleading From line, subject or claims | The From line is "Your name at Agency name". Keep subjects and claims honest when you edit. |
 
 Other countries are stricter (Canada's CASL, the EU's GDPR). Use this for US businesses only.
 
-**7. Why build this when Instantly or Smartlead exist?** Those cost $30 to $100 a month and include warm-up
-networks, inbox rotation and deliverability dashboards. If you outgrow two inboxes or about 60 emails a day,
-switch to one of them. Until then this costs about $8 a month plus a few cents of Claude, keeps the data in your
-own Google account, and does the one thing you need: tell you right away when someone wants a call.
+**7. Google's rules for its business data.** The finder uses Google's official Places API, not page scraping
+(scraping Google Maps breaks Google's terms and gets blocked). Google's Places terms limit how long you may store
+some of the data it returns. I couldn't load Google's policy page from where this was built, so read the
+"Policies" and "Terms" pages for Places API (New) before you lean on it. Keep only what you use for outreach,
+and clear out rows you'll never contact. The email address and findings come from each business's own public
+website, not from Google. Apollo (free tier) or a CSV from another list provider works too: import it, and the
+finder researches any row that has a Website and no Email.
 
 ---
 
-## Setup (about 30 minutes)
+## Setup (about 45 minutes)
 
 ### 1. The sending account
 
-Set up the separate domain and Google Workspace mailbox from point 1 above, and warm it up first. Do the steps
-below **signed in as that account**.
+Set up the separate domain and Workspace inbox (point 4 above) and start warming it up. Do everything below
+**signed in as that account**.
 
 ### 2. The sheet and the script
 
-1. Go to [sheets.new](https://sheets.new) and name the sheet "EverGlow Outreach". In **File → Settings**, set
-   the time zone to Eastern Time. Sending hours use it.
+1. Go to [sheets.new](https://sheets.new) and name the sheet "Outreach". In **File → Settings**, set the time
+   zone. Sending hours use it.
 2. **Extensions → Apps Script.** Delete everything in `Code.gs` and paste in all of [`Outreach.gs`](Outreach.gs).
-3. Click the gear (**Project Settings**) and tick **Show "appsscript.json" manifest file in editor**. Back in
-   the editor, open `appsscript.json` and replace its contents with [`appsscript.json`](appsscript.json). That
-   turns on the Gmail API, which the script needs to thread follow-ups and add the unsubscribe header.
-   (Alternatively: **Services +** → **Gmail API** → **Add**.)
-4. Click **Save**, then go back to the sheet and **reload the page**. An **Outreach** menu appears.
-5. **Outreach → Set up / repair sheets.** Google asks for permission. Because this is your own script and not
-   an app Google has reviewed, it shows "Google hasn't verified this app". Click **Advanced → Go to
-   (project name)**. The script asks to read and send email as this account, edit this spreadsheet, and connect
-   to outside services (Claude and ntfy).
+3. Click the gear (**Project Settings**) and tick **Show "appsscript.json" manifest file in editor**. Open
+   `appsscript.json` and replace its contents with [`appsscript.json`](appsscript.json). That turns on the Gmail
+   API, which threads the follow-ups and adds the unsubscribe header.
+4. **Save**, go back to the sheet and **reload the page**. An **Outreach** menu appears.
+5. **Outreach → Set up / repair sheets.** Google shows "Google hasn't verified this app", because it's your own
+   script. Click **Advanced → Go to (project name)**. It asks to read and send email as this account, edit this
+   spreadsheet, and connect to outside services (Google Places, Claude, ntfy, and the websites it researches).
 
-You now have six tabs: **Contacts, Sequence, Settings, Do Not Contact, Log**, and a hidden `_Processed`.
+You now have tabs for **Contacts, Searches, Sequence, Settings, Do Not Contact, Log** (plus a hidden
+`_Processed`).
 
 ### 3. Settings
 
-Fill in the **Settings** tab. Every row has an explanation beside it. The ones that matter:
+Fill in the **Settings** tab; each row explains itself. Required: **Your name**, **Agency name**, **Mailing
+address**. Worth getting right: **Who you target**, **What you offer**, **Send call alerts to** (your main
+inbox).
 
-- **Mailing address (required by law).** Nothing sends without it.
-- **Send call alerts to:** your main business inbox, so alerts reach you wherever you already look.
-- **Phone push topic (ntfy):** see step 5.
+### 4. Claude (writes and sorts)
 
-### 4. Claude (sorts the replies)
+1. Create an account at [platform.claude.com](https://platform.claude.com), add $5 to $10 of credit, and create an
+   API key.
+2. **Outreach → Set Claude API key**. It's kept in the script's private properties, not the sheet.
+3. **Outreach → Write my emails with Claude**, then read all three emails in the **Sequence** tab and fix
+   anything that isn't true for you. (Or keep the starter emails, which are already written for an agency.)
 
-1. Create an account at [platform.claude.com](https://platform.claude.com), add $5 of credit, and create an API key.
-2. **Outreach → Set Claude API key**, and paste it. It is stored in the script's private properties, not in
-   the sheet, so sharing the sheet doesn't share the key.
+Rough cost: 1 to 2 cents per business researched and per reply sorted. Without a key, the finder still finds
+emails and findings, emails go out without an opening line, and replies are sorted by keywords.
 
-Each reply costs about 1 to 2 cents to sort. Without a key the script still works: it sorts by keywords and, when
-unsure, alerts you anyway. Claude is much better at "not this year, but try me in August" and "talk to Maria,
-she handles the building".
+### 5. Google Places (finds the businesses)
 
-### 5. Phone push (free, recommended)
+1. Go to [console.cloud.google.com](https://console.cloud.google.com), create a project, and add a billing
+   account. Google requires one even for the free monthly allowance.
+2. **APIs & Services → Library**, search for **Places API (New)**, and **Enable** it.
+3. **APIs & Services → Credentials → Create credentials → API key.** Edit the key, and under **API
+   restrictions** choose **Restrict key → Places API (New)**, so a leaked key can't be used for anything else.
+4. **Outreach → Set Google Places API key** and paste it.
+5. Set a spending cap: in **Billing → Budgets & alerts**, add a budget (say $10) with an email alert, and on the
+   Places API (New) **Quotas** page lower the daily request limit (100 a day is plenty: each search uses up to
+   3). Google prices Places per 1,000 requests with a monthly free allowance; I couldn't load the current price
+   list from here, so check it on Google's pricing page.
 
-1. Install the free **ntfy** app on your phone ([ntfy.sh](https://ntfy.sh) links to the iPhone and Android
-   versions).
-2. Tap **+** and subscribe to a topic with a long, random name, like `everglow-calls-7Kq29xLm4Rt`. Topics on
-   ntfy.sh are public to anyone who knows the name, so don't use anything guessable.
-3. Paste the same name into **Phone push topic (ntfy)** in Settings.
+### 6. Phone push (free, recommended)
 
-Call requests arrive as urgent pushes with **Add to calendar** and **Open email** buttons.
+Install the **ntfy** app ([ntfy.sh](https://ntfy.sh) links to the iPhone and Android versions), subscribe to a
+long random topic name like `calls-7Kq29xLm4Rt`, and paste the same name into **Phone push topic (ntfy)**.
+Anyone who knows the name can read the pushes, so don't use anything guessable.
 
-### 6. Make sure you see the alerts
-
-- In your **main** Gmail, add a filter for the outreach address: **Never send it to Spam**, **Always mark it
-  as important**. Alerts from a new domain otherwise risk the spam folder.
-- Add the outreach account to the Gmail app on your phone. **Open email** and the draft replies live there.
+In your main Gmail, add a filter for the outreach address: **Never send it to Spam**, **Always mark it as
+important**. Add the outreach account to the Gmail app on your phone too: the drafts and threads live there.
 
 ### 7. Test it on yourself
 
-1. In **Contacts**, add one row with a personal email address you can reply from. It must not be the outreach
-   account, because the script ignores mail from itself.
-2. Click that row, then **Outreach → Preview next email for selected row**. Read it the way a stranger would.
-3. **Outreach → Send me a test alert.** You should get an alert email (and a push, if you set up ntfy). The
-   dialog says whether Claude or keywords sorted it, which also confirms your API key works.
-4. **Outreach → Start autopilot.** The first email goes out within 10 minutes during sending hours. From your
-   personal account, reply: *"Sure, call me Thursday at 3pm, 215-555-0100."* Within 10 minutes the row turns
+1. In **Searches**, add one search, e.g. `HVAC companies in Austin, TX`. Then **Outreach → Find businesses
+   now**. In a minute or two, Contacts fills with Review, No Email and Skipped rows. Read a few Findings and
+   Personal Lines.
+2. Add a row with **your own personal email** (not the outreach account) and your business name. Click it and
+   **Outreach → Preview next email for selected row**. Read it the way a stranger would.
+3. **Outreach → Send me a test alert** checks the alert email, the push and your Claude key in one go.
+4. **Outreach → Start autopilot.** Your test row gets email 1 within 10 minutes during sending hours. Reply from
+   your personal account: *"Sure, call me Thursday at 3pm, 512-555-0100."* Within 10 minutes the row turns
    green, the alert arrives, and **Add call to calendar** opens an event for Thursday at 3:00.
 5. Delete the test row.
 
-### 8. Add real contacts and start
-
-Use **File → Import → Upload** with a CSV and choose **Append to current sheet** while on the Contacts tab.
-Columns: `Email, First Name, Business, Category, Town, Personal Line` (see
-[`sample-contacts.csv`](sample-contacts.csv)). Only Email and Business are required. Then **Outreach → Start
-autopilot**.
-
 ---
 
-## Every day
+## Every day (15 minutes)
 
-- **Phone buzzes →** open the alert, tap **Add call to calendar**, set the time, save. Then open the email,
-  check the draft Claude wrote, edit, send. Your playbook says the first company to respond often wins the job;
-  aim for within the hour.
-- **Contacts tab:** green rows want a call, yellow rows need your reply, grey rows are closed.
-- **Log tab:** everything the script did, newest at the bottom.
+1. **Add searches.** One trade, a handful of nearby cities: `roofing contractors in Round Rock, TX`,
+   `roofing contractors in Cedar Park, TX`. Autopilot runs one search per cycle and researches 15 businesses per
+   cycle, so a dozen searches are done within a couple of hours.
+2. **Review the blue rows.** Fix any opening line that's off. Select the good rows, then **Outreach → Approve
+   selected rows**. Set any you don't want to Paused, or delete them.
+3. **When your phone buzzes:** open the alert, tap **Add call to calendar**, set the time, save. Then open the
+   email, check the draft, send. The first agency to answer usually gets the meeting, so aim for within the hour.
+4. **Before each call,** read the row's **Findings**. Those are your talking points.
 
-To stop one person, set their Status to **Paused**. Their replies are still watched. To stop everything,
-**Outreach → Pause autopilot**.
-
-| Status | Meaning | What the script does next |
+| Status | Meaning | What happens next |
 | --- | --- | --- |
-| *(blank)* or New | Not contacted yet | Sends email 1 when there's room today |
-| Active | In the sequence | Sends the next follow-up when it's due |
-| Finished | All emails sent, no reply | Nothing more, but still watches for a late reply |
-| **Call Requested** | They want to talk | Alerted you, saved a draft. Stops emailing |
-| **Needs Reply** | Question, referral, or unclear | Alerted you, saved a draft. Stops emailing |
-| Not Interested | Declined | Stops |
-| Unsubscribed | Asked to stop | Stops, adds them to Do Not Contact |
-| Bounced | Address doesn't work | Stops |
-| Paused | You paused them | Sends nothing, still watches for replies |
-| Do Not Contact / Duplicate | On the blocklist, or already emailed from another row | Skipped |
-| Error | Something's wrong with this row (see Notes) | Skipped until you fix it and set Status back to New, or to Active if they had already been emailed |
+| Finding Email | Just added by the finder | It visits their website on the next run |
+| **Review** | Has an email and an opening line, waiting for your OK | Nothing until you approve it |
+| *(blank)* or New | Ready to email | Email 1 goes out when there's room today |
+| Active | In the sequence | The next follow-up goes out when it's due |
+| Finished | All 3 emails sent, no reply | Nothing more, but a late reply still alerts you |
+| **Call Requested** | They want to talk | You were alerted and a draft is saved. No more emails |
+| **Needs Reply** | Question, referral, or unclear | You were alerted and a draft is saved. No more emails |
+| Not Interested / Unsubscribed / Bounced | Closed | No more emails. Unsubscribes go on Do Not Contact |
+| No Email | No email address found | Call list: the phone number is in the row |
+| Skipped | Looks like a franchise or chain | Set it to Review if you want it anyway |
+| Paused | You paused them | Nothing sends; replies are still watched |
+| Do Not Contact / Duplicate | Blocked, or already emailed from another row | Skipped |
+| Error | Something's wrong with this row (see Notes) | Fix it, then set Status back to New (or Active if they'd been emailed) |
 
 ---
 
 ## Editing the emails
 
-The **Sequence** tab holds the three emails. Change the words freely. The rules that keep them working:
+The **Sequence** tab holds the three emails.
 
-- **Placeholders** use double braces: `{{first_name}}`, `{{business}}`, `{{town}}`, `{{personal_line}}`, any
-  other Contacts column (add a column called `Website` and `{{website}}` works), plus `{{my_name}}`,
-  `{{my_company}}`, `{{my_phone}}`, `{{my_website}}` from Settings.
-- **Fallbacks** follow a `|`: `{{first_name|there}}` becomes "Hi there," when the name is blank, and
-  `{{personal_line|}}` disappears when blank. A blank placeholder without a fallback skips that contact with
-  an Error, rather than sending "Hi ,". A misspelled placeholder stops **Start autopilot** before anything sends.
-- **Only step 1's subject is used.** Follow-ups reply in the same thread as "Re: (step 1 subject)", which
-  gets read more than a new email.
-- **Wait Days** is days after the previous email.
-- The footer (company, phone, website, mailing address and the opt-out line) is added to every email
-  automatically. Don't add your own.
+- **Placeholders** use double braces: `{{first_name}}`, `{{business}}`, `{{town}}`, `{{category}}`,
+  `{{rating}}`, `{{reviews}}`, `{{personal_line}}`, any other Contacts column you add, plus `{{my_name}}`,
+  `{{my_company}}`, `{{my_phone}}`, `{{my_website}}`.
+- **Fallbacks** follow a `|`: `{{first_name|there}}` becomes "Hi there," when there's no name, and
+  `{{personal_line|}}` disappears when blank. A blank placeholder without a fallback skips that contact with an
+  Error instead of sending "Hi ,". A misspelled one stops **Start autopilot** before anything sends.
+- **Only step 1's subject is used.** Follow-ups reply in the same thread.
+- **Wait Days** counts from the previous email.
+- The footer (agency, phone, website, mailing address, opt-out line) is added automatically.
 
-What works in cold email: under 100 words, plain text, no links or images in the first email, one easy question
-at the end, and a subject that looks like it came from a person (lowercase is fine). Use **Preview** after every
-change.
+What gets replies: under 100 words, plain text, no links in the first email, the opening line about *them*,
+one easy question at the end. **Preview** after every change.
 
 ---
 
-## How replies are sorted
+## How the research works, and its limits
 
-Claude reads only what they wrote (the quoted copy of your email is cut off) and picks one category. It also pulls
-out their phone number, the time they suggested (turned into a calendar time when it's specific, like "Tuesday
-at 2"), and anyone they referred you to, and drafts a short reply. It is told never to state prices, insurance,
-dates or guarantees in the draft. Those are yours to fill in.
-
-If Claude is unreachable or there's no key, keyword rules take over. Whenever a reply doesn't clearly fit a
-category, it is marked **Needs Reply** and you're alerted. The script would rather bother you than lose a lead.
-
-Bounces and "unsubscribe" emails from Gmail's Unsubscribe link are handled by fixed rules and never reach Claude.
-Reply text is sent to Anthropic's API for sorting; your contact list is not.
+- Up to 3 pages per business: the homepage, the contact page (only if the homepage has no email), and the about
+  page (for the owner's name and something specific to say). It prefers an address on their own domain, then a
+  Gmail-style one. It skips addresses on other domains, which usually belong to the web designer, and
+  no-reply, careers and billing addresses.
+- It decodes the email addresses Cloudflare hides on many small-business sites.
+- **Findings are only what's visible in the page source.** If a site uses Google Tag Manager, ads and pixel tags
+  can load through it unseen, so the finder says "Uses Google Tag Manager" and claims nothing is missing. Some
+  sites build their pages in the browser with JavaScript; for those the finder sees less and may find no email.
+- The opening line is written only from the findings and page text, and Claude is told not to guess, not to
+  flatter, and to ignore any instructions hidden in a website. It can still be wrong, which is why approval is
+  on by default.
 
 ---
 
-## Costs and limits
+## Costs
 
 | | Cost |
 | --- | --- |
 | Second domain | about $12 a year |
-| Google Workspace mailbox | about $7 to $8 a month |
-| Claude | about 1 to 2 cents per reply sorted |
-| ntfy, Google Sheets, Apps Script | free |
+| Google Workspace inbox | about $7 to $8 a month |
+| Claude | about 1 to 2 cents per business researched or reply sorted |
+| Google Places | per request, with a monthly free allowance; check Google's pricing page and set a cap (step 5) |
+| ntfy, Sheets, Apps Script | free |
 
-Google Workspace allows about 2,000 emails a day; this sends 30 at most. Apps Script runs the check every 10
-minutes, well inside Google's free daily limits.
+When you outgrow two inboxes or about 60 emails a day, look at Instantly or Smartlead (about $30 to $100 a
+month). They add warm-up networks and inbox rotation. Your lead list and research carry straight over as a CSV.
 
 ---
 
 ## Troubleshooting
 
-- **No Outreach menu.** Reload the sheet. If it's still missing, check that the script was saved in
-  Extensions → Apps Script.
+- **No Outreach menu.** Reload the sheet; check the script was saved.
+- **A search says "Error: Google Places said 403 …".** Places API (New) isn't enabled, billing isn't set up, or
+  the key is restricted to a different API. The message after the colon is Google's own explanation. Clear the
+  Status cell to run the search again.
+- **Lots of No Email rows.** Normal for some trades: many small shops only list a phone number. Call them, or try
+  a nearby city or a different trade.
 - **Nothing is sending.** **Outreach → Send now** says why: outside your hours, today's limit reached, spacing
-  emails out through the day, or a setting missing.
-- **A row says Error.** Read its Notes cell, fix the problem, and set Status back to New (or Active, if they'd
-  already been emailed).
-- **Alerts never arrive.** Check main Gmail's spam folder and add the filter from step 6. **Outreach → Send me
-  a test alert** tests the whole chain.
-- **"Claude rejected the API key"** in the Log. Create a new key and use **Outreach → Set Claude API key**.
-- **Google emails you "script failed".** Open the Log tab; the reason is usually there. A rare failure
-  (Gmail busy) fixes itself on the next run.
-- **Sorting the Contacts tab is fine,** but avoid doing it in the few seconds a run takes. If rows move
-  mid-run, the script notices and stops rather than writing to the wrong person. Filter views
-  (Data → Filter views) are the safest way to slice the list.
+  emails out, a setting missing, or no rows set to New.
+- **Alerts never arrive.** Check main Gmail's spam folder and add the filter from step 6. **Outreach → Send me a
+  test alert** tests the whole chain.
+- **A row says Error.** Read its Notes, fix it, then set Status back to New (or Active).
+- **The Log tab** records everything the script did, newest at the bottom.
 
 ---
 
 ## For developers
 
 `Outreach.gs` is the whole program: plain Apps Script (V8), no libraries. `appsscript.json` turns on the Gmail
-advanced service. Nothing here is part of the website build; `netlify.toml` publishes only the site files.
+advanced service.
 
-The tests run the real `Outreach.gs` under Node, against in-memory stand-ins for Sheets, Gmail, the Claude API
-and ntfy (`test/fakes.js`). They cover the full flow from first email to alert, follow-up threading, every
-reply category, warm-up and pacing, the legal-footer and placeholder checks, and the Claude-is-down fallback.
+The tests run the real `Outreach.gs` under Node, against in-memory stand-ins for Sheets, Gmail, Google Places,
+websites, the Claude API and ntfy (`test/fakes.js`). They cover the finder (pagination, dedupe, closed and
+listing-site businesses, dead sites, Cloudflare-hidden emails, designer emails, franchises, approval), the
+writer, sending, follow-up threading, every reply category, warm-up and pacing, the legal checks, and the
+Claude-is-down fallback.
 
 ```bash
 cd tools/outreach
 npm test
 ```
 
-The fakes model the Google APIs the script uses; they aren't Google. The first real run (step 7 above) is
-the end-to-end check against real Gmail, Sheets and Claude.
+The stand-ins model the APIs as documented; they aren't Google. In particular, the Places request was written
+without access to Google's current docs. Your first real search (step 7) is the check, and if Google rejects
+anything, its exact error lands in the Searches tab.

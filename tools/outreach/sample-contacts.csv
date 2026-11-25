@@ -1,3 +1,3 @@
-Email,First Name,Business,Category,Town,Personal Line
-owner@example.com,Dana,Example Bistro,Restaurant,Doylestown,Your patio on State Street would look great lit up in December.
-manager@example.org,,Example Plaza,Retail center,Warrington,
+Email,First Name,Business,Category,Town,Website,Phone,Personal Line
+owner@example.com,Dana,Example Plumbing,Plumber,Austin,https://example.com,(512) 555-0100,Saw you have 140 Google reviews but no way to book online.
+,,Example Roofing,Roofing contractor,Round Rock,https://example.org,(512) 555-0101,

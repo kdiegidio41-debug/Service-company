@@ -1,5 +1,5 @@
 {
-  "name": "everglow-outreach",
+  "name": "agency-outreach",
   "private": true,
   "description": "Tests for the Google Apps Script in Outreach.gs. Nothing here is deployed; the script is pasted into Apps Script.",
   "scripts": {

@@ -60,6 +60,10 @@ class FakeRange {
     return this;
   }
   setValue(v) { this.sheet.put(this.row, this.col, v); return this; }
+  clearContent() {
+    for (let r = 0; r < this.nr; r++) for (let c = 0; c < this.nc; c++) this.sheet.put(this.row + r, this.col + c, '');
+    return this;
+  }
   setNumberFormat(f) {
     for (let r = 0; r < this.nr; r++) for (let c = 0; c < this.nc; c++) this.sheet.formats[(this.row + r) + ':' + (this.col + c)] = f;
     return this;
@@ -69,7 +73,7 @@ class FakeRange {
 
 class FakeSheet {
   constructor(name) {
-    this.name = name; this.data = []; this.formats = {}; this.hidden = false;
+    this.name = name; this.data = []; this.formats = {}; this.hidden = false; this.activeRow = 2; this.activeRows = 1;
     return withNoOps(this);
   }
   getName() { return this.name; }
@@ -109,7 +113,7 @@ class FakeSheet {
   deleteRows(start, n) { this.data.splice(start - 1, n); }
   clearContents() { this.data = []; return this; }
   hideSheet() { this.hidden = true; return this; }
-  getActiveRange() { return { getRow: () => this.activeRow || 2 }; }
+  getActiveRange() { return { getRow: () => this.activeRow, getNumRows: () => this.activeRows }; }
   // Test helpers
   rowsAsObjects() {
     const values = this.getDataRange().getValues();
@@ -340,7 +344,7 @@ function createWorld(opts) {
     Button: { OK: 'OK', CANCEL: 'CANCEL', YES: 'YES', NO: 'NO' },
     ButtonSet: { OK: 'OK', OK_CANCEL: 'OK_CANCEL', YES_NO: 'YES_NO' },
     createMenu() { const m = { addItem: () => m, addSeparator: () => m, addSubMenu: () => m, addToUi: () => m }; return m; },
-    alert(...args) { ui.alerts.push(args); return 'OK'; },
+    alert(...args) { ui.alerts.push(args); return args[2] === 'YES_NO' ? (ui.yesNo || 'YES') : 'OK'; },
     prompt() { return { getSelectedButton: () => 'OK', getResponseText: () => ui.promptAnswer }; },
     showModalDialog(out, title) { ui.dialogs.push({ html: out.html, title }); },
   };
@@ -363,24 +367,17 @@ function createWorld(opts) {
     Gmail: makeAdvancedGmail(mail),
     Utilities: {
       Charset: { UTF_8: 'UTF-8' },
+      sleep() {},
       base64Encode: (s) => Buffer.from(String(s), 'utf8').toString('base64'),
       base64EncodeWebSafe: (s) => Buffer.from(String(s), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_'),
       formatDate,
     },
     UrlFetchApp: {
-      fetch(url, params) {
-        fetches.push({ url, params });
-        if (url.startsWith('https://api.anthropic.com/')) {
-          const body = JSON.parse(params.payload);
-          const answer = opts.claude ? opts.claude(body, params) : { status: 500, text: 'no fake' };
-          if (answer && answer.status) return response(answer.status, answer.text || '');
-          return response(200, JSON.stringify({
-            id: 'msg_fake', type: 'message', role: 'assistant', model: body.model, stop_reason: answer.stop_reason || 'end_turn',
-            content: [{ type: 'thinking', thinking: '', signature: 'x' }, { type: 'text', text: JSON.stringify(answer) }],
-          }));
-        }
-        if (url.startsWith('https://ntfy.sh/')) return response(200, '{}');
-        throw new Error('Unexpected fetch to ' + url);
+      fetch(url, params) { return route(url, params || {}); },
+      // Like the real one: one network failure fails the whole batch.
+      fetchAll(requests) {
+        fetchAllCalls.push(requests.length);
+        return requests.map((r) => route(r.url, r));
       },
     },
     PropertiesService: {
@@ -404,6 +401,36 @@ function createWorld(opts) {
       createHtmlOutput(html) { const o = { html, setWidth: () => o, setHeight: () => o }; return o; },
     },
   };
+  const fetchAllCalls = [];
+  // opts.sites: { 'https://a.test': '<html>...' | { status, body } | 'down' }
+  const sites = opts.sites || {};
+  function route(url, params) {
+    fetches.push({ url, params });
+    if (url.startsWith('https://api.anthropic.com/')) {
+      const body = JSON.parse(params.payload);
+      const answer = opts.claude ? opts.claude(body, params) : { status: 500, text: 'no fake' };
+      if (answer && answer.status) return response(answer.status, answer.text || '');
+      return response(200, JSON.stringify({
+        id: 'msg_fake', type: 'message', role: 'assistant', model: body.model, stop_reason: answer.stop_reason || 'end_turn',
+        content: [{ type: 'thinking', thinking: '', signature: 'x' }, { type: 'text', text: JSON.stringify(answer) }],
+      }));
+    }
+    if (url.startsWith('https://ntfy.sh/')) return response(200, '{}');
+    if (url.startsWith('https://places.googleapis.com/')) {
+      const answer = opts.places ? opts.places(JSON.parse(params.payload), params) : { status: 403, json: { error: { message: 'no fake' } } };
+      return response(answer.status || 200, JSON.stringify(answer.json));
+    }
+    const key = Object.keys(sites).find((k) => k === url || k === url.replace(/\/$/, '') || k + '/' === url);
+    if (key) {
+      const site = sites[key];
+      if (site === 'down') throw new Error('Address unavailable: ' + url);
+      return typeof site === 'string' ? response(200, site) : response(site.status, site.body || '');
+    }
+    const host = (url.match(/^https?:\/\/([^/]+)/) || [])[1];
+    if (Object.keys(sites).some((k) => k.includes('//' + host))) return response(404, 'Not found');
+    throw new Error('Unexpected fetch to ' + url);
+  }
+
   sandbox.globalThis = sandbox;
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync(SRC, 'utf8'), sandbox, { filename: 'Outreach.gs' });
@@ -412,7 +439,7 @@ function createWorld(opts) {
   mail.Date = SDate;
   sandbox.now_ = () => new SDate(clock.now.getTime());
 
-  return { gs: sandbox, ss, mail, clock, props, triggers, fetches, ui, me, tz };
+  return { gs: sandbox, ss, mail, clock, props, triggers, fetches, fetchAllCalls, ui, me, tz };
 }
 
 function response(code, text) {
