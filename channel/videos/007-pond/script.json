@@ -1,0 +1,27 @@
+{
+  "title": "How a backyard pond is built",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 62.0,
+  "caption": "A pond is a tiny water treatment plant 🐟 #howitsbuilt #pond #koi #backyard #howitworks",
+  "lines": [
+    { "beat": "hook",     "text": "If you dig a hole in your yard and fill it with water, it soaks right into the dirt." },
+    { "beat": "liner",    "text": "So you line the hole with a rubber *liner*, which holds every drop." },
+    { "beat": "poke",     "text": "But sharp rocks and roots poke holes in it from underneath." },
+    { "beat": "underlay", "text": "So first you lay down a thick pad called *underlayment*, like the padding under a carpet." },
+    { "beat": "still",    "text": "Now you fill it up. But still water turns warm, green, and full of mosquitoes." },
+    { "beat": "pump",     "text": "So you drop in a *pump* to keep the water moving." },
+    { "beat": "falls",    "text": "It pushes the water up to a *waterfall*, and the splashing mixes fresh air back in." },
+    { "beat": "leaves",   "text": "But floating leaves sink and rot on the bottom." },
+    { "beat": "skimmer",  "text": "So a *skimmer* box at the edge pulls them into a net before they sink." },
+    { "beat": "fish",     "text": "Now fish can live in it. But fish poop, and their waste turns into *ammonia*, which poisons them." },
+    { "beat": "filter",   "text": "So the water runs through a *filter* full of good bacteria, which turn the ammonia into something safer." },
+    { "beat": "sun",      "text": "But sunlight still feeds the algae." },
+    { "beat": "plants",   "text": "So you add *plants* that shade the water and soak up the food algae needs." },
+    { "beat": "heron",    "text": "But to a heron, your pond looks like an all-you-can-eat buffet." },
+    { "beat": "caves",    "text": "So you dig it deep, and stack rocks into caves where the fish can hide." },
+    { "beat": "end",      "text": "Congratulations, you just built a *pond*." }
+  ]
+}
