@@ -18,7 +18,7 @@ Rules for picking a topic:
 - [x] 005-foundation: how a house foundation is built (built; see log.md)
 - [x] 006-toilet: how a toilet flushes (built; see log.md)
 - [x] 007-pond: how a backyard pond is built (built; see log.md)
-- [ ] 008-roof: how a roof keeps water out (decking, underlayment, drip edge, shingles overlapping, flashing, ridge vent)
+- [x] 008-roof: how a roof keeps water out (built; see log.md)
 - [ ] 009-waterheater: how a water heater works (cold dip tube, burner/element, thermostat, anode rod, relief valve)
 - [ ] 010-retainingwall: how a retaining wall holds up a hill (footing, batter, drainage gravel, weep pipe, geogrid)
 - [ ] 011-deck: how a deck is built (footings, posts, beams, joists, flashing at the house, ledger, railing)
