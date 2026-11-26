@@ -90,6 +90,11 @@ look at every frame. Fix anything on this list before rendering it all:
   (shapes drawn on the z = 0 cut), keep the duck at z > 0, or the flat panels hide it (that happened in 006).
 - **Indoor topics don't need `buildYard`.** 006-toilet shows how to build a room, flat cutaway shapes, ribbons
   along curves (`stripGeo`, grown with drawRange), and water levels done with clipping planes.
+- **Make thin layers 3–4× thicker than life.** On a phone, real proportions turn a layer stack into
+  one line (008-roof: the shingles, underlayment and ice shield only read once they were exaggerated). Keep
+  big structural pieces such as rafters behind the cut, so they don't fill the cut face.
+- **When the subject is a house, hide `buildYard`'s neighbour houses**: they sit right behind and read as
+  the subject. 008-roof hides them after `buildYard` runs.
 - **To fix part of a finished render**, delete those frames from `out/<id>/frames` and re-run with `--resume 1`.
 - Text stays readable, and nothing flickers or pops between neighboring stills.
 
