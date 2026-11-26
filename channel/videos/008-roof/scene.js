@@ -30,6 +30,7 @@ export function build(ctx) {
 
   const waterMat = lib.std({ color: '#4fa6e6', transparent: true, opacity: 0.82, roughness: 0.05 });
   const metal = lib.std({ color: '#c6cdd4', metalness: 0.55, roughness: 0.3 });
+  const copper = lib.std({ color: '#e0915c', metalness: 0.5, roughness: 0.3, emissive: '#3a1a08' });
 
   // ---------------- the house ----------------
   const wallMat = lib.std({ color: '#e9dcc4' });
@@ -135,8 +136,8 @@ export function build(ctx) {
   const flap = rpart(new THREE.PlaneGeometry(0.5, 0.4).rotateX(-Math.PI / 2).translate(-0.25, 0, 0), flapMat, 2.6, Y0 + 0.003, -0.5);
   const eaveStain = rpart(new THREE.PlaneGeometry(0.34, DECK + 0.002), basic({ color: '#4d3820', transparent: true, opacity: 0 }), L - 0.17, DECK / 2, 0.004);
   const upS = (CH0 - Y0 * Math.sin(TH)) / Math.cos(TH), dnS = (CH1 - TOP * Math.sin(TH)) / Math.cos(TH);
-  const flashUpLeg = rpart(new THREE.BoxGeometry(0.42, 0.02, 0.66), metal, upS - 0.21, Y0 + 0.01, -0.29);
-  const flashDnLeg = rpart(new THREE.BoxGeometry(0.4, 0.02, 0.66), metal, dnS + 0.2, TOP + 0.01, -0.29);
+  const flashUpLeg = rpart(new THREE.BoxGeometry(0.5, 0.035, 0.66), copper, upS - 0.25, Y0 + 0.017, -0.29);
+  const flashDnLeg = rpart(new THREE.BoxGeometry(0.46, 0.035, 0.66), copper, dnS + 0.23, TOP + 0.017, -0.29);
 
   // ---------------- chimney, flashing, ridge vent ----------------
   const brick = canvasTex(128, 256, (g, w, h) => {
@@ -147,7 +148,7 @@ export function build(ctx) {
   chimney.position.set((CH0 + CH1) / 2, 0.15, -0.29);
   const flue = add(new THREE.Mesh(new THREE.PlaneGeometry(0.24, 5.35).translate(0, 2.675, 0), basic({ color: '#3b2a24' })), false, false);
   flue.position.set((CH0 + CH1) / 2, 0.2, 0.022);
-  const flashUpV = add(box(0.03, 0.42, 0.66, metal)), flashDnV = add(box(0.03, 0.36, 0.66, metal));
+  const flashUpV = add(box(0.05, 0.5, 0.66, copper)), flashDnV = add(box(0.05, 0.44, 0.66, copper));
   const ridgeVent = add(new THREE.Mesh(extrude([[-0.46, -0.33], [0, 0], [0.46, -0.33], [0.46, -0.25], [0, 0.08], [-0.46, -0.25]], D + 0.004), lib.std({ color: '#3b3e44' })));
   const ridgeGap = add(new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.32), basic({ color: '#121212' })), false, false);
 
@@ -181,10 +182,10 @@ export function build(ctx) {
     { at: 'rot', pos: [2.1, 6.9, 10.5], look: [1.9, 3.9, -2.5] },
     { at: 'runs', pos: [2.4, 6.4, 9.5], look: [2.2, 3.7, -1.5] },
     { at: 'nails', pos: [3.0, 3.75, 4.4], look: [2.9, 3.3, -0.3] },
-    { at: 'edge', pos: [3.25, 3.75, 5.6], look: [3.5, 2.7, -0.3] },
+    { at: 'edge', pos: [3.3, 3.9, 3.9], look: [3.5, 2.95, -0.3] },
     { at: 'icedam', pos: [2.95, 4.5, 8.4], look: [2.8, 3.2, -1.0] },
     { at: 'chimney', pos: [1.8, 4.9, 7.0], look: [1.65, 4.25, -0.6] },
-    { at: 'attic', pos: [1.35, 4.4, 11], look: [1.35, 3.9, -2.5] },
+    { at: 'attic', pos: [1.4, 4.5, 13], look: [1.4, 3.9, -2.5] },
     { at: 'end', pos: [0.3, 5.0, 23], look: [0.2, 3.2, -2.5], push: 0.08 },
   ]);
 
@@ -356,9 +357,9 @@ export function build(ctx) {
     chimney.visible = flue.visible = chK > 0; chimney.scale.y = flue.scale.y = Math.max(0.001, chK);
     const fK = tl.p('flashing', 0.2, 0.45), lift = (1 - fK) * 1.0;
     [flashUpV, flashDnV, flashUpLeg, flashDnLeg].forEach(m => { m.visible = fK > 0.01; });
-    flashUpV.position.set(CH0 - 0.015, surfY(CH0, Y0) + 0.21 + lift, -0.29);
-    flashDnV.position.set(CH1 + 0.015, surfY(CH1, TOP) + 0.18 + lift, -0.29);
-    flashUpLeg.position.y = Y0 + 0.01 + lift; flashDnLeg.position.y = TOP + 0.01 + lift;
+    flashUpV.position.set(CH0 - 0.025, surfY(CH0, Y0) + 0.25 + lift, -0.29);
+    flashDnV.position.set(CH1 + 0.025, surfY(CH1, TOP) + 0.22 + lift, -0.29);
+    flashUpLeg.position.y = Y0 + 0.017 + lift; flashDnLeg.position.y = TOP + 0.017 + lift;
     const gapK = tl.p('chimney', 0.72, 0.85) * (1 - tl.p('flashing', 0.4, 0.6));
     for (let i = 0; i < 16; i++) {
       if (gapK < 0.02) { chLeakI.hide(i); continue; }
