@@ -1,0 +1,28 @@
+{
+  "title": "How a roof keeps water out",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 66.0,
+  "caption": "Every layer on your roof has one job 🏠🌧️ #howitsbuilt #roofing #homeowner #construction #howitworks",
+  "lines": [
+    { "beat": "hook",     "text": "If your roof were just flat boards, every rainstorm would drip right onto your bed." },
+    { "beat": "pitch",    "text": "So you tilt the roof, so rain runs off instead of sitting on top." },
+    { "beat": "rot",      "text": "But wood soaks up water and rots." },
+    { "beat": "underlay", "text": "So you cover the boards with *underlayment*, a waterproof sheet that's the roof's backup layer." },
+    { "beat": "sun",      "text": "But the sun cooks it, and wind rips it up." },
+    { "beat": "shingles", "text": "So you nail on *shingles*, starting at the bottom and overlapping each row like fish scales." },
+    { "beat": "runs",     "text": "Water runs down over each one and never gets underneath." },
+    { "beat": "nails",    "text": "And each row hides the nails of the row below." },
+    { "beat": "edge",     "text": "But water curls under the bottom edge and soaks the wood." },
+    { "beat": "drip",     "text": "So a metal *drip edge* makes it fall off cleanly into the gutter." },
+    { "beat": "icedam",   "text": "In winter, melted snow refreezes at the edge into an *ice dam*, and the water behind it backs up under the shingles." },
+    { "beat": "shield",   "text": "So the bottom few feet get a sticky membrane called *ice and water shield*." },
+    { "beat": "chimney",  "text": "And wherever the roof meets a chimney, there's a gap." },
+    { "beat": "flashing", "text": "So you bend metal *flashing* into the corner and tuck it under the shingles." },
+    { "beat": "attic",    "text": "But the attic traps hot, damp air that can rot the roof from the inside." },
+    { "beat": "vent",     "text": "So vents at the bottom edge and a *ridge vent* at the top let fresh air flow through." },
+    { "beat": "end",      "text": "Congratulations, you just built a *roof*." }
+  ]
+}
