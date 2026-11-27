@@ -1,0 +1,26 @@
+{
+  "title": "How a water heater works",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 64.0,
+  "caption": "The tank in your basement is fighting fire, rust and pressure all day 🔥🚿 #howitsbuilt #waterheater #plumbing #homeowner #howitworks",
+  "lines": [
+    { "beat": "hook",       "text": "Every hot shower you take starts in a tank that's been keeping water hot all day." },
+    { "beat": "tank",       "text": "So you start with a big steel tank, often fifty gallons." },
+    { "beat": "rust",       "text": "But bare steel rusts when it sits in water." },
+    { "beat": "glass",      "text": "So the inside gets coated with a thin layer of *glass*." },
+    { "beat": "burner",     "text": "Then a gas *burner* underneath heats the water, and the hot exhaust rises through a pipe up the middle, warming it even more." },
+    { "beat": "mix",        "text": "But cold water coming in would mix right into the hot water at the top." },
+    { "beat": "dip",        "text": "So a *dip tube* carries it straight down to the bottom, and the hot water rises to the outlet on top." },
+    { "beat": "thermostat", "text": "A *thermostat* turns the burner off once the water is hot enough." },
+    { "beat": "cracks",     "text": "But the glass gets tiny cracks, and rust starts eating the steel." },
+    { "beat": "anode",      "text": "So you hang an *anode rod* inside, a metal stick that rusts away instead of the tank." },
+    { "beat": "pressure",   "text": "But if the thermostat ever fails, the water keeps heating, and the pressure keeps climbing." },
+    { "beat": "valve",      "text": "So a *relief valve* pops open and lets it out before the tank can burst." },
+    { "beat": "sediment",   "text": "And minerals settle on the bottom as *sediment*, so you drain some out once a year." },
+    { "beat": "foam",       "text": "Then you wrap it all in foam, so the heat stays in." },
+    { "beat": "end",        "text": "Congratulations, you just built a *water heater*." }
+  ]
+}
