@@ -20,7 +20,7 @@ Rules for picking a topic:
 - [x] 007-pond: how a backyard pond is built (built; see log.md)
 - [x] 008-roof: how a roof keeps water out (built; see log.md)
 - [x] 009-waterheater: how a water heater works (built; see log.md)
-- [ ] 010-retainingwall: how a retaining wall holds up a hill (footing, batter, drainage gravel, weep pipe, geogrid)
+- [x] 010-retainingwall: how a retaining wall holds up a hill (built; see log.md)
 - [ ] 011-deck: how a deck is built (footings, posts, beams, joists, flashing at the house, ledger, railing)
 - [ ] 012-sprinklers: how a sprinkler system works (valve box, zones, pop-up heads, backflow preventer, timer)
 - [ ] 013-chimney: how a fireplace pulls smoke out (draft, flue, damper, smoke shelf, cap)
@@ -31,3 +31,4 @@ Rules for picking a topic:
 - [ ] 018-garagedoor: how a garage door lifts 200 pounds (torsion spring, cables, drums, opener)
 - [ ] 019-skyscraper: how a skyscraper stands on mud (piles, bedrock, raft foundation)
 - [ ] 020-tunnel: how a subway tunnel is dug under a city (boring machine, segments, grout, pumps)
+- [ ] 021-solar: how rooftop solar panels power a house (cells, inverter, racking and flashing, meter, grid)
