@@ -1,0 +1,26 @@
+{
+  "title": "How a retaining wall holds up a hill",
+  "voice": "af_heart",
+  "speed": 1.0,
+  "gap": 0.3,
+  "tail": 2.4,
+  "cover": 64.0,
+  "caption": "Why backyard walls don't just fall over 🧱⛰️ #howitsbuilt #retainingwall #landscaping #construction #howitworks",
+  "lines": [
+    { "beat": "hook",   "text": "If you just stacked blocks against a hill, the first big rain would push the whole wall over." },
+    { "beat": "base",   "text": "So you dig a trench and pack it with gravel, so the wall has a solid base." },
+    { "beat": "slide",  "text": "But blocks sitting on the ground can slide right out at the bottom." },
+    { "beat": "bury",   "text": "So you bury the first row, and the dirt holds its feet in place." },
+    { "beat": "tip",    "text": "But a wall standing straight up still tips forward." },
+    { "beat": "lean",   "text": "So each row sits a little behind the one below, and the wall leans into the hill." },
+    { "beat": "rain",   "text": "But rain soaks the soil behind it, and that water can double the push on the wall." },
+    { "beat": "gravel", "text": "So you fill the space behind the blocks with *gravel*, which lets the water drain straight down." },
+    { "beat": "pipe",   "text": "And a *drain pipe* full of holes at the bottom carries it away." },
+    { "beat": "clog",   "text": "But mud washes into the gravel and clogs it." },
+    { "beat": "fabric", "text": "So you line it with *filter fabric*, which lets water through but holds the dirt back." },
+    { "beat": "tall",   "text": "But a taller wall gets shoved by a huge mass of dirt." },
+    { "beat": "grid",   "text": "So you lay plastic mesh called *geogrid* between the rows, reaching back into the hill, so the soil and wall act like one big block." },
+    { "beat": "cap",    "text": "Then glue cap stones on top." },
+    { "beat": "end",    "text": "Congratulations, you just built a *retaining wall*." }
+  ]
+}
